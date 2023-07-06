@@ -14,14 +14,14 @@ const setTokenCookie = (res, user) => {
   const token = jwt.sign(
     { data: safeUser },
     secret,
-    { expiresIn: parseInt(expiresIn) } // 604,800 seconds = 1 week
+    { expiresIn: parseInt(expiresIn) }
   );
 
   const isProduction = process.env.NODE_ENV === "production";
 
   // Set the token cookie
   res.cookie('token', token, {
-    maxAge: expiresIn * 1000, // maxAge in milliseconds
+    maxAge: expiresIn * 1000,
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction && "Lax"
