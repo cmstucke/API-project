@@ -5,14 +5,16 @@ const cors = require('cors');
 const csurf = require('csurf');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
+const { ValidationError } = require('sequelize');
 
 const { environment } = require('./config');
 const isProduction = environment === 'production';
 
+const routes = require('./routes');
+
 const app = express();
 
 app.use(morgan('dev'));
-
 app.use(cookieParser());
 app.use(express.json());
 
@@ -40,8 +42,6 @@ app.use(
   })
 );
 
-const routes = require('./routes');
-
 app.use(routes);
 
 app.use((_req, _res, next) => {
@@ -51,8 +51,6 @@ app.use((_req, _res, next) => {
   err.status = 404;
   next(err);
 });
-
-const { ValidationError } = require('sequelize');
 
 app.use((err, _req, _res, next) => {
   // check if error is a Sequelize error:

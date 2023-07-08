@@ -1,4 +1,6 @@
 const express = require('express');
+const router = express.Router();
+
 const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
 
@@ -7,8 +9,6 @@ const { User } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
-
-const router = express.Router();
 
 // Restore session user
 router.get(
