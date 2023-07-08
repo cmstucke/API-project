@@ -1,20 +1,22 @@
 const express = require('express');
-const router = express.Router();
-
 const bcrypt = require('bcryptjs');
-
-const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { User } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
+const { setTokenCookie, requireAuth } = require('../../utils/auth');
+const { User } = require('../../db/models');
+
+const router = express.Router();
+
 const validateSignup = [
   check('firstName')
     .exists({ checkFalsy: true })
+    .isLength({ min: 1 })
     .withMessage('Please provide a user first name.'),
   check('lastName')
     .exists({ checkFalsy: true })
+    .isLength({ min: 1 })
     .withMessage('Please provide a user last name.'),
   check('email')
     .exists({ checkFalsy: true })
@@ -35,6 +37,7 @@ const validateSignup = [
   handleValidationErrors
 ];
 
+// Sign up
 router.post(
   '/',
   validateSignup,
