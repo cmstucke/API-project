@@ -9,14 +9,67 @@ const { Group, User, Membership } = require('../../db/models');
 
 const router = express.Router();
 
+const validateCreateGroup = [
+  check('name')
+    .exists({ checkFalsy: true })
+    .isLength({ min: 1, max: 60 })
+    .withMessage("Name must be 60 characters or less"),
+  check('about')
+    .isLength({ min: 50 })
+    .withMessage("About must be 50 characters or more"),
+  // check('type')
+  //   .equals(['Online', 'In person'])
+  //   .withMessage("Type must be 'Online' or 'In person'"),
+  check('private')
+    .exists({ checkFalsy: true })
+    .isBoolean()
+    .withMessage("Private must be a boolean"),
+  check('city')
+    .exists({ checkFalsy: true })
+    .withMessage("City is required"),
+  check('state')
+    .exists({ checkFalsy: true })
+    .withMessage("State is required"),
+  handleValidationErrors
+];
+
 // Get all Groups joined or organized by the Current User
 router.get('/current', requireAuth, async (req, res) => {
-  const organizer = await Group.findAll({ where: { organizerId: req.user.id } });
-  const memberships = await Membership.findAll({ include: { model: Group } });
+  const organizer = await Group.findAll({
+    where: { organizerId: req.user.id }
+  });
+  const memberships = await Membership.findAll({
+    where: { userId: req.user.id },
+    include: { model: Group }
+  });
   const member = [];
-  for (const memberOf of memberships) { member.push(memberOf.Group) };
+  for (const memberOf of memberships) {
+    member.push(memberOf.Group)
+  };
   const groups = organizer.concat(member);
   return res.json({ "Groups": groups });
+});
+
+// Create a Group
+router.post('/', requireAuth, validateCreateGroup, async (req, res) => {
+  const { name, about, type, private, city, state } = req.body;
+  const organizerId = req.user.id
+  const group = await Group.create({ organizerId, name, about, type, private, city, state });
+
+  const safeGroup = {
+    id: group.id,
+    organizerId: group.organizerId,
+    name: group.name,
+    about: group.about,
+    type: group.type,
+    private: group.private,
+    city: group.city,
+    state: group.state,
+    createdAt: group.createdAt,
+    updatedAt: group.updatedAt
+  };
+
+  return res.json(safeGroup);
 });
 
 // Get details of a Group from an id
