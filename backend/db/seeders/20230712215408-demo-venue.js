@@ -63,7 +63,9 @@ module.exports = {
         [Op.in]: [
           '101 firstGroupAddress',
           '102 firstGroupAddress',
-          '103 firstGroupAddress'
+          '103 firstGroupAddress',
+          '201 secondGroupAddress',
+          '301 thirdGroupAddress'
         ]
       }
     }, {});
