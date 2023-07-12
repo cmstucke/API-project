@@ -5,11 +5,11 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Group, User, Membership } = require('../../db/models');
+const { Group, Membership, GroupImage } = require('../../db/models');
 
 const router = express.Router();
 
-const validateCreateGroup = [
+const validateGroup = [
   check('name')
     .exists({ checkFalsy: true })
     .isLength({ min: 1, max: 60 })
@@ -33,6 +33,10 @@ const validateCreateGroup = [
   handleValidationErrors
 ];
 
+const validateImg = async (groupId) => {
+
+};
+
 // Get all Groups joined or organized by the Current User
 router.get('/current', requireAuth, async (req, res) => {
   const organizer = await Group.findAll({
@@ -51,10 +55,31 @@ router.get('/current', requireAuth, async (req, res) => {
 });
 
 // Add an Image to a Group based on the Group's id
-router.post('/:groupId/images', requireAuth, async (req, res) => { });
+router.post('/:groupId/images', requireAuth, async (req, res) => {
+  const { url, preview } = req.body;
+  const groupId = req.params.groupId;
+
+  const group = await Group.findByPk(groupId)
+  if (!group) {
+    const err = new Error("Couldn't find a Group with the specified id");
+    console.error(err);
+    res.status(404);
+    return res.json({ "message": "Group couldn't be found" });
+  };
+
+  const img = await GroupImage.create({ groupId, url, preview });
+
+  const safeImg = {
+    id: img.id,
+    url: img.url,
+    preview: img.preview
+  };
+
+  return res.json(safeImg);
+});
 
 // Create a Group
-router.post('/', requireAuth, validateCreateGroup, async (req, res) => {
+router.post('/', requireAuth, validateGroup, async (req, res) => {
   const { name, about, type, private, city, state } = req.body;
   const organizerId = req.user.id
   const group = await Group.create({ organizerId, name, about, type, private, city, state });
@@ -89,7 +114,7 @@ router.get('/:groupId', async (req, res) => {
 
 // Get all Groups
 router.get('/', async (req, res) => {
-  const groups = await Group.findAll();
+  const groups = await Group.findAll({ include: { model: GroupImage } });
   return res.json({ "Groups": groups });
 });
 
