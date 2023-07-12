@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Venue.belongsTo(models.Group, { foreignKey: 'groupId' });
     }
   }
   Venue.init({
@@ -19,9 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     city: DataTypes.STRING,
     state: DataTypes.STRING,
     lat: DataTypes.DECIMAL,
-    lng: DataTypes.DECIMAL,
-    // createdAt: DataTypes.DATE,
-    // updatedAt: DataTypes.DATE
+    lng: DataTypes.DECIMAL
   }, {
     sequelize,
     modelName: 'Venue',
