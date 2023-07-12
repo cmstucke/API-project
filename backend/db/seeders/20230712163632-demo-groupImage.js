@@ -21,6 +21,21 @@ module.exports = {
         groupId: 1,
         url: 'image.url/two',
         preview: false
+      },
+      {
+        groupId: 2,
+        url: 'image.url/three',
+        preview: true
+      },
+      {
+        groupId: 4,
+        url: 'image.url/four',
+        preview: false
+      },
+      {
+        groupId: 4,
+        url: 'image.url/five',
+        preview: true
       }
     ])
   },
