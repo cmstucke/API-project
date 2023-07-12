@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM,
       values: ['status 1', 'status 2']
     },
-    createdAt: DataTypes.DATE,
-    updatedAt: DataTypes.DATE
+    // createdAt: DataTypes.DATE,
+    // updatedAt: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Attendance',

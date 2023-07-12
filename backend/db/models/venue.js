@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     state: DataTypes.STRING,
     lat: DataTypes.DECIMAL,
     lng: DataTypes.DECIMAL,
-    createdAt: DataTypes.DATE,
-    updatedAt: DataTypes.DATE
+    // createdAt: DataTypes.DATE,
+    // updatedAt: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Venue',

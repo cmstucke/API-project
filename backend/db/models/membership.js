@@ -27,8 +27,8 @@ module.exports = (sequelize, DataTypes) => {
     status: {
       type: DataTypes.ENUM('active', 'inactive')
     },
-    createdAt: DataTypes.DATE,
-    updatedAt: DataTypes.DATE
+    // createdAt: DataTypes.DATE,
+    // updatedAt: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Membership',

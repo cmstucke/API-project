@@ -17,8 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     eventId: DataTypes.INTEGER,
     url: DataTypes.STRING,
     preview: DataTypes.BOOLEAN,
-    createdAt: DataTypes.DATE,
-    updatedAt: DataTypes.DATE
+    // createdAt: DataTypes.DATE,
+    // updatedAt: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'EventImage',
