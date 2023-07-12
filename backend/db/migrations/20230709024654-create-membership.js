@@ -32,8 +32,7 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       status: {
-        type: Sequelize.ENUM,
-        values: ['active', 'inactive']
+        type: Sequelize.ENUM(['active', 'inactive'])
       },
       createdAt: {
         type: Sequelize.DATE
