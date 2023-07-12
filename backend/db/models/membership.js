@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Membership.belongsTo(models.User, { foreignKey: 'userId' });
+      Membership.belongsTo(models.Group, { foreignKey: 'groupId' });
     }
   }
   Membership.init({
@@ -18,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     groupId: DataTypes.INTEGER,
     status: {
       type: DataTypes.ENUM,
-      values: ['status 1', 'status 2']
+      values: ['active', 'inactive']
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE

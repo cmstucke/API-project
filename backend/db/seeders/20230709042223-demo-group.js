@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 
-const { Group, User } = require('../models');
+const { Group } = require('../models');
 const bcrypt = require("bcryptjs");
 
 let options = {};
