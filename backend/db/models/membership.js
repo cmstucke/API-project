@@ -24,10 +24,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     userId: DataTypes.INTEGER,
     groupId: DataTypes.INTEGER,
-    status: {
-      type: DataTypes.ENUM,
-      values: ['active', 'inactive']
-    },
+    // status: {
+    //   type: DataTypes.ENUM,
+    //   values: ['active', 'inactive']
+    // },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE
   }, {

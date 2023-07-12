@@ -28,10 +28,10 @@ module.exports = {
         },
         onDelete: 'CASCADE'
       },
-      status: {
-        type: Sequelize.ENUM,
-        values: ['active', 'inactive']
-      },
+      // status: {
+      //   type: Sequelize.ENUM,
+      //   values: ['active', 'inactive']
+      // },
       createdAt: {
         type: Sequelize.DATE
       },
