@@ -33,27 +33,6 @@ const validateGroup = [
   handleValidationErrors
 ];
 
-const validateImg = async (groupId) => {
-
-};
-
-// Get all Groups joined or organized by the Current User
-router.get('/current', requireAuth, async (req, res) => {
-  const organizer = await Group.findAll({
-    where: { organizerId: req.user.id }
-  });
-  const memberships = await Membership.findAll({
-    where: { userId: req.user.id },
-    include: { model: Group }
-  });
-  const member = [];
-  for (const memberOf of memberships) {
-    member.push(memberOf.Group)
-  };
-  const groups = organizer.concat(member);
-  return res.json({ "Groups": groups });
-});
-
 // Add an Image to a Group based on the Group's id
 router.post('/:groupId/images', requireAuth, async (req, res) => {
   const { url, preview } = req.body;
@@ -78,6 +57,68 @@ router.post('/:groupId/images', requireAuth, async (req, res) => {
   return res.json(safeImg);
 });
 
+// Edit a Group
+router.put('/:groupId', requireAuth, validateGroup, async (req, res) => {
+  const group = await Group.findByPk(req.params.groupId);
+
+  // No such group
+  if (!group) {
+    const err = new Error("Couldn't find a Group with the specified id");
+    console.error(err);
+    res.status(404);
+    return res.json({ "message": "Group couldn't be found" });
+  };
+
+  // Unauthorized user
+  if (req.user.id !== group.organizerId) {
+    const err = new Error("Group must belong to the current user");
+    console.error(err);
+    res.status(403);
+    return res.json({ "message": "Group must belong to the current user" });
+  };
+
+  // Handler
+  const { name, about, type, private, city, state } = req.body;
+
+  group.name = name;
+  group.about = about;
+  group.type = type;
+  group.private = private;
+  group.city = city;
+  group.state = state;
+
+  return res.json(group);
+});
+
+// Get all Groups joined or organized by the Current User
+router.get('/current', requireAuth, async (req, res) => {
+  const organizer = await Group.findAll({
+    where: { organizerId: req.user.id }
+  });
+  const memberships = await Membership.findAll({
+    where: { userId: req.user.id },
+    include: { model: Group }
+  });
+  const member = [];
+  for (const memberOf of memberships) {
+    member.push(memberOf.Group)
+  };
+  const groups = organizer.concat(member);
+  return res.json({ "Groups": groups });
+});
+
+// Get details of a Group from an id
+router.get('/:groupId', async (req, res) => {
+  const group = await Group.findByPk(req.params.groupId);
+  if (!group) {
+    const err = new Error("Couldn't find a Group with the specified id");
+    console.error(err);
+    res.status(404);
+    return res.json({ "message": "Group couldn't be found" });
+  };
+  return res.json(group);
+});
+
 // Create a Group
 router.post('/', requireAuth, validateGroup, async (req, res) => {
   const { name, about, type, private, city, state } = req.body;
@@ -98,18 +139,6 @@ router.post('/', requireAuth, validateGroup, async (req, res) => {
   };
 
   return res.json(safeGroup);
-});
-
-// Get details of a Group from an id
-router.get('/:groupId', async (req, res) => {
-  const group = await Group.findByPk(req.params.groupId);
-  if (!group) {
-    const err = new Error("Couldn't find a Group with the specified id");
-    console.error(err);
-    res.status(404);
-    return res.json({ "message": "Group couldn't be found" });
-  }
-  return res.json(group);
 });
 
 // Get all Groups
