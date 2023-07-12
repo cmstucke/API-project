@@ -16,7 +16,7 @@ module.exports = {
       {
         userId: 1,
         groupId: 2,
-        status: 'active'
+        // status: ['active']
       }
     ], { validate: true })
   },
