@@ -6,6 +6,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
 const { Group, Membership, GroupImage } = require('../../db/models');
+const { ResultWithContextImpl } = require('express-validator/src/chain');
 
 const router = express.Router();
 
@@ -117,6 +118,32 @@ router.get('/:groupId', async (req, res) => {
     return res.json({ "message": "Group couldn't be found" });
   };
   return res.json(group);
+});
+
+// Delete a Group
+router.delete('/:groupId', requireAuth, async (req, res) => {
+  const group = await Group.findByPk(req.params.groupId);
+
+  // No such group
+  if (!group) {
+    const err = new Error("Couldn't find a Group with the specified id");
+    console.error(err);
+    res.status(404);
+    return res.json({ "message": "Group couldn't be found" });
+  };
+
+  // Unauthorized user
+  if (req.user.id !== group.organizerId) {
+    const err = new Error("Group must belong to the current user");
+    console.error(err);
+    res.status(403);
+    return res.json({ "message": "Group must belong to the current user" });
+  };
+
+  await group.destroy();
+
+  return res.json({ "message": "Successfully deleted" })
+
 });
 
 // Create a Group
