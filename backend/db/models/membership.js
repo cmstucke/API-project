@@ -25,8 +25,8 @@ module.exports = (sequelize, DataTypes) => {
     userId: DataTypes.INTEGER,
     groupId: DataTypes.INTEGER,
     status: {
-      type: DataTypes.ENUM,
-      values: ['active', 'inactive']
+      type: DataTypes.ENUM('active', 'inactive')
+      // values: ['active', 'inactive']
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE
