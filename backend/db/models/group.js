@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Group.hasMany(models.GroupImage, { foreignKey: 'groupId' })
       Group.hasMany(models.Membership, { foreignKey: 'groupId' })
       Group.belongsToMany(models.User, {
         through: models.Membership,
@@ -30,8 +31,6 @@ module.exports = (sequelize, DataTypes) => {
     private: DataTypes.BOOLEAN,
     city: DataTypes.STRING,
     state: DataTypes.STRING,
-    // createdAt: DataTypes.DATE,
-    // updatedAt: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Group',

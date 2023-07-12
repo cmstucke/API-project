@@ -50,6 +50,9 @@ router.get('/current', requireAuth, async (req, res) => {
   return res.json({ "Groups": groups });
 });
 
+// Add an Image to a Group based on the Group's id
+router.post('/:groupId/images', requireAuth, async (req, res) => { });
+
 // Create a Group
 router.post('/', requireAuth, validateCreateGroup, async (req, res) => {
   const { name, about, type, private, city, state } = req.body;
