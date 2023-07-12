@@ -12,14 +12,27 @@ const router = express.Router();
 // Get details of a Group from an id
 router.get('/current', requireAuth, async (req, res) => {
   // console.log(req.user.id)
-  const organizer = await Group.findAll({ where: { organizerId: req.user.id } });
-  const members = await Membership.findAll({ include: { model: Group } });
-  const memberships = [];
-  for (const member of members) {
-    memberships.push(member.Group)
-  }
-  const groups = [...organizer, ...memberships]
-  return res.json(groups);
+  const groups = await Group.findAll({
+    where: { organizerId: req.user.id }
+  });
+  const memberships = await Group.findAll({
+    include: [{
+      model: User,
+      where: { id: req.user.id }
+    }]
+  });
+  const allGroups = groups.concat(memberships);
+  // const member = [];
+  // for (const memberOf of members) {
+  //   memberships.push(memberOf.Group)
+  // }
+  // const groups = [...organizer, ...member]
+  return res.json({ 'Groups': allGroups });
+});
+
+router.get('/:groupId', async (req, res) => {
+  const group = await Group.findByPk(req.params.groupId);
+  return res.json(group);
 });
 
 // Get all Groups
