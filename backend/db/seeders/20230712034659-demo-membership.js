@@ -15,7 +15,7 @@ module.exports = {
     await Membership.bulkCreate([
       {
         userId: 1,
-        groupId: 2,
+        GroupId: 2,
         status: 'active'
       }
     ], { validate: true })
