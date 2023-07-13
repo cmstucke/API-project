@@ -25,10 +25,8 @@ module.exports = (sequelize, DataTypes) => {
     userId: DataTypes.INTEGER,
     groupId: DataTypes.INTEGER,
     status: {
-      type: DataTypes.ENUM('active', 'inactive')
-    },
-    // createdAt: DataTypes.DATE,
-    // updatedAt: DataTypes.DATE
+      type: DataTypes.ENUM('co-host', 'member', 'pending')
+    }
   }, {
     sequelize,
     modelName: 'Membership',

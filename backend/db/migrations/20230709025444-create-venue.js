@@ -16,7 +16,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       groupId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Groups',
+          key: 'id'
+        },
+        onDelete: 'CASCADE'
       },
       address: {
         type: Sequelize.STRING
@@ -34,18 +39,12 @@ module.exports = {
         type: Sequelize.DECIMAL
       },
       createdAt: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updatedAt: {
-        type: Sequelize.DATE
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     }, options);
   },

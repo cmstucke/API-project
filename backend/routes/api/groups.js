@@ -10,6 +10,20 @@ const { ResultWithContextImpl } = require('express-validator/src/chain');
 
 const router = express.Router();
 
+/*
+  VENUES
+*/
+
+router.get('/:groupId/venues', requireAuth, async (req, res) => {
+  const membership = await Membership.findOne({ where: { groupId: req.params.groupId } });
+  const group = await Group.findByPk(req.params.groupId);
+  res.json(group);
+});
+
+/*
+  GROUPS
+*/
+
 const validateGroup = [
   check('name')
     .exists({ checkFalsy: true })
@@ -143,7 +157,6 @@ router.delete('/:groupId', requireAuth, async (req, res) => {
   await group.destroy();
 
   return res.json({ "message": "Successfully deleted" })
-
 });
 
 // Create a Group

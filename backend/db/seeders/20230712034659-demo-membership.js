@@ -14,9 +14,29 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await Membership.bulkCreate([
       {
+        userId: 2,
+        groupId: 1,
+        status: 'member'
+      },
+      {
+        userId: 3,
+        groupId: 1,
+        status: 'member'
+      },
+      {
+        userId: 4,
+        groupId: 1,
+        status: 'co-host'
+      },
+      {
         userId: 1,
-        groupId: 2,
-        status: 'active'
+        groupId: 4,
+        status: 'member'
+      },
+      {
+        userId: 5,
+        groupId: 4,
+        status: 'pending'
       }
     ], { validate: true })
   },

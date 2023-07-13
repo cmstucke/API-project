@@ -39,6 +39,24 @@ module.exports = {
         private: false,
         city: 'Dayton',
         state: 'OH'
+      },
+      {
+        organizerId: 4,
+        name: 'Group Four',
+        about: 'The is the fourth group seed record.',
+        type: 'In person',
+        private: false,
+        city: 'Chicago',
+        state: 'IL'
+      },
+      {
+        organizerId: 4,
+        name: 'Group Five',
+        about: 'The is the fifth group seed record.',
+        type: 'In person',
+        private: false,
+        city: 'Cincinnati',
+        state: 'IL'
       }
     ], { validate: true });
   },
