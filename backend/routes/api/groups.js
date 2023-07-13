@@ -14,7 +14,7 @@ const router = express.Router();
   VENUES
 */
 
-// Check if member has co-host status without throwing type error
+// Check if membership has co-host status without throwing type error
 const coHost = async (group, user) => {
   const membership = await Membership.findOne({ where: { groupId: group, userId: user } });
   if (membership) {

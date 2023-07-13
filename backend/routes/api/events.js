@@ -25,6 +25,16 @@ const isAttending = async (userId, eventId) => {
   return false;
 };
 
+// Check if membership has co-host status without throwing type error
+const coHost = async (userId, groupId) => {
+  const membership = await Membership.findOne({ where: { userId: userId, groupId: groupId } });
+  if (membership) {
+    if (membership.status === 'co-host') return true
+    return false
+  }
+  return false
+};
+
 // Add an Image to a Event based on the Event's id
 router.post('/:eventId/images', requireAuth, async (req, res) => {
   const event = await Event.findByPk(req.params.eventId);
@@ -107,6 +117,60 @@ router.get('/:eventId', async (req, res) => {
 
   return res.json(eventObj);
 });
+
+// Edit an Event specified by its id
+router.put('/:eventId', requireAuth, async (req, res) => {
+  const event = await Event.findByPk(req.params.eventId)
+
+  // No such Event
+  if (!event) {
+    const err = new Error("Couldn't find a Event with the specified id");
+    console.error(err);
+    res.status(404);
+    return res.json({ message: "Event couldn't be found" });
+  };
+
+  const group = await Group.findByPk(event.groupId);
+  const isCoHost = await coHost(group.id, req.user.id);
+
+  // Unauthorized user
+  if (req.user.id !== group.organizerId && !isCoHost) {
+    const err = new Error("Group Event must be created by Organizer or Co-Host");
+    console.error(err);
+    res.status(403);
+    return res.json({ message: "Group Event must be created by Organizer or Co-Host" });
+  };
+
+  const {
+    venueId,
+    name,
+    type,
+    capacity,
+    price,
+    description,
+    startDate,
+    endDate
+  } = req.body;
+
+  event.venueId = venueId;
+  event.name = name;
+  event.type = type;
+  event.capacity = capacity;
+  event.price = price;
+  event.description = description;
+  event.startDate = startDate;
+  event.endDate = endDate;
+
+  event.save()
+  const eventObj = event.toJSON()
+
+  delete eventObj.createdAt;
+  delete eventObj.updatedAt;
+
+  return res.json(eventObj)
+});
+
+
 
 // Get all Events
 router.get('/', async (req, res) => {
