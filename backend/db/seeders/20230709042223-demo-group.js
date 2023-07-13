@@ -32,7 +32,7 @@ module.exports = {
         state: 'NY'
       },
       {
-        organizerId: 1,
+        organizerId: 5,
         name: 'Group Three',
         about: 'The is the third group seed record.',
         type: 'Online',
