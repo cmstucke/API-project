@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 
-const { GroupImage } = require('../models');
+const { EventImage } = require('../models');
 
 let options = {};
 if (process.env.NODE_ENV === 'production') {
@@ -11,37 +11,37 @@ if (process.env.NODE_ENV === 'production') {
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await GroupImage.bulkCreate([
+    await EventImage.bulkCreate([
       {
-        groupId: 1,
+        eventId: 1,
         url: 'image.url/one',
-        preview: true
+        preview: false,
       },
       {
-        groupId: 1,
+        eventId: 1,
         url: 'image.url/two',
-        preview: false
+        preview: true,
       },
       {
-        groupId: 2,
+        eventId: 1,
         url: 'image.url/three',
-        preview: true
+        preview: false,
       },
       {
-        groupId: 4,
+        eventId: 4,
         url: 'image.url/four',
-        preview: false
+        preview: true,
       },
       {
-        groupId: 4,
+        eventId: 4,
         url: 'image.url/five',
-        preview: true
+        preview: false,
       }
     ], { validate: true })
   },
 
   async down(queryInterface, Sequelize) {
-    options.tableName = 'GroupImages';
+    options.tableName = 'EventImages';
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, {
       id: { [Op.in]: [1, 2, 3, 4, 5] }

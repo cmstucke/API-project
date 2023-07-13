@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 
-const { GroupImage } = require('../models');
+const { Attendance } = require('../models');
 
 let options = {};
 if (process.env.NODE_ENV === 'production') {
@@ -11,37 +11,42 @@ if (process.env.NODE_ENV === 'production') {
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await GroupImage.bulkCreate([
+    await Attendance.bulkCreate([
       {
-        groupId: 1,
-        url: 'image.url/one',
-        preview: true
+        eventId: 1,
+        userId: 2,
+        status: 'attending'
       },
       {
-        groupId: 1,
-        url: 'image.url/two',
-        preview: false
+        eventId: 1,
+        userId: 3,
+        status: 'pending'
       },
       {
-        groupId: 2,
-        url: 'image.url/three',
-        preview: true
+        eventId: 1,
+        userId: 4,
+        status: 'attending'
       },
       {
-        groupId: 4,
-        url: 'image.url/four',
-        preview: false
+        eventId: 1,
+        userId: 5,
+        status: 'waitlist'
       },
       {
-        groupId: 4,
-        url: 'image.url/five',
-        preview: true
+        eventId: 4,
+        userId: 5,
+        status: 'attending'
+      },
+      {
+        eventId: 1,
+        userId: 1,
+        status: 'attending'
       }
     ], { validate: true })
   },
 
   async down(queryInterface, Sequelize) {
-    options.tableName = 'GroupImages';
+    options.tableName = 'Attendances';
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, {
       id: { [Op.in]: [1, 2, 3, 4, 5] }
