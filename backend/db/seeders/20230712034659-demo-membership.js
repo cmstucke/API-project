@@ -30,8 +30,8 @@ module.exports = {
       },
       {
         userId: 1,
-        groupId: 4,
-        status: 'member'
+        groupId: 3,
+        status: 'co-host'
       },
       {
         userId: 5,
