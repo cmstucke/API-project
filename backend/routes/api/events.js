@@ -35,6 +35,17 @@ const coHost = async (userId, groupId) => {
   return false
 };
 
+/*
+  ATTENDEES
+*/
+
+// Get all Attendees of an Event specified by its id
+router.get('/:eventId/attendees', (req, res) => { });
+
+/*
+  EVENTS
+*/
+
 // Add an Image to a Event based on the Event's id
 router.post('/:eventId/images', requireAuth, async (req, res) => {
   const event = await Event.findByPk(req.params.eventId);
