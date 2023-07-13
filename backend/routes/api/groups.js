@@ -5,7 +5,7 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Attendance, Event, EventImage, Group, GroupImage, Membership, Venue } = require('../../db/models');
+const { Attendance, Event, EventImage, Group, GroupImage, Membership, Venue, User } = require('../../db/models');
 const { ResultWithContextImpl } = require('express-validator/src/chain');
 
 const router = express.Router();
@@ -88,6 +88,45 @@ router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
   }
 });
 
+/*
+  MEMBERSHIPS
+*/
+
+router.get('/:groupId/members', async (req, res) => {
+  const group = await Group.findByPk(req.params.groupId);
+
+  // No such group
+  if (!group) {
+    const err = new Error("Couldn't find a Group with the specified id");
+    console.error(err);
+    res.status(404);
+    return res.json({ "message": "Group couldn't be found" });
+  };
+
+  const memberships = await Membership.findAll({
+    where: { groupId: req.params.groupId },
+    include: { model: User }
+  });
+
+  const membershipObjs = [];
+  memberships.forEach(membership => {
+    membershipObjs.push(membership.toJSON())
+  });
+  // console.log(memberObjs);
+  const members = [];
+  membershipObjs.forEach(memberObj => {
+    const user = memberObj.User;
+    user.Membership = { status: memberObj.status };
+    delete user.username;
+    if (req.user.id !== group.organizerId && memberObj.status !== 'pending') {
+      members.push(user);
+    } else if (req.user.id === group.organizerId) {
+      members.push(user);
+    }
+  });
+
+  return res.json({ Members: members })
+});
 
 /*
   EVENTS
