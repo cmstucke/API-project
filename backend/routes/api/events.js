@@ -5,7 +5,7 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Attendance, Event, EventImage, Group, Membership, Venue } = require('../../db/models');
+const { Attendance, Event, EventImage, Group, Membership, Venue, User } = require('../../db/models');
 
 const router = express.Router();
 
@@ -40,7 +40,45 @@ const coHost = async (userId, groupId) => {
 */
 
 // Get all Attendees of an Event specified by its id
-router.get('/:eventId/attendees', (req, res) => { });
+router.get('/:eventId/attendees', async (req, res) => {
+  const eventId = req.params.eventId;
+  const event = await Event.findByPk(eventId);
+
+  if (!event) {
+    res.status(404)
+    return res.json({ message: "Event couldn't be found" })
+  }
+
+  const group = await Group.findByPk(event.groupId)
+
+  const attendees = await Attendance.findAll({
+    where: { eventId: eventId },
+    include: { model: User }
+  });
+
+  const attendeeObjs = [];
+  attendees.forEach(attendee => {
+    attendeeObjs.push(attendee.toJSON());
+  });
+  // console.log(attendeeObjs)
+  const attendeeReturn = [];
+  attendeeObjs.forEach(attendee => {
+    attendee.User.Attendance = { status: attendee.status };
+    attendee.User.id = attendee.id;
+    delete attendee.User.username;
+    attendeeReturn.push(attendee.User);
+  });
+
+  // Return unfiltered list for group organizers and co-hosts
+  const isCoHost = await coHost(req.user.id, group.id);
+  if (req.user.id === group.organizerId || isCoHost) {
+    return res.json({ Attendees: attendeeReturn })
+  };
+
+  const attendeeFilter = attendeeReturn.filter(attendee => attendee.Attendance.status !== 'pending');
+
+  return res.json({ Attendees: attendeeFilter });
+});
 
 /*
   EVENTS
