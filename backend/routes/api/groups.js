@@ -5,7 +5,7 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Group, Membership, GroupImage } = require('../../db/models');
+const { Group, Membership, GroupImage, Venue } = require('../../db/models');
 const { ResultWithContextImpl } = require('express-validator/src/chain');
 
 const router = express.Router();
@@ -14,10 +14,45 @@ const router = express.Router();
   VENUES
 */
 
-router.get('/:groupId/venues', requireAuth, async (req, res) => {
-  const membership = await Membership.findOne({ where: { groupId: req.params.groupId } });
+// Check if member with co-host status without throwing type error
+const coHost = async (group, user) => {
+  const membership = await Membership.findOne({ where: { groupId: group, userId: user } });
+  // console.log(membership);
+  if (membership) {
+    if (membership.status === 'co-host') return true
+    return false
+  }
+  return false
+};
+
+// Get All Venues for a Group specified by its id
+router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
+  const membership = await Membership.findOne({ where: { groupId: req.params.groupId, userId: req.user.id } });
   const group = await Group.findByPk(req.params.groupId);
-  res.json(group);
+  const groupId = req.params.groupId
+  const userId = req.user.id
+
+  const isCoHost = await coHost(groupId, userId)
+  // console.log(isCoHost);
+
+  // No such group
+  if (!group) {
+    const err = new Error("Couldn't find a Group with the specified id");
+    console.error(err);
+    res.status(404);
+    return res.json({ "message": "Group couldn't be found" });
+  };
+
+  // Handler
+  if (group.organizerId === userId || isCoHost) {
+    const venues = await Venue.findAll({ where: { groupId: groupId } });
+    return res.json({ "Venues": venues });
+  } else {
+    const err = new Error("Unauthenticated user");
+    console.error(err);
+    res.status(403);
+    return res.json({ "message": "User must be organizer or co-host to the current group" });
+  }
 });
 
 /*
