@@ -5,9 +5,60 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Event, Group, Venue, Attendance, EventImage } = require('../../db/models');
+const { Attendance, Event, EventImage, Group, Membership, Venue } = require('../../db/models');
 
 const router = express.Router();
+
+// Check if member has co-host status without throwing type error
+const isAttending = async (userId, eventId) => {
+  const attendance = await Attendance.findOne({ where: { userId: userId, eventId: eventId } });
+  if (attendance) {
+    if (
+      attendance.status === 'host' ||
+      attendance.status === 'co-host' ||
+      attendance.status === 'attending'
+    ) {
+      return true;
+    };
+    return false;
+  };
+  return false;
+};
+
+// Add an Image to a Event based on the Event's id
+router.post('/:eventId/images', requireAuth, async (req, res) => {
+  const event = await Event.findByPk(req.params.eventId);
+
+  // No such Event
+  if (!event) {
+    const err = new Error("Couldn't find an Event with the specified id");
+    console.error(err);
+    res.status(404);
+    return res.json({ message: "Event couldn't be found" });
+  }
+
+  const attending = await isAttending(req.user.id, event.id)
+
+  // Unauthorized user
+  if (!attending) {
+    const err = new Error("Current User must be an attendee, host, or co-host of the event");
+    console.error(err);
+    res.status(403);
+    return res.json({ message: "User must be an attendee, host, or co-host of the event" });
+  }
+
+  const eventId = event.id;
+  const { url, preview } = req.body;
+  const img = await EventImage.create({ eventId, url, preview });
+  // img.save();
+  const imgObj = img.toJSON();
+
+  delete imgObj.eventId;
+  delete imgObj.createdAt;
+  delete imgObj.updatedAt;
+
+  return res.json(imgObj);
+});
 
 // Get details of an Event specified by its id
 router.get('/:eventId', async (req, res) => {

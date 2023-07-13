@@ -159,12 +159,14 @@ router.post('/:groupId/events', requireAuth, async (req, res) => {
     return res.json({ "message": "Group couldn't be found" });
   };
 
+  const isCoHost = await coHost(group.id, req.user.id)
+
   // Unauthorized user
-  if (req.user.id !== group.organizerId) {
-    const err = new Error("Group must belong to the current user");
+  if (req.user.id !== group.organizerId && !isCoHost) {
+    const err = new Error("Group Event must be created by Organizer or Co-Host");
     console.error(err);
     res.status(403);
-    return res.json({ "message": "Group must belong to the current user" });
+    return res.json({ message: "Group Event must be created by Organizer or Co-Host" });
   };
 
   const groupId = group.id;
