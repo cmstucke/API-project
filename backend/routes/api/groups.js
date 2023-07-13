@@ -14,7 +14,7 @@ const router = express.Router();
   VENUES
 */
 
-// Check if member with co-host status without throwing type error
+// Check if member has co-host status without throwing type error
 const coHost = async (group, user) => {
   const membership = await Membership.findOne({ where: { groupId: group, userId: user } });
   if (membership) {
@@ -93,6 +93,7 @@ router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
   EVENTS
 */
 
+// Get all Events of a Group specified by its id
 router.get('/:groupId/events', async (req, res) => {
   const groupId = req.params.groupId;
   const group = await Group.findByPk(groupId)
@@ -144,6 +145,37 @@ router.get('/:groupId/events', async (req, res) => {
   });
 
   return res.json({ Events: eventsList });
+});
+
+// Create an Event for a Group specified by its id
+router.post('/:groupId/events', requireAuth, async (req, res) => {
+  const group = await Group.findByPk(req.params.groupId);
+
+  // No such group
+  if (!group) {
+    const err = new Error("Couldn't find a Group with the specified id");
+    console.error(err);
+    res.status(404);
+    return res.json({ "message": "Group couldn't be found" });
+  };
+
+  // Unauthorized user
+  if (req.user.id !== group.organizerId) {
+    const err = new Error("Group must belong to the current user");
+    console.error(err);
+    res.status(403);
+    return res.json({ "message": "Group must belong to the current user" });
+  };
+
+  const groupId = group.id;
+  const { venueId, name, description, type, capacity, price, startDate, endDate } = req.body;
+  const event = await Event.create({ groupId, venueId, name, description, type, capacity, price, startDate, endDate });
+
+  const eventObj = event.toJSON()
+  delete eventObj.updatedAt;
+  delete eventObj.createdAt;
+
+  return res.json(eventObj);
 });
 
 /*
