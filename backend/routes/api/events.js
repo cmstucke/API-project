@@ -47,8 +47,9 @@ router.get('/', async (req, res) => {
     event.numAttending = event.Attendances.length;
     delete event.Attendances;
     event.EventImages.forEach(img => {
-      if (img.preview) { event.previewImage = img.url };
+      if (img.preview) event.previewImage = img.url;
     });
+    if (!event.previewImage) event.previewImage = 'No preview image found';
     delete event.EventImages;
   });
 
