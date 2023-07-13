@@ -327,7 +327,7 @@ router.delete('/:groupId', requireAuth, async (req, res) => {
 
   await group.destroy();
 
-  return res.json({ "message": "Successfully deleted" })
+  return res.json({ message: "Successfully deleted" })
 });
 
 // Create a Group
