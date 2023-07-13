@@ -120,13 +120,22 @@ const validateGroup = [
 router.post('/:groupId/images', requireAuth, async (req, res) => {
   const { url, preview } = req.body;
   const groupId = req.params.groupId;
-
   const group = await Group.findByPk(groupId)
+
+  // No such group
   if (!group) {
     const err = new Error("Couldn't find a Group with the specified id");
     console.error(err);
     res.status(404);
     return res.json({ "message": "Group couldn't be found" });
+  };
+
+  // Unauthorized user
+  if (req.user.id !== group.organizerId) {
+    const err = new Error("Group must belong to the current user");
+    console.error(err);
+    res.status(403);
+    return res.json({ "message": "Group must belong to the current user" });
   };
 
   const img = await GroupImage.create({ groupId, url, preview });
