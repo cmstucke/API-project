@@ -9,6 +9,7 @@ const { Event, Group, Venue, Attendance, EventImage } = require('../../db/models
 
 const router = express.Router();
 
+// Get all Events
 router.get('/', async (req, res) => {
   const events = await Event.findAll({
     attributes: [
@@ -21,12 +22,8 @@ router.get('/', async (req, res) => {
       "endDate"
     ],
     include: [
-      {
-        model: Attendance
-      },
-      {
-        model: EventImage
-      },
+      { model: Attendance },
+      { model: EventImage },
       {
         model: Group,
         attributes: ['id', 'name', 'city', 'state']
@@ -39,9 +36,7 @@ router.get('/', async (req, res) => {
   });
 
   const eventsList = [];
-  events.forEach(event => {
-    eventsList.push(event.toJSON());
-  });
+  events.forEach(event => { eventsList.push(event.toJSON()) });
 
   eventsList.forEach(event => {
     event.numAttending = event.Attendances.length;
