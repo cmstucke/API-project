@@ -190,7 +190,7 @@ router.put('/:groupId/membership', requireAuth, async (req, res) => {
     return res.json({ message: "Group couldn't be found" });
   };
 
-  // Must be organizer to change to co-host
+  // Must be organizer or member
   if (status === 'co-host' && hostId !== group.organizerId) {
     const err = new Error("Current User must be group organizer to create co-host");
     console.error(err);
@@ -232,6 +232,48 @@ router.put('/:groupId/membership', requireAuth, async (req, res) => {
   delete membershipObj.updatedAt;
 
   return res.json(membershipObj);
+});
+
+// Delete membership to a group specified by id
+router.delete('/:groupId/membership', requireAuth, async (req, res) => {
+  const userId = req.user.id;
+  const groupId = req.params.groupId;
+  const { memberId } = req.body;
+  const group = await Group.findByPk(groupId);
+  const membership = await Membership.findByPk(memberId);
+
+  // No such group
+  if (!group) {
+    const err = new Error("Couldn't find a Group with the specified id");
+    console.error(err);
+    res.status(404);
+    return res.json({ message: "Group couldn't be found" });
+  };
+
+  // Membership doesn't exist
+  if (!membership) {
+    const err = new Error("Couldn't find a User with the specified memberId");
+    console.error(err);
+    res.status(400);
+    return res.json({
+      "message": "Validation Error",
+      "errors": {
+        "memberId": "User couldn't be found"
+      }
+    });
+  }
+
+  // Must be organizer or member
+  if (userId !== group.organizerId && userId !== membership.userId) {
+    const err = new Error("Only group organizers and members may delete memberships");
+    console.error(err);
+    res.status(403);
+    return res.json({ message: "Only group organizers and members may delete memberships" });
+  }
+
+  await membership.destroy();
+
+  return res.json({ message: "Successfully deleted membership from group" });
 });
 
 /*
