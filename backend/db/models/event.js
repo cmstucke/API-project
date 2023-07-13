@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Event.belongsTo(models.Venue, { foreignKey: 'venueId' });
+      Event.belongsTo(models.Group, { foreignKey: 'groupId' });
     }
   }
   Event.init({
@@ -20,14 +22,12 @@ module.exports = (sequelize, DataTypes) => {
     description: DataTypes.STRING,
     type: {
       type: DataTypes.ENUM,
-      values: ['type 1', 'type 2']
+      values: ['In person', 'Online']
     },
     capacity: DataTypes.INTEGER,
     price: DataTypes.INTEGER,
     startDate: DataTypes.DATE,
     endDate: DataTypes.DATE,
-    // createdAt: DataTypes.DATE,
-    // updatedAt: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Event',

@@ -16,10 +16,20 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       venueId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Venues',
+          key: 'id'
+        },
+        onDelete: 'SET NULL'
       },
       groupId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Groups',
+          key: 'id'
+        },
+        onDelete: 'CASCADE'
       },
       name: {
         type: Sequelize.STRING
@@ -29,7 +39,7 @@ module.exports = {
       },
       type: {
         type: Sequelize.ENUM,
-        values: ['type 1', 'type 2']
+        values: ['In person', 'Online']
       },
       capacity: {
         type: Sequelize.INTEGER
@@ -44,18 +54,12 @@ module.exports = {
         type: Sequelize.DATE
       },
       createdAt: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updatedAt: {
-        type: Sequelize.DATE
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     }, options);
   },
