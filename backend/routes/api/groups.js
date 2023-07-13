@@ -17,7 +17,6 @@ const router = express.Router();
 // Check if member with co-host status without throwing type error
 const coHost = async (group, user) => {
   const membership = await Membership.findOne({ where: { groupId: group, userId: user } });
-  // console.log(membership);
   if (membership) {
     if (membership.status === 'co-host') return true
     return false
@@ -25,15 +24,12 @@ const coHost = async (group, user) => {
   return false
 };
 
-// Get All Venues for a Group specified by its id
-router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
-  const membership = await Membership.findOne({ where: { groupId: req.params.groupId, userId: req.user.id } });
-  const group = await Group.findByPk(req.params.groupId);
+// Create a new Venue for a Group specified by its id
+router.post('/:groupId/venues', requireAuth, async (req, res, next) => {
   const groupId = req.params.groupId
-  const userId = req.user.id
-
-  const isCoHost = await coHost(groupId, userId)
-  // console.log(isCoHost);
+  const group = await Group.findByPk(groupId);
+  const isCoHost = await coHost(groupId, req.user.id)
+  const { address, city, state, lat, lng } = req.body
 
   // No such group
   if (!group) {
@@ -44,8 +40,45 @@ router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
   };
 
   // Handler
-  if (group.organizerId === userId || isCoHost) {
-    const venues = await Venue.findAll({ where: { groupId: groupId } });
+  if (group.organizerId === req.user.id || isCoHost) {
+    const venue = await Venue.create({ groupId, address, city, state, lat, lng });
+
+    const safeVenue = {
+      id: venue.id,
+      groupId: venue.groupId,
+      address: venue.address,
+      city: venue.city,
+      state: venue.state,
+      lat: venue.lat,
+      lng: venue.lng
+    }
+
+    return res.json(safeVenue);
+
+  } else {
+    const err = new Error("Unauthenticated user");
+    console.error(err);
+    res.status(403);
+    return res.json({ "message": "User must be organizer or co-host to the current group" });
+  }
+});
+
+// Get All Venues for a Group specified by its id
+router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
+  const group = await Group.findByPk(req.params.groupId);
+  const isCoHost = await coHost(req.params.groupId, req.user.id)
+
+  // No such group
+  if (!group) {
+    const err = new Error("Couldn't find a Group with the specified id");
+    console.error(err);
+    res.status(404);
+    return res.json({ "message": "Group couldn't be found" });
+  };
+
+  // Handler
+  if (group.organizerId === req.user.id || isCoHost) {
+    const venues = await Venue.findAll({ where: { groupId: req.params.groupId } });
     return res.json({ "Venues": venues });
   } else {
     const err = new Error("Unauthenticated user");
@@ -136,6 +169,8 @@ router.put('/:groupId', requireAuth, validateGroup, async (req, res) => {
   group.private = private;
   group.city = city;
   group.state = state;
+
+  await group.save();
 
   return res.json(group);
 });
