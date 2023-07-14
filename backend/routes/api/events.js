@@ -174,13 +174,52 @@ router.put('/:eventId/attendance', requireAuth, async (req, res) => {
   };
 
   attendance.status = status;
-  attendance.save();
+  await attendance.save();
 
   const resObj = attendance.toJSON()
   delete resObj.createdAt;
   delete resObj.updatedAt;
 
   return res.json(resObj);
+});
+
+// Delete attendance to an event specified by id
+router.delete('/:eventId/attendance', requireAuth, async (req, res) => {
+  const sessionUserId = req.user.id;
+  const eventId = req.params.eventId;
+  const { userId } = req.body;
+  const event = await Event.findByPk(eventId);
+  const attendance = await Attendance.findOne({
+    where: { userId: userId, eventId: eventId }
+  });
+
+  // No such Event
+  if (!event) {
+    const err = new Error("Event couldn't be found");
+    console.error(err);
+    res.status(404);
+    return res.json({ message: "Event couldn't be found" });
+  };
+
+  const group = await Group.findByPk(event.groupId);
+  // Unauthorized
+  if (sessionUserId !== group.organizerId && sessionUserId !== userId) {
+    const err = new Error("Only the User or organizer may delete an Attendance");
+    console.error(err);
+    res.status(403);
+    return res.json({ message: "Only the User or organizer may delete an Attendance" });
+  };
+
+  // No such Attendance
+  if (!attendance) {
+    const err = new Error("Attendance between the user and the event does not exist");
+    console.error(err);
+    res.status(404);
+    return res.json({ message: "Attendance between the user and the event does not exist" });
+  };
+
+  await attendance.destroy();
+  return res.json({ message: "Successfully deleted attendance from event" });
 });
 
 /*
