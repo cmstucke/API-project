@@ -96,6 +96,18 @@ router.post('/:eventId/attendance', requireAuth, async (req, res) => {
     return res.json({ message: "Event couldn't be found" });
   };
 
+  const membership = await Membership.findOne({
+    where: { userId: userId, groupId: event.groupId }
+  });
+
+  // Not a group member
+  if (!membership) {
+    const err = new Error('Current User must be a member of the group');
+    console.error(err);
+    res.status(403);
+    return res.json({ message: 'Current User must be a member of the group' });
+  }
+
   // Already have attending status
   if (attendance) {
     res.status(400);
@@ -112,7 +124,61 @@ router.post('/:eventId/attendance', requireAuth, async (req, res) => {
   newAttendance.save()
 
   const newAttendanceObj = newAttendance.toJSON();
-  const resObj = { userId: newAttendanceObj.userId, status: status };
+  const resObj = { eventId: eventId, userId: newAttendanceObj.userId, status: status };
+
+  return res.json(resObj);
+});
+
+// Change the status of an attendance for an event specified by id
+router.put('/:eventId/attendance', requireAuth, async (req, res) => {
+  const sessionUserId = req.user.id;
+  const eventId = req.params.eventId;
+  const { userId, status } = req.body;
+  const event = await Event.findByPk(eventId);
+  const attendance = await Attendance.findOne({
+    where: { userId: userId, eventId: eventId }
+  });
+
+  // No such Event
+  if (!event) {
+    const err = new Error("Event couldn't be found");
+    console.error(err);
+    res.status(404);
+    return res.json({ message: "Event couldn't be found" });
+  };
+
+  const group = await Group.findByPk(event.groupId);
+  const isCoHost = await coHost(sessionUserId, group.id);
+  // Unauthorized
+  if (sessionUserId !== group.organizerId && !isCoHost) {
+    const err = new Error("User must already be the organizer or co-host");
+    console.error(err);
+    res.status(403);
+    return res.json({ message: "User must already be the organizer or co-host" });
+  };
+
+  // No such Attendance
+  if (!attendance) {
+    const err = new Error("Attendance between the user and the event does not exist");
+    console.error(err);
+    res.status(404);
+    return res.json({ message: "Attendance between the user and the event does not exist" });
+  };
+
+  // Attempting to change attendance status to 'pending'
+  if (status === 'pending') {
+    const err = new Error("Cannot change an attendance status to pending");
+    console.error(err);
+    res.status(400);
+    return res.json({ message: "Cannot change an attendance status to pending" });
+  };
+
+  attendance.status = status;
+  attendance.save();
+
+  const resObj = attendance.toJSON()
+  delete resObj.createdAt;
+  delete resObj.updatedAt;
 
   return res.json(resObj);
 });
