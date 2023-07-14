@@ -161,7 +161,7 @@ router.put('/:eventId', requireAuth, async (req, res) => {
   event.startDate = startDate;
   event.endDate = endDate;
 
-  event.save()
+  await event.save()
   const eventObj = event.toJSON()
 
   delete eventObj.createdAt;
@@ -170,7 +170,33 @@ router.put('/:eventId', requireAuth, async (req, res) => {
   return res.json(eventObj)
 });
 
+// Delete an Event specified by its id
+router.delete('/:eventId', requireAuth, async (req, res) => {
+  const event = await Event.findByPk(req.params.eventId);
 
+  // No such Event
+  if (!event) {
+    const err = new Error("Couldn't find a Event with the specified id");
+    console.error(err);
+    res.status(404);
+    return res.json({ message: "Event couldn't be found" });
+  };
+
+  const group = await Group.findByPk(event.groupId);
+  const isCoHost = await coHost(group.id, req.user.id);
+
+  // Unauthorized user
+  if (req.user.id !== group.organizerId && !isCoHost) {
+    const err = new Error('Current User must be the organizer of the group or a member of the group with a status of "co-host"');
+    console.error(err);
+    res.status(403);
+    return res.json({ message: "Current User must be the organizer or a co-host of the group" });
+  };
+
+  await event.destroy();
+
+  return res.json({ message: "Successfully deleted" })
+});
 
 // Get all Events
 router.get('/', async (req, res) => {
