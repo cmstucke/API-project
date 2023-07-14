@@ -465,19 +465,51 @@ router.put('/:groupId', requireAuth, validateGroup, async (req, res) => {
 
 // Get all Groups joined or organized by the Current User
 router.get('/current', requireAuth, async (req, res) => {
-  const organizer = await Group.findAll({
-    where: { organizerId: req.user.id }
+  // Get created groups
+  const groups = await Group.findAll({
+    where: { organizerId: req.user.id },
+    include: [
+      { model: Membership },
+      { model: GroupImage }
+    ]
   });
+
+  // Get Memberships
   const memberships = await Membership.findAll({
     where: { userId: req.user.id },
-    include: { model: Group }
+    include: {
+      model: Group,
+      include: [
+        { model: Membership },
+        { model: GroupImage }
+      ]
+    }
   });
-  const member = [];
-  for (const memberOf of memberships) {
-    member.push(memberOf.Group)
+
+  // Combine all organizer and member Group records
+  const memberOf = [];
+  for (const membership of memberships) {
+    memberOf.push(membership.Group);
   };
-  const groups = organizer.concat(member);
-  return res.json({ "Groups": groups });
+  const allGroups = groups.concat(memberOf);
+
+  // Handler
+  const groupObjs = [];
+  for (const group of allGroups) {
+    groupObjs.push(group.toJSON());
+  };
+
+  for (const groupObj of groupObjs) {
+    groupObj.numMembers = groupObj.Memberships.length;
+    groupObj.previewImage = 'No preview image';
+    for (const img of groupObj.GroupImages) {
+      if (img.preview) groupObj.previewImage = img.url;
+    };
+    delete groupObj.Memberships;
+    delete groupObj.GroupImages;
+  };
+
+  return res.json({ Groups: groupObjs });
 });
 
 // Get details of a Group from an id
