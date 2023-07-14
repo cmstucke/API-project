@@ -541,8 +541,29 @@ router.post('/', requireAuth, validateGroup, async (req, res) => {
 
 // Get all Groups
 router.get('/', async (req, res) => {
-  const groups = await Group.findAll({ include: { model: GroupImage } });
-  return res.json({ "Groups": groups });
+  const groups = await Group.findAll({
+    include: [
+      { model: Membership },
+      { model: GroupImage }
+    ]
+  });
+
+  const groupObjs = [];
+  for (const group of groups) {
+    groupObjs.push(group.toJSON());
+  };
+
+  for (const groupObj of groupObjs) {
+    groupObj.numMembers = groupObj.Memberships.length;
+    groupObj.previewImage = 'No preview image';
+    for (const img of groupObj.GroupImages) {
+      if (img.preview) groupObj.previewImage = img.url;
+    };
+    delete groupObj.Memberships;
+    delete groupObj.GroupImages;
+  };
+
+  return res.json({ Groups: groupObjs });
 });
 
 module.exports = router;
