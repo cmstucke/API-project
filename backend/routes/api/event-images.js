@@ -19,13 +19,9 @@ const coHost = async (userId, groupId) => {
   return false
 };
 
-/*
-  IMAGES
-*/
-
-// Delete an Image for a Group
+// Delete an Image for an Event
 router.delete('/:imageId', requireAuth, async (req, res) => {
-  const img = await GroupImage.findByPk(req.params.imageId);
+  const img = await EventImage.findByPk(req.params.imageId);
 
   // No such image
   if (!img) {
@@ -35,8 +31,9 @@ router.delete('/:imageId', requireAuth, async (req, res) => {
     return res.json({ message: "Group Image couldn't be found" })
   };
 
+  const event = await Event.findByPk(img.eventId)
   const userId = req.user.id;
-  const group = await Group.findByPk(img.groupId);
+  const group = await Group.findByPk(event.groupId);
   const isCoHost = await coHost(userId, group.id);
 
   // Unauthorized user
