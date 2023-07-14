@@ -71,15 +71,26 @@ router.get('/:eventId/attendees', async (req, res) => {
   });
 
   // Return unfiltered list for group organizers and co-hosts
-  const isCoHost = await coHost(req.user.id, group.id);
-  if (req.user.id === group.organizerId || isCoHost) {
-    return res.json({ Attendees: attendeeReturn })
+  if (req.user) {
+    const isCoHost = await coHost(req.user.id, group.id);
+    if (req.user.id === group.organizerId || isCoHost) {
+      return res.json({ Attendees: attendeeReturn });
+    };
   };
 
   // Return unfiltered list for group organizers and co-hosts
-  const attendeeFilter = attendeeReturn.filter(attendee => {
-    attendee.Attendance.status !== 'pending'
-  });
+  // const attendeeFilter = attendeeReturn.filter(attendee => {
+  //   attendee.Attendance.status !== 'pending'
+  // });
+
+  console.log(attendeeReturn);
+  const attendeeFilter = [];
+  for (const attendee of attendeeReturn) {
+    if (attendee.Attendance.status !== 'pending') {
+      attendeeFilter.push(attendee);
+    };
+  };
+
   return res.json({ Attendees: attendeeFilter });
 });
 
