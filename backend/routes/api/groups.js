@@ -5,8 +5,7 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Attendance, Event, EventImage, Group, GroupImage, Membership, Venue } = require('../../db/models');
-const { ResultWithContextImpl } = require('express-validator/src/chain');
+const { Attendance, Event, EventImage, Group, GroupImage, Membership, Venue, User } = require('../../db/models');
 
 const router = express.Router();
 
@@ -15,8 +14,8 @@ const router = express.Router();
 */
 
 // Check if membership has co-host status without throwing type error
-const coHost = async (group, user) => {
-  const membership = await Membership.findOne({ where: { groupId: group, userId: user } });
+const coHost = async (userId, groupId) => {
+  const membership = await Membership.findOne({ where: { userId: userId, groupId: groupId } });
   if (membership) {
     if (membership.status === 'co-host') return true
     return false
@@ -88,6 +87,152 @@ router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
   }
 });
 
+/*
+  MEMBERSHIPS
+*/
+
+router.get('/:groupId/members', async (req, res) => {
+  const group = await Group.findByPk(req.params.groupId);
+
+  // No such group
+  if (!group) {
+    const err = new Error("Couldn't find a Group with the specified id");
+    console.error(err);
+    res.status(404);
+    return res.json({ "message": "Group couldn't be found" });
+  };
+
+  const memberships = await Membership.findAll({
+    where: { groupId: req.params.groupId },
+    include: { model: User }
+  });
+
+  const membershipObjs = [];
+  memberships.forEach(membership => {
+    membershipObjs.push(membership.toJSON())
+  });
+  // console.log(memberObjs);
+  const members = [];
+  membershipObjs.forEach(memberObj => {
+    const user = memberObj.User;
+    user.Membership = { status: memberObj.status };
+    delete user.username;
+    if (req.user.id !== group.organizerId && memberObj.status !== 'pending') {
+      members.push(user);
+    } else if (req.user.id === group.organizerId) {
+      members.push(user);
+    }
+  });
+
+  return res.json({ Members: members })
+});
+
+// Request a Membership for a Group based on the Group's id
+router.post('/:groupId/membership', requireAuth, async (req, res) => {
+  const userId = req.user.id;
+  const groupId = req.params.groupId;
+  const group = await Group.findByPk(groupId)
+
+  // No such group
+  if (!group) {
+    const err = new Error("Couldn't find a Group with the specified id");
+    console.error(err);
+    res.status(404);
+    return res.json({ "message": "Group couldn't be found" });
+  };
+
+  // If membership exists already
+  const status = 'pending'
+  const membership = await Membership.findOne({
+    where: { groupId: groupId, userId: userId }
+  });
+  if (membership) {
+    const membershipObj = membership.toJSON()
+    if (membershipObj.status === status) {
+      const err = new Error("Current User already has a pending membership for the group");
+      console.error(err);
+      res.status(400);
+      return res.json({ message: "Membership has already been requested" });
+    } else {
+      const err = new Error("Current User is already an accepted member of the group");
+      console.error(err);
+      res.status(400);
+      return res.json({ message: "User is already a member of the group" });
+    }
+  }
+
+  const newMembership = await Membership.create({ userId, groupId, status });
+  const newMembershipObj = newMembership.toJSON();
+  newMembershipObj.memberId = newMembershipObj.userId;
+  delete newMembershipObj.id;
+  delete newMembershipObj.userId;
+  // delete newMembershipObj.groupId;
+  delete newMembershipObj.createdAt;
+  delete newMembershipObj.updatedAt;
+
+  return res.json(newMembershipObj);
+});
+
+// Change the status of a membership for a group specified by id
+router.put('/:groupId/membership', requireAuth, async (req, res) => {
+  const hostId = req.user.id;
+  const groupId = req.params.groupId;
+  const { memberId, status } = req.body;
+  const isCoHost = await coHost(hostId, groupId);
+  const group = await Group.findByPk(groupId);
+  const membership = await Membership.findByPk(memberId);
+
+  // No such group
+  if (!group) {
+    const err = new Error("Couldn't find a Group with the specified id");
+    console.error(err);
+    res.status(404);
+    return res.json({ message: "Group couldn't be found" });
+  };
+
+  // Must be organizer to change to co-host
+  if (status === 'co-host' && hostId !== group.organizerId) {
+    const err = new Error("Current User must be group organizer to create co-host");
+    console.error(err);
+    res.status(403);
+    return res.json({ message: "Current User must be group organizer to create co-host" });
+  }
+
+  // Must be organizer or co-host to edit
+  if (hostId !== group.organizerId && !isCoHost) {
+    const err = new Error("Current User must be organizer co-host to edit membership statuses");
+    console.error(err);
+    res.status(403);
+    return res.json({ message: "Current User must be organizer co-host to edit membership statuses" });
+  }
+
+  // Membership doesn't exist
+  if (!membership) {
+    const err = new Error("Membership between the user and the group does not exist");
+    console.error(err);
+    res.status(404);
+    return res.json({ message: "Membership between the user and the group does not exist" });
+  }
+
+  // Cannot change status to pending
+  if (status === 'pending') {
+    const err = new Error("Cannot set status to 'pending'");
+    console.error(err);
+    res.status(400);
+    return res.json({ message: "Cannot set status to 'pending'" });
+  }
+
+  membership.status = status;
+  membership.save();
+
+  const membershipObj = membership.toJSON()
+  membershipObj.memberId = membershipObj.userId;
+  delete membershipObj.userId;
+  delete membershipObj.createdAt;
+  delete membershipObj.updatedAt;
+
+  return res.json(membershipObj);
+});
 
 /*
   EVENTS
