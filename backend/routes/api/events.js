@@ -44,6 +44,7 @@ router.get('/:eventId/attendees', async (req, res) => {
   const eventId = req.params.eventId;
   const event = await Event.findByPk(eventId);
 
+  // No such Event
   if (!event) {
     res.status(404)
     return res.json({ message: "Event couldn't be found" })
@@ -60,7 +61,7 @@ router.get('/:eventId/attendees', async (req, res) => {
   attendees.forEach(attendee => {
     attendeeObjs.push(attendee.toJSON());
   });
-  // console.log(attendeeObjs)
+
   const attendeeReturn = [];
   attendeeObjs.forEach(attendee => {
     attendee.User.Attendance = { status: attendee.status };
@@ -75,9 +76,45 @@ router.get('/:eventId/attendees', async (req, res) => {
     return res.json({ Attendees: attendeeReturn })
   };
 
-  const attendeeFilter = attendeeReturn.filter(attendee => attendee.Attendance.status !== 'pending');
-
+  // Return unfiltered list for group organizers and co-hosts
+  const attendeeFilter = attendeeReturn.filter(attendee => {
+    attendee.Attendance.status !== 'pending'
+  });
   return res.json({ Attendees: attendeeFilter });
+});
+
+// Request to Attend an Event based on the Event's id
+router.post('/:eventId/attendance', requireAuth, async (req, res) => {
+  const userId = req.user.id;
+  const eventId = req.params.eventId;
+  const event = await Event.findByPk(eventId);
+  const attendance = await Attendance.findOne({ where: { userId: userId, eventId: eventId } });
+
+  // No such Event
+  if (!event) {
+    res.status(404);
+    return res.json({ message: "Event couldn't be found" });
+  };
+
+  // Already have attending status
+  if (attendance) {
+    res.status(400);
+    if (attendance.status === 'pending' || attendance.status === 'waitlist') {
+      return res.json({ message: "Attendance has already been requested" })
+    } else {
+      return res.json({ message: "User is already an attendee of the event" })
+    };
+  };
+
+  // Handler
+  const status = 'pending';
+  const newAttendance = await Attendance.create({ eventId, userId, status });
+  newAttendance.save()
+
+  const newAttendanceObj = newAttendance.toJSON();
+  const resObj = { userId: newAttendanceObj.userId, status: status };
+
+  return res.json(resObj);
 });
 
 /*
