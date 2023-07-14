@@ -40,7 +40,12 @@ module.exports = {
       {
         eventId: 1,
         userId: 1,
-        status: 'attending'
+        status: 'host'
+      },
+      {
+        eventId: 3,
+        userId: 1,
+        status: 'co-host'
       }
     ], { validate: true })
   },
