@@ -32,7 +32,7 @@ module.exports = {
         state: 'NY'
       },
       {
-        organizerId: 5,
+        organizerId: 3,
         name: 'Group Three',
         about: 'The is the third group seed record.',
         type: 'Online',
@@ -50,7 +50,7 @@ module.exports = {
         state: 'IL'
       },
       {
-        organizerId: 4,
+        organizerId: 5,
         name: 'Group Five',
         about: 'The is the fifth group seed record.',
         type: 'In person',

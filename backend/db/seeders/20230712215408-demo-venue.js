@@ -18,7 +18,7 @@ module.exports = {
         city: 'Cincinnati',
         state: 'OH',
         lat: 101.01,
-        lng: 101.01
+        lng: -101.01
       },
       {
         groupId: 1,
@@ -26,7 +26,7 @@ module.exports = {
         city: 'Westchester',
         state: 'OH',
         lat: 101.02,
-        lng: 101.02
+        lng: -101.02
       },
       {
         groupId: 1,
@@ -34,7 +34,7 @@ module.exports = {
         city: 'Newport',
         state: 'KY',
         lat: 101.03,
-        lng: 101.03
+        lng: -101.03
       },
       {
         groupId: 2,
@@ -42,7 +42,7 @@ module.exports = {
         city: 'Chicago',
         state: 'IL',
         lat: 102.01,
-        lng: 102.01
+        lng: -102.01
       },
       {
         groupId: 3,
@@ -50,7 +50,7 @@ module.exports = {
         city: 'Brooklyn',
         state: 'NY',
         lat: 103.01,
-        lng: 103.01
+        lng: -103.01
       }
     ], { validate: true })
   },

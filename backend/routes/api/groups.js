@@ -474,7 +474,7 @@ router.get('/current', requireAuth, async (req, res) => {
     ]
   });
 
-  // Get Memberships
+  // Get memberships
   const memberships = await Membership.findAll({
     where: { userId: req.user.id },
     include: {
@@ -486,7 +486,7 @@ router.get('/current', requireAuth, async (req, res) => {
     }
   });
 
-  // Combine all organizer and member Group records
+  // Combine all organizer and member group records
   const memberOf = [];
   for (const membership of memberships) {
     memberOf.push(membership.Group);
@@ -514,14 +514,49 @@ router.get('/current', requireAuth, async (req, res) => {
 
 // Get details of a Group from an id
 router.get('/:groupId', async (req, res) => {
-  const group = await Group.findByPk(req.params.groupId);
+  const group = await Group.findByPk(req.params.groupId, {
+    include: [
+      { model: Membership },
+      { model: GroupImage },
+      { model: Venue }
+    ],
+  });
+
+  // No such group
   if (!group) {
     const err = new Error("Couldn't find a Group with the specified id");
     console.error(err);
     res.status(404);
-    return res.json({ "message": "Group couldn't be found" });
+    return res.json({ message: "Group couldn't be found" });
   };
-  return res.json(group);
+
+  // Get organizer user properties
+  const organizer = await User.findByPk(group.organizerId);
+  const organizerObj = organizer.toJSON();
+  delete organizerObj.username;
+
+  // Create numMembers property
+  const groupObj = group.toJSON();
+  groupObj.numMembers = groupObj.Memberships.length;
+  delete groupObj.Memberships;
+
+  // Return necessary GroupImages properties
+  for (const img of groupObj.GroupImages) {
+    delete img.groupId;
+    delete img.createdAt;
+    delete img.updatedAt;
+  };
+
+  // Add organizer properties to response object
+  groupObj.Organizer = organizerObj;
+
+  // Return necessary Venues properties
+  for (const img of groupObj.Venues) {
+    delete img.createdAt;
+    delete img.updatedAt;
+  };
+
+  return res.json(groupObj);
 });
 
 // Delete a Group
