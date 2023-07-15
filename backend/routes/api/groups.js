@@ -379,9 +379,10 @@ const validateGroup = [
   check('about')
     .isLength({ min: 50 })
     .withMessage("About must be 50 characters or more"),
-  // check('type')
-  //   .equals(['Online', 'In person'])
-  //   .withMessage("Type must be 'Online' or 'In person'"),
+  check('type')
+    .exists({ checkFalsy: true })
+    .isIn(['Online', 'In person'])
+    .withMessage("Type must be 'Online' or 'In person'"),
   check('private')
     .exists({ checkFalsy: true })
     .isBoolean()
@@ -603,6 +604,7 @@ router.post('/', requireAuth, validateGroup, async (req, res) => {
     updatedAt: group.updatedAt
   };
 
+  res.status(201);
   return res.json(safeGroup);
 });
 
