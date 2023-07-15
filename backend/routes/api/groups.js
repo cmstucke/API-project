@@ -63,7 +63,7 @@ router.post('/:groupId/venues', requireAuth, async (req, res, next) => {
 });
 
 // Get All Venues for a Group specified by its id
-router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
+router.get('/:groupId/venues', requireAuth, async (req, res) => {
   const group = await Group.findByPk(req.params.groupId);
   const isCoHost = await coHost(req.params.groupId, req.user.id)
 
@@ -75,16 +75,24 @@ router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
     return res.json({ "message": "Group couldn't be found" });
   };
 
-  // Handler
-  if (group.organizerId === req.user.id || isCoHost) {
-    const venues = await Venue.findAll({ where: { groupId: req.params.groupId } });
-    return res.json({ "Venues": venues });
-  } else {
+  // Unauthorized
+  if (group.organizerId !== req.user.id && !isCoHost) {
     res.status(403);
     const err = new Error("Unauthenticated user");
     console.error(err);
-    return res.json({ "message": "User must be organizer or co-host to the current group" });
+    return res.json({ message: "User must be organizer or co-host to the current group" });
   }
+
+  const venues = await Venue.findAll({ where: { groupId: req.params.groupId } });
+  const venueObjs = [];
+  for (const venue of venues) {
+    const venueObj = venue.toJSON();
+    delete venueObj.createdAt;
+    delete venueObj.updatedAt;
+    venueObjs.push(venueObj);
+  };
+
+  return res.json({ Venues: venueObjs });
 });
 
 /*
@@ -577,7 +585,7 @@ router.delete('/:groupId', requireAuth, async (req, res) => {
     res.status(403);
     const err = new Error("Group must belong to the current user");
     console.error(err);
-    return res.json({ "message": "Group must belong to the current user" });
+    return res.json({ message: "Group must belong to the current user" });
   };
 
   await group.destroy();
