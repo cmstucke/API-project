@@ -9,11 +9,22 @@ const { Attendance, Event, EventImage, Group, GroupImage, Membership, Venue, Use
 
 const router = express.Router();
 
+// CHECK IF MEMBERSHIP HAS HOST STATUS
+const coHost = async (userId, groupId) => {
+  const membership = await Membership.findOne({ where: { userId: userId, groupId: groupId } });
+  if (membership) {
+    if (membership.status === 'co-host') return true
+    return false
+  }
+  return false
+};
+
 /*
-  VENUES
+VENUES
+------
 */
 
-// Group validations
+// VENUE VALIDATIONS
 const validateVenue = [
   check('address')
     .exists({ checkFalsy: true })
@@ -35,15 +46,39 @@ const validateVenue = [
   handleValidationErrors
 ];
 
-// CHECK IF MEMBERSHIP HAS HOST STATUS
-const coHost = async (userId, groupId) => {
-  const membership = await Membership.findOne({ where: { userId: userId, groupId: groupId } });
-  if (membership) {
-    if (membership.status === 'co-host') return true
-    return false
+// GET ALL VENUES FOR A GROUP SPECIFIED BY ITS ID
+router.get('/:groupId/venues', requireAuth, async (req, res) => {
+  const group = await Group.findByPk(req.params.groupId);
+  const isCoHost = await coHost(req.params.groupId, req.user.id)
+
+  // No such group
+  if (!group) {
+    res.status(404);
+    const err = new Error("Couldn't find a Group with the specified id");
+    console.error(err);
+    return res.json({ "message": "Group couldn't be found" });
+  };
+
+  // Unauthorized
+  if (req.user.id !== group.organizerId && !isCoHost) {
+    res.status(403);
+    const err = new Error("Unauthenticated user");
+    console.error(err);
+    return res.json({ message: "User must be organizer or co-host to the current group" });
   }
-  return false
-};
+
+  // Handler
+  const venues = await Venue.findAll({ where: { groupId: req.params.groupId } });
+  const venueObjs = [];
+  for (const venue of venues) {
+    const venueObj = venue.toJSON();
+    delete venueObj.createdAt;
+    delete venueObj.updatedAt;
+    venueObjs.push(venueObj);
+  };
+
+  return res.json({ Venues: venueObjs });
+});
 
 // CREATE A NEW VENUE FOR A GROUP SPECIFIED BY ITS ID
 router.post('/:groupId/venues', requireAuth, validateVenue, async (req, res, next) => {
@@ -77,42 +112,9 @@ router.post('/:groupId/venues', requireAuth, validateVenue, async (req, res, nex
   return res.json(venueObj);
 });
 
-// Get All Venues for a Group specified by its id
-router.get('/:groupId/venues', requireAuth, async (req, res) => {
-  const group = await Group.findByPk(req.params.groupId);
-  const isCoHost = await coHost(req.params.groupId, req.user.id)
-
-  // No such group
-  if (!group) {
-    res.status(404);
-    const err = new Error("Couldn't find a Group with the specified id");
-    console.error(err);
-    return res.json({ "message": "Group couldn't be found" });
-  };
-
-  // Unauthorized
-  if (group.organizerId !== req.user.id && !isCoHost) {
-    res.status(403);
-    const err = new Error("Unauthenticated user");
-    console.error(err);
-    return res.json({ message: "User must be organizer or co-host to the current group" });
-  }
-
-  // Handler
-  const venues = await Venue.findAll({ where: { groupId: req.params.groupId } });
-  const venueObjs = [];
-  for (const venue of venues) {
-    const venueObj = venue.toJSON();
-    delete venueObj.createdAt;
-    delete venueObj.updatedAt;
-    venueObjs.push(venueObj);
-  };
-
-  return res.json({ Venues: venueObjs });
-});
-
 /*
   MEMBERSHIPS
+  -----------
 */
 
 router.get('/:groupId/members', async (req, res) => {
