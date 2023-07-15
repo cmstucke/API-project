@@ -32,9 +32,9 @@ router.post('/:groupId/venues', requireAuth, async (req, res, next) => {
 
   // No such group
   if (!group) {
+    res.status(404);
     const err = new Error("Couldn't find a Group with the specified id");
     console.error(err);
-    res.status(404);
     return res.json({ "message": "Group couldn't be found" });
   };
 
@@ -55,9 +55,9 @@ router.post('/:groupId/venues', requireAuth, async (req, res, next) => {
     return res.json(safeVenue);
 
   } else {
+    res.status(403);
     const err = new Error("Unauthenticated user");
     console.error(err);
-    res.status(403);
     return res.json({ "message": "User must be organizer or co-host to the current group" });
   }
 });
@@ -69,9 +69,9 @@ router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
 
   // No such group
   if (!group) {
+    res.status(404);
     const err = new Error("Couldn't find a Group with the specified id");
     console.error(err);
-    res.status(404);
     return res.json({ "message": "Group couldn't be found" });
   };
 
@@ -80,9 +80,9 @@ router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
     const venues = await Venue.findAll({ where: { groupId: req.params.groupId } });
     return res.json({ "Venues": venues });
   } else {
+    res.status(403);
     const err = new Error("Unauthenticated user");
     console.error(err);
-    res.status(403);
     return res.json({ "message": "User must be organizer or co-host to the current group" });
   }
 });
@@ -96,9 +96,9 @@ router.get('/:groupId/members', async (req, res) => {
 
   // No such group
   if (!group) {
+    res.status(404);
     const err = new Error("Couldn't find a Group with the specified id");
     console.error(err);
-    res.status(404);
     return res.json({ "message": "Group couldn't be found" });
   };
 
@@ -135,9 +135,9 @@ router.post('/:groupId/membership', requireAuth, async (req, res) => {
 
   // No such group
   if (!group) {
+    res.status(404);
     const err = new Error("Couldn't find a Group with the specified id");
     console.error(err);
-    res.status(404);
     return res.json({ "message": "Group couldn't be found" });
   };
 
@@ -149,14 +149,14 @@ router.post('/:groupId/membership', requireAuth, async (req, res) => {
   if (membership) {
     const membershipObj = membership.toJSON()
     if (membershipObj.status === status) {
+      res.status(400);
       const err = new Error("Current User already has a pending membership for the group");
       console.error(err);
-      res.status(400);
       return res.json({ message: "Membership has already been requested" });
     } else {
+      res.status(400);
       const err = new Error("Current User is already an accepted member of the group");
       console.error(err);
-      res.status(400);
       return res.json({ message: "User is already a member of the group" });
     }
   }
@@ -184,41 +184,41 @@ router.put('/:groupId/membership', requireAuth, async (req, res) => {
 
   // No such group
   if (!group) {
+    res.status(404);
     const err = new Error("Couldn't find a Group with the specified id");
     console.error(err);
-    res.status(404);
     return res.json({ message: "Group couldn't be found" });
   };
 
   // Must be organizer or member
   if (status === 'co-host' && hostId !== group.organizerId) {
+    res.status(403);
     const err = new Error("Current User must be group organizer to create co-host");
     console.error(err);
-    res.status(403);
     return res.json({ message: "Current User must be group organizer to create co-host" });
   }
 
   // Must be organizer or co-host to edit
   if (hostId !== group.organizerId && !isCoHost) {
+    res.status(403);
     const err = new Error("Current User must be organizer co-host to edit membership statuses");
     console.error(err);
-    res.status(403);
     return res.json({ message: "Current User must be organizer co-host to edit membership statuses" });
   }
 
   // Membership doesn't exist
   if (!membership) {
+    res.status(404);
     const err = new Error("Membership between the user and the group does not exist");
     console.error(err);
-    res.status(404);
     return res.json({ message: "Membership between the user and the group does not exist" });
   }
 
   // Cannot change status to pending
   if (status === 'pending') {
+    res.status(400);
     const err = new Error("Cannot set status to 'pending'");
     console.error(err);
-    res.status(400);
     return res.json({ message: "Cannot set status to 'pending'" });
   }
 
@@ -252,9 +252,9 @@ router.delete('/:groupId/membership', requireAuth, async (req, res) => {
 
   // Membership doesn't exist
   if (!membership) {
+    res.status(400);
     const err = new Error("Couldn't find a User with the specified memberId");
     console.error(err);
-    res.status(400);
     return res.json({
       "message": "Validation Error",
       "errors": {
@@ -265,9 +265,9 @@ router.delete('/:groupId/membership', requireAuth, async (req, res) => {
 
   // Must be organizer or member
   if (userId !== group.organizerId && userId !== membership.userId) {
+    res.status(403);
     const err = new Error("Only group organizers and members may delete memberships");
     console.error(err);
-    res.status(403);
     return res.json({ message: "Only group organizers and members may delete memberships" });
   }
 
@@ -287,10 +287,10 @@ router.get('/:groupId/events', async (req, res) => {
 
   // No such group
   if (!group) {
+    res.status(404);
     const err = new Error("Couldn't find a Group with the specified id");
     console.error(err);
-    res.status(404);
-    return res.json({ "message": "Group couldn't be found" });
+    return res.json({ message: "Group couldn't be found" });
   };
 
   const events = await Event.findAll({
@@ -340,9 +340,9 @@ router.post('/:groupId/events', requireAuth, async (req, res) => {
 
   // No such group
   if (!group) {
+    res.status(404);
     const err = new Error("Couldn't find a Group with the specified id");
     console.error(err);
-    res.status(404);
     return res.json({ "message": "Group couldn't be found" });
   };
 
@@ -350,9 +350,9 @@ router.post('/:groupId/events', requireAuth, async (req, res) => {
 
   // Unauthorized user
   if (req.user.id !== group.organizerId && !isCoHost) {
+    res.status(403);
     const err = new Error("Group Event must be created by Organizer or Co-Host");
     console.error(err);
-    res.status(403);
     return res.json({ message: "Group Event must be created by Organizer or Co-Host" });
   };
 
@@ -404,18 +404,18 @@ router.post('/:groupId/images', requireAuth, async (req, res) => {
 
   // No such group
   if (!group) {
+    res.status(404);
     const err = new Error("Couldn't find a Group with the specified id");
     console.error(err);
-    res.status(404);
-    return res.json({ "message": "Group couldn't be found" });
+    return res.json({ message: "Group couldn't be found" });
   };
 
   // Unauthorized user
   if (req.user.id !== group.organizerId) {
+    res.status(403);
     const err = new Error("Group must belong to the current user");
     console.error(err);
-    res.status(403);
-    return res.json({ "message": "Group must belong to the current user" });
+    return res.json({ message: "Group must belong to the current user" });
   };
 
   const img = await GroupImage.create({ groupId, url, preview });
@@ -435,17 +435,17 @@ router.put('/:groupId', requireAuth, validateGroup, async (req, res) => {
 
   // No such group
   if (!group) {
+    res.status(404);
     const err = new Error("Couldn't find a Group with the specified id");
     console.error(err);
-    res.status(404);
     return res.json({ "message": "Group couldn't be found" });
   };
 
   // Unauthorized user
   if (req.user.id !== group.organizerId) {
+    res.status(403);
     const err = new Error("Group must belong to the current user");
     console.error(err);
-    res.status(403);
     return res.json({ "message": "Group must belong to the current user" });
   };
 
@@ -525,9 +525,9 @@ router.get('/:groupId', async (req, res) => {
 
   // No such group
   if (!group) {
+    res.status(404);
     const err = new Error("Couldn't find a Group with the specified id");
     console.error(err);
-    res.status(404);
     return res.json({ message: "Group couldn't be found" });
   };
 
@@ -566,17 +566,17 @@ router.delete('/:groupId', requireAuth, async (req, res) => {
 
   // No such group
   if (!group) {
+    res.status(404);
     const err = new Error("Couldn't find a Group with the specified id");
     console.error(err);
-    res.status(404);
     return res.json({ "message": "Group couldn't be found" });
   };
 
   // Unauthorized user
   if (req.user.id !== group.organizerId) {
+    res.status(403);
     const err = new Error("Group must belong to the current user");
     console.error(err);
-    res.status(403);
     return res.json({ "message": "Group must belong to the current user" });
   };
 
