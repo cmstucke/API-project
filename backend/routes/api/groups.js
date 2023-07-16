@@ -306,7 +306,64 @@ router.delete('/:groupId/membership', requireAuth, async (req, res) => {
   EVENTS
 */
 
-// Get all Events of a Group specified by its id
+// check('venueId')
+//   .exists({ checkFalsy: true })
+//   .isLength({ min: 1, max: 60 })
+//   .withMessage("Name must be 60 characters or less"),
+// check('name')
+//   .isLength({ min: 50 })
+//   .withMessage("About must be 50 characters or more"),
+// check('type')
+//   .exists({ checkFalsy: true })
+//   .isIn(['Online', 'In person'])
+//   .withMessage("Type must be 'Online' or 'In person'"),
+// check('capacity')
+//   .exists({ checkFalsy: true })
+//   .isBoolean()
+//   .withMessage("Private must be a boolean"),
+// check('price')
+//   .exists({ checkFalsy: true })
+//   .withMessage("City is required"),
+// check('description')
+//   .exists({ checkFalsy: true })
+//   .withMessage("State is required"),
+
+// EVENT VALIDATIONS
+const validateEvent = [
+  // check('venueId')
+  //   .exists({ checkFalsy: true })
+  //   .isInt()
+  //   .withMessage("Venue does not exist"),
+  check('name')
+    .exists({ checkFalsy: true })
+    .isLength({ min: 5 })
+    .withMessage("Name must be at least 5 characters"),
+  check('type')
+    .exists({ checkFalsy: true })
+    .isIn(['Online', 'In person'])
+    .withMessage("Type must be 'Online' or 'In person'"),
+  check('capacity')
+    .exists({ checkFalsy: true })
+    .isInt()
+    .withMessage("Private must be a boolean"),
+  check('price')
+    .exists({ checkFalsy: true })
+    .isDecimal()
+    .withMessage("City is required"),
+  check('description')
+    .exists({ checkFalsy: true })
+    .withMessage("Description is required"),
+  // check('startDate')
+  //   .exists({ checkFalsy: true })
+  //   .withMessage("Start date must be in the future"),
+  // check('endDate')
+  //   .exists({ checkFalsy: true })
+  //   .isAfter({ comparisonDate: new Date('startDate').toString() })
+  //   .withMessage(`End date is less than start date ${this}`),
+  handleValidationErrors
+];
+
+// GET ALL EVENTS OF A GROUP SPECIFIED BY ITS ID
 router.get('/:groupId/events', async (req, res) => {
   const groupId = req.params.groupId;
   const group = await Group.findByPk(groupId)
@@ -360,9 +417,23 @@ router.get('/:groupId/events', async (req, res) => {
   return res.json({ Events: eventsList });
 });
 
-// Create an Event for a Group specified by its id
-router.post('/:groupId/events', requireAuth, async (req, res) => {
+// CREATE AN EVENT FOR A GROUP SPECIFIED BY ITS ID
+router.post('/:groupId/events', requireAuth, validateEvent, async (req, res) => {
+  const userId = req.user.id;
   const group = await Group.findByPk(req.params.groupId);
+  const { venueId, name, description, type, capacity, price, startDate, endDate } = req.body;
+
+  //No such Venue
+  const venue = await Venue.findByPk(venueId);
+  if (!venue) {
+    res.status(400);
+    const err = new Error("Venue does not exist")
+    console.error(err);
+    return res.json({
+      message: "Bad Request",
+      errors: { venueId: "Venue does not exist" }
+    });
+  };
 
   // No such group
   if (!group) {
@@ -372,23 +443,63 @@ router.post('/:groupId/events', requireAuth, async (req, res) => {
     return res.json({ "message": "Group couldn't be found" });
   };
 
-  const isCoHost = await coHost(group.id, req.user.id)
+  const isCoHost = await coHost(group.id, userId)
 
   // Unauthorized user
-  if (req.user.id !== group.organizerId && !isCoHost) {
+  if (userId !== group.organizerId && !isCoHost) {
     res.status(403);
     const err = new Error("Group Event must be created by Organizer or Co-Host");
     console.error(err);
     return res.json({ message: "Group Event must be created by Organizer or Co-Host" });
   };
 
+  // Invalid dates
+  const startDateTime = new Date(startDate).getTime();
+  const endDateTime = new Date(endDate).getTime();
+  const currentTime = new Date().getTime();
+
+  if (startDateTime <= currentTime) {
+    res.status(400);
+    const err = new Error("Start date must be in the future")
+    console.error(err);
+    return res.json({
+      message: "Bad Request",
+      errors: { startDate: "Start date must be in the future" }
+    });
+  };
+
+  if (endDateTime <= startDateTime) {
+    res.status(400);
+    const err = new Error("End date is less than start date")
+    console.error(err);
+    return res.json({
+      message: "Bad Request",
+      errors: { endDate: "End date is less than start date" }
+    });
+  };
+
+  // Handler
   const groupId = group.id;
-  const { venueId, name, description, type, capacity, price, startDate, endDate } = req.body;
-  const event = await Event.create({ groupId, venueId, name, description, type, capacity, price, startDate, endDate });
+  const event = await Event.create({
+    groupId,
+    venueId,
+    name,
+    description,
+    type,
+    capacity,
+    price,
+    startDate,
+    endDate
+  });
 
   const eventObj = event.toJSON()
   delete eventObj.updatedAt;
   delete eventObj.createdAt;
+
+  const eventId = event.id;
+  const status = 'host';
+  const host = await Attendance.create({ eventId, userId, status });
+  await host.save();
 
   return res.json(eventObj);
 });
@@ -397,7 +508,7 @@ router.post('/:groupId/events', requireAuth, async (req, res) => {
   GROUPS
 */
 
-// Group validations
+// GROUP VALIDATIONS
 const validateGroup = [
   check('name')
     .exists({ checkFalsy: true })
@@ -423,7 +534,7 @@ const validateGroup = [
   handleValidationErrors
 ];
 
-// Add an Image to a Group based on the Group's id
+// ADD AN IMAGE TO GROUP BASED ON THE GROUP'S ID
 router.post('/:groupId/images', requireAuth, async (req, res) => {
   const { url, preview } = req.body;
   const groupId = req.params.groupId;
