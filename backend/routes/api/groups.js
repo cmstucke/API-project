@@ -421,18 +421,12 @@ router.get('/:groupId/events', async (req, res) => {
 router.post('/:groupId/events', requireAuth, validateEvent, async (req, res) => {
   const userId = req.user.id;
   const group = await Group.findByPk(req.params.groupId);
-  const { venueId, name, description, type, capacity, price, startDate, endDate } = req.body;
+  let { venueId, name, description, type, capacity, price, startDate, endDate } = req.body;
 
   //No such Venue
   const venue = await Venue.findByPk(venueId);
   if (!venue) {
-    res.status(400);
-    const err = new Error("Venue does not exist")
-    console.error(err);
-    return res.json({
-      message: "Bad Request",
-      errors: { venueId: "Venue does not exist" }
-    });
+    venueId = null;
   };
 
   // No such group

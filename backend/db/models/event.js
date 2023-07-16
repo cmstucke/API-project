@@ -1,7 +1,6 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model, Validator } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Event extends Model {
     /**
@@ -18,17 +17,35 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Event.init({
-    venueId: DataTypes.INTEGER,
-    groupId: DataTypes.INTEGER,
-    name: DataTypes.STRING,
-    description: DataTypes.STRING,
+    venueId: {
+      type: DataTypes.INTEGER
+    },
+    groupId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    description: {
+      type: DataTypes.STRING
+    },
     type: {
       type: DataTypes.ENUM,
       values: ['In person', 'Online']
     },
-    capacity: DataTypes.INTEGER,
+    capacity: {
+      type: DataTypes.INTEGER
+    },
     price: DataTypes.DECIMAL,
-    startDate: DataTypes.DATE,
+    startDate: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      validate: {
+        isDate: true
+      }
+    },
     endDate: DataTypes.DATE,
   }, {
     sequelize,
