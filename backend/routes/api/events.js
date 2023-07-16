@@ -405,6 +405,13 @@ router.put('/:eventId', requireAuth, validateEvent, async (req, res) => {
   const endDateTime = new Date(endDate).getTime();
   const currentTime = new Date().getTime();
 
+  if (!startDateTime || !endDateTime) {
+    res.status(400);
+    const err = new Error("State and end dates must be valid dates")
+    console.error(err);
+    return res.json({ message: "State and end dates must be valid dates" });
+  }
+
   if (startDateTime <= currentTime) {
     res.status(400);
     const err = new Error("Start date must be in the future")

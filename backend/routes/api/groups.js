@@ -421,12 +421,18 @@ router.get('/:groupId/events', async (req, res) => {
 router.post('/:groupId/events', requireAuth, validateEvent, async (req, res) => {
   const userId = req.user.id;
   const group = await Group.findByPk(req.params.groupId);
-  let { venueId, name, description, type, capacity, price, startDate, endDate } = req.body;
+  const { venueId, name, description, type, capacity, price, startDate, endDate } = req.body;
 
   //No such Venue
   const venue = await Venue.findByPk(venueId);
-  if (!venue) {
-    venueId = null;
+  if (venueId !== null && !venue) {
+    res.status(400);
+    const err = new Error("Venue does not exist")
+    console.error(err);
+    return res.json({
+      message: "Bad Request",
+      errors: { venueId: "Venue does not exist" }
+    });
   };
 
   // No such group
@@ -451,6 +457,13 @@ router.post('/:groupId/events', requireAuth, validateEvent, async (req, res) => 
   const startDateTime = new Date(startDate).getTime();
   const endDateTime = new Date(endDate).getTime();
   const currentTime = new Date().getTime();
+
+  if (!startDateTime || !endDateTime) {
+    res.status(400);
+    const err = new Error("State and end dates must be valid dates")
+    console.error(err);
+    return res.json({ message: "State and end dates must be valid dates" });
+  }
 
   if (startDateTime <= currentTime) {
     res.status(400);
