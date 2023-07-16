@@ -328,12 +328,21 @@ router.delete('/:groupId/membership', requireAuth, async (req, res) => {
 //   .exists({ checkFalsy: true })
 //   .withMessage("State is required"),
 
+// check('venueId')
+//   .exists({ checkFalsy: true })
+//   .isInt()
+//   .withMessage("Venue does not exist"),
+
+// check('startDate')
+//   .exists({ checkFalsy: true })
+//   .withMessage("Start date must be in the future"),
+// check('endDate')
+//   .exists({ checkFalsy: true })
+//   .isAfter({ comparisonDate: new Date('startDate').toString() })
+//   .withMessage(`End date is less than start date ${this}`),
+
 // EVENT VALIDATIONS
 const validateEvent = [
-  // check('venueId')
-  //   .exists({ checkFalsy: true })
-  //   .isInt()
-  //   .withMessage("Venue does not exist"),
   check('name')
     .exists({ checkFalsy: true })
     .isLength({ min: 5 })
@@ -353,13 +362,6 @@ const validateEvent = [
   check('description')
     .exists({ checkFalsy: true })
     .withMessage("Description is required"),
-  // check('startDate')
-  //   .exists({ checkFalsy: true })
-  //   .withMessage("Start date must be in the future"),
-  // check('endDate')
-  //   .exists({ checkFalsy: true })
-  //   .isAfter({ comparisonDate: new Date('startDate').toString() })
-  //   .withMessage(`End date is less than start date ${this}`),
   handleValidationErrors
 ];
 
