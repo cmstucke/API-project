@@ -9,7 +9,7 @@ const { Group, Membership, Venue } = require('../../db/models');
 
 const router = express.Router();
 
-// Check if member with co-host status without throwing type error
+// CHECK IF MEMBERSHIP HAS HOST STATUS
 const coHost = async (group, user) => {
   const membership = await Membership.findOne({ where: { groupId: group, userId: user } });
   if (membership) {
@@ -19,32 +19,52 @@ const coHost = async (group, user) => {
   return false
 };
 
-// Edit a Venue specified by its id
-router.put('/:venueId', requireAuth, async (req, res, next) => {
-  const venueId = req.params.venueId;
-  const venue = await Venue.findByPk(venueId);
+// VENUE VALIDATIONS
+const validateVenue = [
+  check('address')
+    .exists({ checkFalsy: true })
+    .withMessage("Street address is required"),
+  check('city')
+    .exists({ checkFalsy: true })
+    .withMessage("City is required"),
+  check('state')
+    .exists({ checkFalsy: true })
+    .withMessage("State is required"),
+  check('lat')
+    .exists({ checkFalsy: true })
+    .isDecimal()
+    .withMessage("Latitude is not valid"),
+  check('lng')
+    .exists({ checkFalsy: true })
+    .isDecimal()
+    .withMessage("Longitude is not valid"),
+  handleValidationErrors
+];
 
-  // No such group
+// EDIT A VENUE SPECIFIED BY ITS ID
+router.put('/:venueId', requireAuth, validateVenue, async (req, res, next) => {
+  const venue = await Venue.findByPk(req.params.venueId);
+
+  // No such venue
   if (!venue) {
+    res.status(404);
     const err = new Error("Couldn't find a Venue with the specified id");
     console.error(err);
-    res.status(404);
     return res.json({ "message": "Venue couldn't be found" });
   };
 
-  const groupId = venue.groupId
-  const group = await Group.findByPk(groupId)
-  const isCoHost = await coHost(groupId, req.user.id)
-  const { address, city, state, lat, lng } = req.body
+  const group = await Group.findByPk(venue.groupId);
+  const isCoHost = await coHost(venue.groupId, req.user.id);
 
-  // Handler
-  if (group.organizerId !== req.user.id && !isCoHost) {
+  // Unauthorized user
+  if (req.user.id !== group.organizerId && !isCoHost) {
+    res.status(403);
     const err = new Error("Unauthenticated user");
     console.error(err);
-    res.status(403);
     return res.json({ "message": "User must be organizer or co-host to the current group" });
   }
 
+  const { address, city, state, lat, lng } = req.body
   venue.address = address;
   venue.city = city;
   venue.state = state;
@@ -52,8 +72,10 @@ router.put('/:venueId', requireAuth, async (req, res, next) => {
   venue.lng = lng;
 
   await venue.save();
+  const venueObj = venue.toJSON();
+  delete venueObj.updatedAt;
 
-  return res.json(venue);
+  return res.json(venueObj);
 });
 
 module.exports = router;

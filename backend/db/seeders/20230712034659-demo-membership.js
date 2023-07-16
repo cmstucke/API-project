@@ -39,7 +39,7 @@ module.exports = {
         status: 'pending'
       },
       {
-        userId: 2,
+        userId: 1,
         groupId: 2,
         status: 'co-host'
       },
