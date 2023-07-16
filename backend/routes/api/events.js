@@ -528,23 +528,6 @@ router.get('/', validateGetEvents, async (req, res) => {
     query.where.startDate = date;
   }
 
-  // // const date = new Date(req.query.startDate);
-  // if (req.query.startDate) {
-  //   const date = new Date(req.query.startDate);
-  //   // if (!date) {
-  //   //   const err = new Error('Start date must be a valid datetime');
-  //   //   err.status = 400;
-  //   //   err.message = 'Bad Request';
-  //   //   err.errors = { startDate: 'Start date must be a valid datetime' };
-  //   //   return res.json(err);
-  //   // }
-  //   const dateTime = date.toISOString();
-  //   // const dateOnly = dateTime.slice(0, -14);
-  //   // console.log(dateOnly);
-  //   query.where.startDate = dateTime;
-  //   //  < - - - - - - - - - - - - - - - - - - - - - - - - YOU ARE HERE
-  // };
-
   const events = await Event.findAll({
     ...query,
     attributes: [
@@ -583,7 +566,7 @@ router.get('/', validateGetEvents, async (req, res) => {
     delete event.EventImages;
   });
 
-  return res.json({ Events: eventsList }); // date
+  return res.json({ page: page, size: size, Events: eventsList }); // date
 });
 
 module.exports = router;
