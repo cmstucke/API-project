@@ -3,3 +3,5 @@ node_modules
 build
 .DS_Store
 *.db
+documentation
+meetup_dbdiagram.png
