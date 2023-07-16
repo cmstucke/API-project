@@ -46,7 +46,13 @@ module.exports = (sequelize, DataTypes) => {
         isDate: true
       }
     },
-    endDate: DataTypes.DATE,
+    endDate: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      validate: {
+        isDate: true
+      }
+    }
   }, {
     sequelize,
     modelName: 'Event',

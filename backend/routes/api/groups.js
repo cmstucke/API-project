@@ -427,7 +427,7 @@ router.post('/:groupId/events', requireAuth, validateEvent, async (req, res) => 
 
   //No such Venue
   const venue = await Venue.findByPk(venueId);
-  if (venueId !== null && !venue) {
+  if (venueId && !venue) {
     res.status(400);
     const err = new Error("Venue does not exist")
     console.error(err);

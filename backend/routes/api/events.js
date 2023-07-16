@@ -237,10 +237,6 @@ router.delete('/:eventId/attendance', requireAuth, async (req, res) => {
 
 // EVENT VALIDATIONS
 const validateEvent = [
-  // check('venueId')
-  //   .exists({ checkFalsy: true })
-  //   .isInt()
-  //   .withMessage("Venue does not exist"),
   check('name')
     .exists({ checkFalsy: true })
     .isLength({ min: 5 })
@@ -260,15 +256,6 @@ const validateEvent = [
   check('description')
     .exists({ checkFalsy: true })
     .withMessage("Description is required"),
-  check('startDate')
-    .exists({ checkFalsy: true })
-    .isISO8601()
-    .withMessage("Start date must be in the future"),
-  check('endDate')
-    .exists({ checkFalsy: true })
-    .isISO8601()
-    // .isAfter({ comparisonDate: new Date('startDate').toString() })
-    .withMessage(`End date is less than start date ${this}`),
   handleValidationErrors
 ];
 
@@ -371,7 +358,7 @@ router.put('/:eventId', requireAuth, validateEvent, async (req, res) => {
 
   //No such Venue
   const venue = await Venue.findByPk(venueId);
-  if (!venue) {
+  if (venueId && !venue) {
     res.status(400);
     const err = new Error("Venue does not exist")
     console.error(err);
@@ -441,8 +428,8 @@ router.put('/:eventId', requireAuth, validateEvent, async (req, res) => {
   event.startDate = startDate;
   event.endDate = endDate;
 
-  await event.save()
-  const eventObj = event.toJSON()
+  await event.save();
+  const eventObj = event.toJSON();
 
   delete eventObj.createdAt;
   delete eventObj.updatedAt;
