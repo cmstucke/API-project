@@ -407,9 +407,9 @@ router.put('/:eventId', requireAuth, validateEvent, async (req, res) => {
 
   if (!startDateTime || !endDateTime) {
     res.status(400);
-    const err = new Error("State and end dates must be valid dates")
+    const err = new Error("Start and end dates must be valid dates")
     console.error(err);
-    return res.json({ message: "State and end dates must be valid dates" });
+    return res.json({ message: "Start and end dates must be valid dates" });
   }
 
   if (startDateTime <= currentTime) {
