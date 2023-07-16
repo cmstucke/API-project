@@ -6,6 +6,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
 const { Attendance, Event, EventImage, Group, Membership, Venue, User } = require('../../db/models');
+const { Op } = require('sequelize');
 
 const router = express.Router();
 
@@ -440,7 +441,7 @@ router.put('/:eventId', requireAuth, validateEvent, async (req, res) => {
   return res.json(eventObj)
 });
 
-// Delete an Event specified by its id
+// DELETE AN EVENT SPECIFIED BY ITS ID
 router.delete('/:eventId', requireAuth, async (req, res) => {
   const event = await Event.findByPk(req.params.eventId);
 
@@ -468,9 +469,68 @@ router.delete('/:eventId', requireAuth, async (req, res) => {
   return res.json({ message: "Successfully deleted" })
 });
 
-// Get all Events
-router.get('/', async (req, res) => {
+const validateGetEvents = [
+  check('page')
+    .optional({ checkFalsy: false })
+    .isLength({ min: 0 })
+    .isInt({ min: 1 })
+    .withMessage("Page must be greater than or equal to 1"),
+  check('size')
+    .optional({ checkFalsy: false })
+    .isInt({ min: 1 })
+    .withMessage("Size must be greater than or equal to 1"),
+  check('name')
+    .optional({ checkFalsy: false })
+    .isString()
+    .withMessage("Name must be a string"),
+  check('type')
+    .optional({ checkFalsy: false })
+    .isIn(['In person', 'Online'])
+    .withMessage("Type must be 'Online' or 'In person'"),
+  // check('startDate')
+  //   .optional({ checkFalsy: false })
+  //   .toDate()
+  //   .isDate({ delimiters: ['/', '-', '.', ' ', '_', ':'] })
+  //   .withMessage("Start date must be a valid datetime"),
+  handleValidationErrors
+];
+
+// GET ALL EVENTS
+router.get('/', validateGetEvents, async (req, res) => {
+
+  const query = {
+    where: {},
+    include: []
+  };
+
+  let { page, size } = req.query;
+  page = parseInt(page);
+  size = parseInt(size);
+  if (Number.isNaN(page) || page < 1 || page > 10) page = 1;
+  if (Number.isNaN(size) || size < 1 || size > 20) size = 20;
+  if (page >= 1 && size >= 1) {
+    query.limit = size;
+    query.offset = size * (page - 1);
+  };
+
+  if (req.query.name) {
+    query.where.name = { [Op.like]: `%${req.query.name}%` }
+  };
+
+  if (req.query.type) {
+    query.where.type = req.query.type;
+  };
+
+  const date = new Date(req.query.startDate);
+  if (req.query.startDate) {
+    const date = new Date(req.query.startDate);
+    const dateTime = date.toISOString().slice(0, -5);
+    console.log(dateTime);
+    query.where.startDate.includes(dateTime);
+  };
+
   const events = await Event.findAll({
+    ...query,
     attributes: [
       "id",
       "groupId",
@@ -507,7 +567,7 @@ router.get('/', async (req, res) => {
     delete event.EventImages;
   });
 
-  return res.json({ Events: eventsList });
+  return res.json({ Events: eventsList }); // date
 });
 
 module.exports = router;
