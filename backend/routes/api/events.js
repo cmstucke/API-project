@@ -260,13 +260,15 @@ const validateEvent = [
   check('description')
     .exists({ checkFalsy: true })
     .withMessage("Description is required"),
-  // check('startDate')
-  //   .exists({ checkFalsy: true })
-  //   .withMessage("Start date must be in the future"),
-  // check('endDate')
-  //   .exists({ checkFalsy: true })
-  //   .isAfter({ comparisonDate: new Date('startDate').toString() })
-  //   .withMessage(`End date is less than start date ${this}`),
+  check('startDate')
+    .exists({ checkFalsy: true })
+    .isISO8601()
+    .withMessage("Start date must be in the future"),
+  check('endDate')
+    .exists({ checkFalsy: true })
+    .isISO8601()
+    // .isAfter({ comparisonDate: new Date('startDate').toString() })
+    .withMessage(`End date is less than start date ${this}`),
   handleValidationErrors
 ];
 
@@ -480,25 +482,24 @@ const validateGetEvents = [
     .isInt({ min: 1 })
     .withMessage("Size must be greater than or equal to 1"),
   check('name')
-    .optional({ checkFalsy: false })
+    .optional()
     .isString()
     .withMessage("Name must be a string"),
   check('type')
     .optional({ checkFalsy: false })
     .isIn(['In person', 'Online'])
     .withMessage("Type must be 'Online' or 'In person'"),
-  // check('startDate')
-  //   .optional({ checkFalsy: false })
-  //   .toDate()
-  //   .isDate({ delimiters: ['/', '-', '.', ' ', '_', ':'] })
-  //   .withMessage("Start date must be a valid datetime"),
+  check('startDate')
+    .optional()
+    .isISO8601() // { delimiters: ['/', '-', '.', ' ', '_', ':'] }
+    .withMessage("Start date must be a valid datetime"),
   handleValidationErrors
 ];
 
 // GET ALL EVENTS
 router.get('/', validateGetEvents, async (req, res) => {
 
-  const query = {
+  let query = {
     where: {},
     include: []
   };
@@ -521,13 +522,28 @@ router.get('/', validateGetEvents, async (req, res) => {
     query.where.type = req.query.type;
   };
 
-  const date = new Date(req.query.startDate);
   if (req.query.startDate) {
-    const date = new Date(req.query.startDate);
-    const dateTime = date.toISOString().slice(0, -5);
-    console.log(dateTime);
-    query.where.startDate.includes(dateTime);
-  };
+    const date = new Date(req.query.startDate).toISOString();
+    console.log(date);
+    query.where.startDate = date;
+  }
+
+  // // const date = new Date(req.query.startDate);
+  // if (req.query.startDate) {
+  //   const date = new Date(req.query.startDate);
+  //   // if (!date) {
+  //   //   const err = new Error('Start date must be a valid datetime');
+  //   //   err.status = 400;
+  //   //   err.message = 'Bad Request';
+  //   //   err.errors = { startDate: 'Start date must be a valid datetime' };
+  //   //   return res.json(err);
+  //   // }
+  //   const dateTime = date.toISOString();
+  //   // const dateOnly = dateTime.slice(0, -14);
+  //   // console.log(dateOnly);
+  //   query.where.startDate = dateTime;
+  //   //  < - - - - - - - - - - - - - - - - - - - - - - - - YOU ARE HERE
+  // };
 
   const events = await Event.findAll({
     ...query,
