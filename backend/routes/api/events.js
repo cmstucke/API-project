@@ -9,7 +9,7 @@ const { Attendance, Event, EventImage, Group, Membership, Venue, User } = requir
 
 const router = express.Router();
 
-// Check if member has co-host status without throwing type error
+// CHECK IF A USER IS ATTENDING AN EVENT HELPER
 const isAttending = async (userId, eventId) => {
   const attendance = await Attendance.findOne({ where: { userId: userId, eventId: eventId } });
   if (attendance) {
@@ -25,7 +25,7 @@ const isAttending = async (userId, eventId) => {
   return false;
 };
 
-// Check if membership has co-host status without throwing type error
+// CHECK IF A USER IS CO-HOST OF GROUP HELPER
 const coHost = async (userId, groupId) => {
   const membership = await Membership.findOne({ where: { userId: userId, groupId: groupId } });
   if (membership) {
@@ -39,7 +39,7 @@ const coHost = async (userId, groupId) => {
   ATTENDEES
 */
 
-// Get all Attendees of an Event specified by its id
+// GET ALL ATTENDEES OF AN EVENT SPECIFIED BY ITS ID
 router.get('/:eventId/attendees', async (req, res) => {
   const eventId = req.params.eventId;
   const event = await Event.findByPk(eventId);
@@ -70,7 +70,7 @@ router.get('/:eventId/attendees', async (req, res) => {
     attendeeReturn.push(attendee.User);
   });
 
-  // Return unfiltered list for group organizers and co-hosts
+  // Handle unfiltered list for group organizers and co-hosts
   if (req.user) {
     const isCoHost = await coHost(req.user.id, group.id);
     if (req.user.id === group.organizerId || isCoHost) {
@@ -78,7 +78,7 @@ router.get('/:eventId/attendees', async (req, res) => {
     };
   };
 
-  // Return unfiltered list for group organizers and co-hosts
+  // Handle filtered lists for all other users
   const attendeeFilter = [];
   for (const attendee of attendeeReturn) {
     if (attendee.Attendance.status !== 'pending') {
@@ -89,7 +89,7 @@ router.get('/:eventId/attendees', async (req, res) => {
   return res.json({ Attendees: attendeeFilter });
 });
 
-// Request to Attend an Event based on the Event's id
+// REQUEST TO ATTEND AN EVENT BASED ON THE EVENT'S ID
 router.post('/:eventId/attendance', requireAuth, async (req, res) => {
   const userId = req.user.id;
   const eventId = req.params.eventId;
@@ -135,7 +135,7 @@ router.post('/:eventId/attendance', requireAuth, async (req, res) => {
   return res.json(resObj);
 });
 
-// Change the status of an attendance for an event specified by id
+// CHANGE THE STATUS OF AN ATTENDANCE FOR AN EVENT SPECIFIED BY ID
 router.put('/:eventId/attendance', requireAuth, async (req, res) => {
   const sessionUserId = req.user.id;
   const eventId = req.params.eventId;
@@ -179,6 +179,7 @@ router.put('/:eventId/attendance', requireAuth, async (req, res) => {
     return res.json({ message: "Cannot change an attendance status to pending" });
   };
 
+  // Handler
   attendance.status = status;
   await attendance.save();
 
@@ -189,7 +190,7 @@ router.put('/:eventId/attendance', requireAuth, async (req, res) => {
   return res.json(resObj);
 });
 
-// Delete attendance to an event specified by id
+// DELETE ATTENDANCE TO AN EVENT SPECIFIED BY ID
 router.delete('/:eventId/attendance', requireAuth, async (req, res) => {
   const sessionUserId = req.user.id;
   const eventId = req.params.eventId;
@@ -224,6 +225,7 @@ router.delete('/:eventId/attendance', requireAuth, async (req, res) => {
     return res.json({ message: "Attendance between the user and the event does not exist" });
   };
 
+  // Handler
   await attendance.destroy();
   return res.json({ message: "Successfully deleted attendance from event" });
 });
@@ -232,7 +234,42 @@ router.delete('/:eventId/attendance', requireAuth, async (req, res) => {
   EVENTS
 */
 
-// Add an Image to a Event based on the Event's id
+// EVENT VALIDATIONS
+const validateEvent = [
+  // check('venueId')
+  //   .exists({ checkFalsy: true })
+  //   .isInt()
+  //   .withMessage("Venue does not exist"),
+  check('name')
+    .exists({ checkFalsy: true })
+    .isLength({ min: 5 })
+    .withMessage("Name must be at least 5 characters"),
+  check('type')
+    .exists({ checkFalsy: true })
+    .isIn(['Online', 'In person'])
+    .withMessage("Type must be 'Online' or 'In person'"),
+  check('capacity')
+    .exists({ checkFalsy: true })
+    .isInt()
+    .withMessage("Private must be a boolean"),
+  check('price')
+    .exists({ checkFalsy: true })
+    .isDecimal()
+    .withMessage("City is required"),
+  check('description')
+    .exists({ checkFalsy: true })
+    .withMessage("Description is required"),
+  // check('startDate')
+  //   .exists({ checkFalsy: true })
+  //   .withMessage("Start date must be in the future"),
+  // check('endDate')
+  //   .exists({ checkFalsy: true })
+  //   .isAfter({ comparisonDate: new Date('startDate').toString() })
+  //   .withMessage(`End date is less than start date ${this}`),
+  handleValidationErrors
+];
+
+// ADD AN IMAGE TO AN EVENT BASED ON THE EVENT'S ID
 router.post('/:eventId/images', requireAuth, async (req, res) => {
   const event = await Event.findByPk(req.params.eventId);
 
@@ -254,10 +291,10 @@ router.post('/:eventId/images', requireAuth, async (req, res) => {
     return res.json({ message: "User must be an attendee, host, or co-host of the event" });
   }
 
+  // Handler
   const eventId = event.id;
   const { url, preview } = req.body;
   const img = await EventImage.create({ eventId, url, preview });
-  // img.save();
   const imgObj = img.toJSON();
 
   delete imgObj.eventId;
@@ -267,7 +304,7 @@ router.post('/:eventId/images', requireAuth, async (req, res) => {
   return res.json(imgObj);
 });
 
-// Get details of an Event specified by its id
+// GET DETAILS OF AN EVENT BY ITS ID
 router.get('/:eventId', async (req, res) => {
   const eventId = req.params.eventId;
   const event = await Event.findByPk(eventId, {
@@ -315,9 +352,31 @@ router.get('/:eventId', async (req, res) => {
   return res.json(eventObj);
 });
 
-// Edit an Event specified by its id
-router.put('/:eventId', requireAuth, async (req, res) => {
+// EDIT AN EVENT SPECIFIED BY ITS ID
+router.put('/:eventId', requireAuth, validateEvent, async (req, res) => {
   const event = await Event.findByPk(req.params.eventId)
+  const {
+    venueId,
+    name,
+    type,
+    capacity,
+    price,
+    description,
+    startDate,
+    endDate
+  } = req.body;
+
+  //No such Venue
+  const venue = await Venue.findByPk(venueId);
+  if (!venue) {
+    res.status(400);
+    const err = new Error("Venue does not exist")
+    console.error(err);
+    return res.json({
+      message: "Bad Request",
+      errors: { venueId: "Venue does not exist" }
+    });
+  };
 
   // No such Event
   if (!event) {
@@ -338,16 +397,30 @@ router.put('/:eventId', requireAuth, async (req, res) => {
     return res.json({ message: "Group Event must be created by Organizer or Co-Host" });
   };
 
-  const {
-    venueId,
-    name,
-    type,
-    capacity,
-    price,
-    description,
-    startDate,
-    endDate
-  } = req.body;
+  // Invalid dates
+  const startDateTime = new Date(startDate).getTime();
+  const endDateTime = new Date(endDate).getTime();
+  const currentTime = new Date().getTime();
+
+  if (startDateTime <= currentTime) {
+    res.status(400);
+    const err = new Error("Start date must be in the future")
+    console.error(err);
+    return res.json({
+      message: "Bad Request",
+      errors: { startDate: "Start date must be in the future" }
+    });
+  };
+
+  if (endDateTime <= startDateTime) {
+    res.status(400);
+    const err = new Error("End date is less than start date")
+    console.error(err);
+    return res.json({
+      message: "Bad Request",
+      errors: { endDate: "End date is less than start date" }
+    });
+  };
 
   event.venueId = venueId;
   event.name = name;
