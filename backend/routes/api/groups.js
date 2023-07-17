@@ -109,6 +109,7 @@ router.post('/:groupId/venues', requireAuth, validateVenue, async (req, res, nex
   delete venueObj.createdAt;
   delete venueObj.updatedAt;
 
+  res.status(201);
   return res.json(venueObj);
 });
 
@@ -182,7 +183,6 @@ router.post('/:groupId/membership', requireAuth, async (req, res) => {
   };
 
   // If membership exists already
-  const status = 'pending'
   const membership = await Membership.findOne({
     where: { groupId: groupId, userId: userId }
   });
@@ -201,6 +201,7 @@ router.post('/:groupId/membership', requireAuth, async (req, res) => {
     }
   }
 
+  const status = 'pending'
   const newMembership = await Membership.create({ userId, groupId, status });
   const newMembershipObj = newMembership.toJSON();
   newMembershipObj.memberId = newMembershipObj.userId;
@@ -210,6 +211,7 @@ router.post('/:groupId/membership', requireAuth, async (req, res) => {
   delete newMembershipObj.createdAt;
   delete newMembershipObj.updatedAt;
 
+  res.status(201);
   return res.json(newMembershipObj);
 });
 
@@ -220,7 +222,24 @@ router.put('/:groupId/membership', requireAuth, async (req, res) => {
   const { memberId, status } = req.body;
   const isCoHost = await coHost(hostId, groupId);
   const group = await Group.findByPk(groupId);
-  const membership = await Membership.findByPk(memberId);
+  const user = await User.findByPk(memberId);
+  const membership = await Membership.findOne({
+    where: {
+      userId: memberId,
+      groupId: groupId
+    }
+  });
+
+  // No such group
+  if (!user) {
+    res.status(400);
+    const err = new Error("Couldn't find a User with the specified memberId");
+    console.error(err);
+    return res.json({
+      message: "Validaitons Error",
+      errors: { memberId: "User couldn't be found" }
+    });
+  };
 
   // No such group
   if (!group) {
@@ -251,15 +270,18 @@ router.put('/:groupId/membership', requireAuth, async (req, res) => {
     res.status(404);
     const err = new Error("Membership between the user and the group does not exist");
     console.error(err);
-    return res.json({ message: "Membership between the user and the group does not exist" });
+    return res.json(err);
   }
 
   // Cannot change status to pending
   if (status === 'pending') {
     res.status(400);
-    const err = new Error("Cannot set status to 'pending'");
+    const err = new Error("Validations Error");
     console.error(err);
-    return res.json({ message: "Cannot set status to 'pending'" });
+    return res.json({
+      message: "Validaitons Error",
+      errors: { status: "Cannot change a membership status to pending" }
+    });
   }
 
   membership.status = status;
@@ -538,10 +560,11 @@ router.post('/:groupId/images', requireAuth, async (req, res) => {
     preview: img.preview
   };
 
+  res.status(201);
   return res.json(safeImg);
 });
 
-// Edit a Group
+// EDIT A GROUP
 router.put('/:groupId', requireAuth, validateGroup, async (req, res) => {
   const group = await Group.findByPk(req.params.groupId);
 
@@ -672,7 +695,7 @@ router.get('/:groupId', async (req, res) => {
   return res.json(groupObj);
 });
 
-// Delete a Group
+// DELETE A GROUP
 router.delete('/:groupId', requireAuth, async (req, res) => {
   const group = await Group.findByPk(req.params.groupId);
 
@@ -697,11 +720,18 @@ router.delete('/:groupId', requireAuth, async (req, res) => {
   return res.json({ message: "Successfully deleted" })
 });
 
-// Create a Group
+// CREATE A GROUP
 router.post('/', requireAuth, validateGroup, async (req, res) => {
   const { name, about, type, private, city, state } = req.body;
   const organizerId = req.user.id
   const group = await Group.create({ organizerId, name, about, type, private, city, state });
+  await group.save();
+  const groupId = group.id;
+  const status = 'host';
+  const userId = req.user.id;
+  const membership = await Membership.create({ userId, groupId, status });
+  await membership.save();
+  console.log(membership);
 
   const safeGroup = {
     id: group.id,
