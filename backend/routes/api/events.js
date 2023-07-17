@@ -504,7 +504,7 @@ const validateGetEvents = [
     .withMessage("Type must be 'Online' or 'In person'"),
   check('startDate')
     .optional()
-    .isISO8601() // { delimiters: ['/', '-', '.', ' ', '_', ':'] }
+    .isISO8601()
     .withMessage("Start date must be a valid datetime"),
   handleValidationErrors
 ];
