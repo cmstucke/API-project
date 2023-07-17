@@ -213,7 +213,7 @@ router.post('/:groupId/membership', requireAuth, async (req, res) => {
   return res.json(newMembershipObj);
 });
 
-// Change the status of a membership for a group specified by id
+// CHANGE A STATUS OF A MEMBERSHIP FOR A GROUP SPECIFIED BY ID
 router.put('/:groupId/membership', requireAuth, async (req, res) => {
   const hostId = req.user.id;
   const groupId = req.params.groupId;
@@ -274,7 +274,7 @@ router.put('/:groupId/membership', requireAuth, async (req, res) => {
   return res.json(membershipObj);
 });
 
-// Delete membership to a group specified by id
+// DELETE MEMBERSHIP TO A GROUP SPECIFIED BY ID
 router.delete('/:groupId/membership', requireAuth, async (req, res) => {
   const userId = req.user.id;
   const groupId = req.params.groupId;
