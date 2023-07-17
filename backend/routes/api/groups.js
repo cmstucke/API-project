@@ -314,8 +314,8 @@ router.delete('/:groupId/membership', requireAuth, async (req, res) => {
   const userId = req.user.id;
   const groupId = req.params.groupId;
   const { memberId } = req.body;
+  const user = await User.findByPk(memberId)
   const group = await Group.findByPk(groupId);
-  const membership = await Membership.findByPk(memberId);
 
   // No such group
   if (!group) {
@@ -325,17 +325,27 @@ router.delete('/:groupId/membership', requireAuth, async (req, res) => {
     return res.json({ message: "Group couldn't be found" });
   };
 
+  // No such user
+  if (!user) {
+    const err = new Error("Couldn't find a User with the specified memberId");
+    console.error(err);
+    res.status(404);
+    return res.json({ message: "User couldn't be found" });
+  };
+
+  const membership = await Membership.findOne({
+    where: {
+      userId: memberId,
+      groupId: groupId
+    }
+  });
+
   // Membership doesn't exist
   if (!membership) {
     res.status(400);
-    const err = new Error("Couldn't find a User with the specified memberId");
+    const err = new Error("Membership between the user and the group does not exist");
     console.error(err);
-    return res.json({
-      "message": "Validation Error",
-      "errors": {
-        "memberId": "User couldn't be found"
-      }
-    });
+    return res.json({ message: "Membership between the user and the group does not exist" });
   }
 
   // Must be organizer or member
