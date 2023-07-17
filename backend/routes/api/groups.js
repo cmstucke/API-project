@@ -12,6 +12,7 @@ const router = express.Router();
 // CHECK IF MEMBERSHIP HAS HOST STATUS
 const coHost = async (userId, groupId) => {
   const membership = await Membership.findOne({ where: { userId: userId, groupId: groupId } });
+  console.log(membership);
   if (membership) {
     if (membership.status === 'co-host') return true
     return false
@@ -92,7 +93,7 @@ router.post('/:groupId/venues', requireAuth, validateVenue, async (req, res, nex
     res.status(404);
     const err = new Error("Couldn't find a Group with the specified id");
     console.error(err);
-    return res.json({ "message": "Group couldn't be found" });
+    return res.json({ message: "Group couldn't be found" });
   };
 
   // Unauthorized User
@@ -100,7 +101,7 @@ router.post('/:groupId/venues', requireAuth, validateVenue, async (req, res, nex
     res.status(403);
     const err = new Error("Unauthenticated user");
     console.error(err);
-    return res.json({ "message": "User must be organizer or co-host to the current group" });
+    return res.json({ message: "User must be organizer or co-host to the current group" });
   }
 
   // Handler
@@ -183,6 +184,7 @@ router.post('/:groupId/membership', requireAuth, async (req, res) => {
   };
 
   // If membership exists already
+  const status = 'pending'
   const membership = await Membership.findOne({
     where: { groupId: groupId, userId: userId }
   });
@@ -201,7 +203,6 @@ router.post('/:groupId/membership', requireAuth, async (req, res) => {
     }
   }
 
-  const status = 'pending'
   const newMembership = await Membership.create({ userId, groupId, status });
   const newMembershipObj = newMembership.toJSON();
   newMembershipObj.memberId = newMembershipObj.userId;
@@ -215,8 +216,19 @@ router.post('/:groupId/membership', requireAuth, async (req, res) => {
   return res.json(newMembershipObj);
 });
 
+const validateMembershipChange = [
+  check('memberId')
+    .exists({ checkFalsy: true })
+    .isInt()
+    .withMessage("User couldn't be found"),
+  check('status')
+    .isIn(['co-host', 'member'])
+    .withMessage("Status must be 'co-host' or 'member'"),
+  handleValidationErrors
+];
+
 // CHANGE A STATUS OF A MEMBERSHIP FOR A GROUP SPECIFIED BY ID
-router.put('/:groupId/membership', requireAuth, async (req, res) => {
+router.put('/:groupId/membership', requireAuth, validateMembershipChange, async (req, res) => {
   const hostId = req.user.id;
   const groupId = req.params.groupId;
   const { memberId, status } = req.body;
@@ -270,7 +282,7 @@ router.put('/:groupId/membership', requireAuth, async (req, res) => {
     res.status(404);
     const err = new Error("Membership between the user and the group does not exist");
     console.error(err);
-    return res.json(err);
+    return res.json({ message: "Membership between the user and the group does not exist" });
   }
 
   // Cannot change status to pending
@@ -285,7 +297,8 @@ router.put('/:groupId/membership', requireAuth, async (req, res) => {
   }
 
   membership.status = status;
-  membership.save();
+  await membership.save();
+  console.log(membership);
 
   const membershipObj = membership.toJSON()
   membershipObj.memberId = membershipObj.userId;
@@ -460,12 +473,13 @@ router.post('/:groupId/events', requireAuth, validateEvent, async (req, res) => 
     res.status(404);
     const err = new Error("Couldn't find a Group with the specified id");
     console.error(err);
-    return res.json({ "message": "Group couldn't be found" });
+    return res.json({ message: "Group couldn't be found" });
   };
 
-  const isCoHost = await coHost(group.id, userId)
+  const isCoHost = await coHost(userId, group.id);
 
   // Unauthorized user
+  console.log(isCoHost);
   if (userId !== group.organizerId && !isCoHost) {
     res.status(403);
     const err = new Error("Group Event must be created by Organizer or Co-Host");
