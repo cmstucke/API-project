@@ -117,6 +117,7 @@ router.post('/:groupId/venues', requireAuth, validateVenue, async (req, res, nex
   -----------
 */
 
+// GET ALL MEMBERS OF A GROUP SPECIFIED BY ITS ID
 router.get('/:groupId/members', async (req, res) => {
   const group = await Group.findByPk(req.params.groupId);
 
@@ -137,23 +138,36 @@ router.get('/:groupId/members', async (req, res) => {
   memberships.forEach(membership => {
     membershipObjs.push(membership.toJSON())
   });
-  // console.log(memberObjs);
-  const members = [];
-  membershipObjs.forEach(memberObj => {
+
+  console.log(membershipObjs);
+  const membersReturn = [];
+  for (const memberObj of membershipObjs) {
     const user = memberObj.User;
     user.Membership = { status: memberObj.status };
     delete user.username;
-    if (req.user.id !== group.organizerId && memberObj.status !== 'pending') {
-      members.push(user);
-    } else if (req.user.id === group.organizerId) {
-      members.push(user);
-    }
-  });
+    membersReturn.push(user);
+  };
 
-  return res.json({ Members: members })
+  // Handle unfiltered list for group organizers and co-hosts
+  if (req.user) {
+    const isCoHost = await coHost(req.user.id, group.id);
+    if (req.user.id === group.organizerId || isCoHost) {
+      return res.json({ Memberships: membersReturn });
+    };
+  };
+
+  // Handle filtered lists for all other users
+  const memberFilter = [];
+  for (const member of membersReturn) {
+    if (member.Membership.status !== 'pending') {
+      memberFilter.push(member);
+    };
+  };
+
+  return res.json({ Memberships: memberFilter });
 });
 
-// Request a Membership for a Group based on the Group's id
+// REQUEST A MEMBERSHIP FOR A GROUP BASED ON THE GROUP'S ID
 router.post('/:groupId/membership', requireAuth, async (req, res) => {
   const userId = req.user.id;
   const groupId = req.params.groupId;
