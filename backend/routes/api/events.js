@@ -66,7 +66,7 @@ router.get('/:eventId/attendees', async (req, res) => {
   const attendeeReturn = [];
   attendeeObjs.forEach(attendee => {
     attendee.User.Attendance = { status: attendee.status };
-    attendee.User.id = attendee.id;
+    // attendee.User.id = attendee.id;
     delete attendee.User.username;
     attendeeReturn.push(attendee.User);
   });
@@ -133,6 +133,7 @@ router.post('/:eventId/attendance', requireAuth, async (req, res) => {
   const newAttendanceObj = newAttendance.toJSON();
   const resObj = { eventId: eventId, userId: newAttendanceObj.userId, status: status };
 
+  res.status(201);
   return res.json(resObj);
 });
 
@@ -308,6 +309,7 @@ router.post('/:eventId/images', requireAuth, async (req, res) => {
   delete imgObj.createdAt;
   delete imgObj.updatedAt;
 
+  res.status(201);
   return res.json(imgObj);
 });
 
