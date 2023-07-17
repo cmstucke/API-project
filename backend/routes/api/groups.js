@@ -306,41 +306,6 @@ router.delete('/:groupId/membership', requireAuth, async (req, res) => {
   EVENTS
 */
 
-// check('venueId')
-//   .exists({ checkFalsy: true })
-//   .isLength({ min: 1, max: 60 })
-//   .withMessage("Name must be 60 characters or less"),
-// check('name')
-//   .isLength({ min: 50 })
-//   .withMessage("About must be 50 characters or more"),
-// check('type')
-//   .exists({ checkFalsy: true })
-//   .isIn(['Online', 'In person'])
-//   .withMessage("Type must be 'Online' or 'In person'"),
-// check('capacity')
-//   .exists({ checkFalsy: true })
-//   .isBoolean()
-//   .withMessage("Private must be a boolean"),
-// check('price')
-//   .exists({ checkFalsy: true })
-//   .withMessage("City is required"),
-// check('description')
-//   .exists({ checkFalsy: true })
-//   .withMessage("State is required"),
-
-// check('venueId')
-//   .exists({ checkFalsy: true })
-//   .isInt()
-//   .withMessage("Venue does not exist"),
-
-// check('startDate')
-//   .exists({ checkFalsy: true })
-//   .withMessage("Start date must be in the future"),
-// check('endDate')
-//   .exists({ checkFalsy: true })
-//   .isAfter({ comparisonDate: new Date('startDate').toString() })
-//   .withMessage(`End date is less than start date ${this}`),
-
 // EVENT VALIDATIONS
 const validateEvent = [
   check('venueId')
@@ -472,38 +437,6 @@ router.post('/:groupId/events', requireAuth, validateEvent, async (req, res) => 
     return res.json({ message: "Group Event must be created by Organizer or Co-Host" });
   };
 
-  // // Invalid dates
-  // const startDateTime = new Date(startDate).getTime();
-  // const endDateTime = new Date(endDate).getTime();
-  // const currentTime = new Date().getTime();
-
-  // if (!startDateTime || !endDateTime) {
-  //   res.status(400);
-  //   const err = new Error("State and end dates must be valid dates")
-  //   console.error(err);
-  //   return res.json({ message: "State and end dates must be valid dates" });
-  // }
-
-  // if (startDateTime <= currentTime) {
-  //   res.status(400);
-  //   const err = new Error("Start date must be in the future")
-  //   console.error(err);
-  //   return res.json({
-  //     message: "Bad Request",
-  //     errors: { startDate: "Start date must be in the future" }
-  //   });
-  // };
-
-  // if (endDateTime <= startDateTime) {
-  //   res.status(400);
-  //   const err = new Error("End date is less than start date")
-  //   console.error(err);
-  //   return res.json({
-  //     message: "Bad Request",
-  //     errors: { endDate: "End date is less than start date" }
-  //   });
-  // };
-
   // Handler
   const groupId = group.id;
   const event = await Event.create({
@@ -527,6 +460,7 @@ router.post('/:groupId/events', requireAuth, validateEvent, async (req, res) => 
   const host = await Attendance.create({ eventId, userId, status });
   await host.save();
 
+  res.status(201);
   return res.json(eventObj);
 });
 
