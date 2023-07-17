@@ -343,6 +343,13 @@ router.delete('/:groupId/membership', requireAuth, async (req, res) => {
 
 // EVENT VALIDATIONS
 const validateEvent = [
+  check('venueId')
+    .optional()
+    .custom(async venueId => {
+      const venue = await Venue.findByPk(venueId);
+      if (venueId !== null && !venue || venueId !== null && typeof venueId !== 'number') throw new Error;
+    })
+    .withMessage('Venue does not exist'),
   check('name')
     .exists({ checkFalsy: true })
     .isLength({ min: 5 })
@@ -362,6 +369,16 @@ const validateEvent = [
   check('description')
     .exists({ checkFalsy: true })
     .withMessage("Description is required"),
+  check('startDate')
+    .exists({ checkFalsy: true })
+    .isAfter()
+    .withMessage("Start date must be in the future"),
+  check('endDate')
+    .exists({ checkFalsy: true })
+    .withMessage('End date is less than start date')
+    .custom(async (endDate, req) => {
+      if (endDate < req.req.body.startDate) throw new Error("End date is less than start date")
+    }),
   handleValidationErrors
 ];
 
@@ -455,37 +472,37 @@ router.post('/:groupId/events', requireAuth, validateEvent, async (req, res) => 
     return res.json({ message: "Group Event must be created by Organizer or Co-Host" });
   };
 
-  // Invalid dates
-  const startDateTime = new Date(startDate).getTime();
-  const endDateTime = new Date(endDate).getTime();
-  const currentTime = new Date().getTime();
+  // // Invalid dates
+  // const startDateTime = new Date(startDate).getTime();
+  // const endDateTime = new Date(endDate).getTime();
+  // const currentTime = new Date().getTime();
 
-  if (!startDateTime || !endDateTime) {
-    res.status(400);
-    const err = new Error("State and end dates must be valid dates")
-    console.error(err);
-    return res.json({ message: "State and end dates must be valid dates" });
-  }
+  // if (!startDateTime || !endDateTime) {
+  //   res.status(400);
+  //   const err = new Error("State and end dates must be valid dates")
+  //   console.error(err);
+  //   return res.json({ message: "State and end dates must be valid dates" });
+  // }
 
-  if (startDateTime <= currentTime) {
-    res.status(400);
-    const err = new Error("Start date must be in the future")
-    console.error(err);
-    return res.json({
-      message: "Bad Request",
-      errors: { startDate: "Start date must be in the future" }
-    });
-  };
+  // if (startDateTime <= currentTime) {
+  //   res.status(400);
+  //   const err = new Error("Start date must be in the future")
+  //   console.error(err);
+  //   return res.json({
+  //     message: "Bad Request",
+  //     errors: { startDate: "Start date must be in the future" }
+  //   });
+  // };
 
-  if (endDateTime <= startDateTime) {
-    res.status(400);
-    const err = new Error("End date is less than start date")
-    console.error(err);
-    return res.json({
-      message: "Bad Request",
-      errors: { endDate: "End date is less than start date" }
-    });
-  };
+  // if (endDateTime <= startDateTime) {
+  //   res.status(400);
+  //   const err = new Error("End date is less than start date")
+  //   console.error(err);
+  //   return res.json({
+  //     message: "Bad Request",
+  //     errors: { endDate: "End date is less than start date" }
+  //   });
+  // };
 
   // Handler
   const groupId = group.id;
