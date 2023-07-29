@@ -537,7 +537,6 @@ router.get('/', validateGetEvents, async (req, res) => {
 
   if (req.query.startDate) {
     const date = new Date(req.query.startDate).toISOString();
-    console.log(date);
     query.where.startDate = date;
   }
 
