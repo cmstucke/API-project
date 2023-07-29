@@ -12,7 +12,6 @@ const router = express.Router();
 // CHECK IF MEMBERSHIP HAS HOST STATUS
 const coHost = async (userId, groupId) => {
   const membership = await Membership.findOne({ where: { userId: userId, groupId: groupId } });
-  console.log(membership);
   if (membership) {
     if (membership.status === 'co-host') return true
     return false
@@ -141,7 +140,6 @@ router.get('/:groupId/members', async (req, res) => {
     membershipObjs.push(membership.toJSON())
   });
 
-  console.log(membershipObjs);
   const membersReturn = [];
   for (const memberObj of membershipObjs) {
     const user = memberObj.User;
@@ -298,7 +296,6 @@ router.put('/:groupId/membership', requireAuth, validateMembershipChange, async 
 
   membership.status = status;
   await membership.save();
-  console.log(membership);
 
   const membershipObj = membership.toJSON()
   membershipObj.memberId = membershipObj.userId;
@@ -489,7 +486,7 @@ router.post('/:groupId/events', requireAuth, validateEvent, async (req, res) => 
   const isCoHost = await coHost(userId, group.id);
 
   // Unauthorized user
-  console.log(isCoHost);
+  (isCoHost);
   if (userId !== group.organizerId && !isCoHost) {
     res.status(403);
     const err = new Error("Group Event must be created by Organizer or Co-Host");
@@ -755,7 +752,6 @@ router.post('/', requireAuth, validateGroup, async (req, res) => {
   const userId = req.user.id;
   const membership = await Membership.create({ userId, groupId, status });
   await membership.save();
-  console.log(membership);
 
   const safeGroup = {
     id: group.id,
