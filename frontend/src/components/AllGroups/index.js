@@ -5,18 +5,24 @@ import { fetchGroups } from "../../store/groups";
 const GetAllGroups = () => {
   const groupsObj = useSelector(state => state.groups ? state.groups : []);
   const groups = Object.values(groupsObj)
+
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(fetchGroups());
   }, [dispatch]);
 
   return (
     <>
-      <h1>Groups</h1>
+      <h1>Groups in Meetup</h1>
+      <div>
+        <h2>Events</h2>
+        <h2>Groups</h2>
+      </div>
       <div>
         {groups.map(group => (
           <div>
-            <h2>{group.name}</h2>
+            <h3>{group.name}</h3>
             <p>{group.about}</p>
             <p>{group.type}</p>
           </div>

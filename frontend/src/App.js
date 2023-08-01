@@ -4,6 +4,7 @@ import { Link, Route, Switch } from "react-router-dom";
 import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
 import GetAllGroups from "./components/AllGroups";
+import GetGroupDetails from "./components/GroupDetails";
 
 function App() {
   const dispatch = useDispatch();
@@ -20,6 +21,9 @@ function App() {
       </div>
       {isLoaded &&
         <Switch>
+          <Route path='/groups/:groupId'>
+            <GetGroupDetails />
+          </Route>
           <Route path='/groups'>
             <GetAllGroups />
           </Route>
