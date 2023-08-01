@@ -16,7 +16,7 @@ module.exports = {
       {
         organizerId: 1,
         name: 'Group One',
-        about: 'The is the first group seed record.',
+        about: 'This is the first group seed record.',
         type: 'In person',
         private: false,
         city: 'Cincinnati',
@@ -25,7 +25,7 @@ module.exports = {
       {
         organizerId: 2,
         name: 'Group Two',
-        about: 'The is the second group seed record.',
+        about: 'This is the second group seed record.',
         type: 'Online',
         private: true,
         city: 'Brooklyn',
@@ -34,7 +34,7 @@ module.exports = {
       {
         organizerId: 3,
         name: 'Group Three',
-        about: 'The is the third group seed record.',
+        about: 'This is the third group seed record.',
         type: 'Online',
         private: false,
         city: 'Dayton',
@@ -43,7 +43,7 @@ module.exports = {
       {
         organizerId: 4,
         name: 'Group Four',
-        about: 'The is the fourth group seed record.',
+        about: 'This is the fourth group seed record.',
         type: 'In person',
         private: false,
         city: 'Chicago',
@@ -52,7 +52,7 @@ module.exports = {
       {
         organizerId: 5,
         name: 'Group Five',
-        about: 'The is the fifth group seed record.',
+        about: 'This is the fifth group seed record.',
         type: 'In person',
         private: false,
         city: 'Cincinnati',

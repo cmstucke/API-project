@@ -1,24 +1,34 @@
 // ACTION TYPE CONSTANTS:
 export const LOAD_GROUPS = 'groups/LOAD_GROUPS';
+export const LOAD_GROUP_DETAILS = 'groups/LOAD_GROUP_DETAILS';
 
-// ACTION CREATORS
+// ACTIONS
 export const loadGroups = (groups) => ({
   type: LOAD_GROUPS,
   groups
-})
+});
+
+export const loadGroupDetails = (group) => ({
+  type: LOAD_GROUP_DETAILS,
+  group
+});
 
 // THUNK ACTION CREATORS
 export const fetchGroups = () => async (dispatch) => {
   const res = await fetch('/api/groups', {
     method: 'GET'
   });
-  // console.log('RES: ', res)
   if (res.ok) {
-    // const resJson = await res.json();
-    // console.log('RES JSON', resJson);
     const { Groups } = await res.json();
-    // console.log('RES DESTRUCTURE: ', Groups);
     dispatch(loadGroups(Groups));
+  };
+};
+
+export const fetchGroupDetails = (groupId) => async (dispatch) => {
+  const res = await fetch(`/api/groups/${groupId}`);
+  if (res.ok) {
+    const group = await res.json();
+    dispatch(loadGroupDetails(group));
   };
 };
 
@@ -31,9 +41,11 @@ const groupsReducer = (state = {}, action) => {
         groupsState[group.id] = group;
       });
       return groupsState;
+    case LOAD_GROUP_DETAILS:
+      return { ...state, [action.group.id]: action.group }
     default:
       return state;
-  }
+  };
 };
 
 export default groupsReducer;
