@@ -39,6 +39,11 @@ function Navigation({ isLoaded }) {
           Home
         </NavLink>
       </li>
+      <li>
+        <NavLink to="/groups/create">
+          Create a group
+        </NavLink>
+      </li>
       {isLoaded && sessionLinks}
     </ul>
   );

@@ -25,7 +25,7 @@ const GetGroupDetails = () => {
   }, [user, group, join, userObj]);
 
   // SHORT CIRCUIT
-  if (!group) return null;
+  if (!group || !group.Organizer) return null;
 
   return (
     <>
