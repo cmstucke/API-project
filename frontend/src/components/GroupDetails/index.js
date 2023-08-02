@@ -7,9 +7,9 @@ const GetGroupDetails = () => {
   // GET GROUP DETAILS
   const dispatch = useDispatch();
   const { groupId } = useParams();
-  const group = useSelector((state) =>
+  const group = useSelector((state) => (
     state.groups ? state.groups[groupId] : null
-  );
+  ));
 
   useEffect(() => {
     dispatch(fetchGroupDetails(groupId));
