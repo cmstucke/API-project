@@ -13,7 +13,7 @@ const GetGroupDetails = () => {
 
   useEffect(() => {
     dispatch(fetchGroupDetails(groupId));
-  }, [dispatch, groupId])
+  }, [dispatch, groupId]);
 
   // AUTHENTICATED USER
   const [user, setUser] = useState(null);
