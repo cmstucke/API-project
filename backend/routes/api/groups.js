@@ -538,8 +538,8 @@ const validateGroup = [
     .exists({ checkFalsy: true })
     .isIn(['Online', 'In person'])
     .withMessage("Type must be 'Online' or 'In person'"),
-  check('private')
-    .exists({ checkFalsy: true })
+  check('isPrivate')
+    .exists({ checkFalsy: false })
     .isBoolean()
     .withMessage("Private must be a boolean"),
   check('city')
@@ -742,8 +742,9 @@ router.delete('/:groupId', requireAuth, async (req, res) => {
 });
 
 // CREATE A GROUP
-router.post('/', requireAuth, validateGroup, async (req, res) => {
-  const { name, about, type, private, city, state } = req.body;
+router.post('/create', requireAuth, validateGroup, async (req, res) => {
+  const { name, about, type, isPrivate, city, state } = req.body;
+  const private = isPrivate;
   const organizerId = req.user.id
   const group = await Group.create({ organizerId, name, about, type, private, city, state });
   await group.save();

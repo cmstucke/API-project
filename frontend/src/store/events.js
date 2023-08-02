@@ -1,6 +1,7 @@
 // ACTION TYPE CONSTANTS:
 export const LOAD_GROUP_EVENTS = 'groups/LOAD_GROUP_EVENTS';
 export const LOAD_EVENT_DETAILS = 'events/LOAD_EVENT_DETAILS';
+export const LOAD_EVENTS = 'events/LOAD_EVENTS';
 
 // ACTION
 export const loadGroupEvents = groupEvents => ({
@@ -13,12 +14,17 @@ export const loadEventDetails = event => ({
   event
 });
 
+export const loadEvents = events => ({
+  type: LOAD_EVENTS,
+  events
+});
+
 // THUNK ACTION CREATORS
 export const fetchGroupEvents = groupId => async dispatch => {
   const res = await fetch(`/api/groups/${groupId}/events`);
   if (res.ok) {
-    const { Events } = await res.json();
-    dispatch(loadGroupEvents(Events))
+    const events = await res.json();
+    dispatch(loadGroupEvents(events))
   };
 };
 
@@ -27,6 +33,14 @@ export const fetchEventDetails = eventId => async dispatch => {
   if (res.ok) {
     const event = await res.json();
     dispatch(loadEventDetails(event));
+  };
+};
+
+export const fetchEvents = () => async dispatch => {
+  const res = await fetch('/api/events');
+  if (res.ok) {
+    const { Events } = await res.json();
+    dispatch(loadEvents(Events));
   };
 };
 
@@ -41,6 +55,8 @@ const eventsReducer = (state = {}, action) => {
       return groupEventsState;
     case LOAD_EVENT_DETAILS:
       return { ...state, [action.event.id]: action.event };
+    case LOAD_EVENTS:
+      return { ...state, ...action.events }
     default:
       return state;
   }
