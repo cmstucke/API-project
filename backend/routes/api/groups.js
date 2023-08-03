@@ -717,7 +717,7 @@ router.get('/:groupId', async (req, res) => {
 });
 
 // DELETE A GROUP
-router.delete('/:groupId', requireAuth, async (req, res) => {
+router.delete('/:groupId/delete', requireAuth, async (req, res) => {
   const group = await Group.findByPk(req.params.groupId);
 
   // No such group
