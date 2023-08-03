@@ -458,7 +458,7 @@ router.get('/:groupId/events', async (req, res) => {
 });
 
 // CREATE AN EVENT FOR A GROUP SPECIFIED BY ITS ID
-router.post('/:groupId/events', requireAuth, validateEvent, async (req, res) => {
+router.post('/:groupId/events/create', requireAuth, validateEvent, async (req, res) => {
   const userId = req.user.id;
   const group = await Group.findByPk(req.params.groupId);
   const { venueId, name, description, type, capacity, price, startDate, endDate } = req.body;
