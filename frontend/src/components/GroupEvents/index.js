@@ -22,7 +22,10 @@ const GetGroupEvents = () => {
     }
   }
 
-  console.log('EVENTS: ', events)
+  // console.log('EVENTS: ', events)
+
+  // SHORT CIRCUIT
+  if (!events.length) return null;
 
   return (
     <>
