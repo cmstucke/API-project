@@ -14,27 +14,27 @@ module.exports = {
     await GroupImage.bulkCreate([
       {
         groupId: 1,
-        url: 'images/group-img-01.jpg',
+        url: 'group-img-01.jpg',
         preview: true
       },
       {
         groupId: 1,
-        url: 'image.url/two',
+        url: 'group-img-02.jpg',
         preview: false
       },
       {
         groupId: 2,
-        url: 'image.url/three',
+        url: 'group-img-03.jpg',
         preview: true
       },
       {
         groupId: 4,
-        url: 'image.url/four',
+        url: 'group-img-04.jpg',
         preview: false
       },
       {
         groupId: 4,
-        url: 'image.url/five',
+        url: 'group-img-05.jpg',
         preview: true
       }
     ], { validate: true })

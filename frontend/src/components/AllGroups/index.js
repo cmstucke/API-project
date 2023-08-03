@@ -13,7 +13,7 @@ const GetAllGroups = () => {
     dispatch(groupsFetch());
   }, [dispatch]);
 
-  console.log('GROUPS: ', groups);
+  // if (!groups.length) return null;
 
   return (
     <>
@@ -27,10 +27,15 @@ const GetAllGroups = () => {
             <h2>Groups in Meetup</h2>
           </div>
           <div>
-            {groups.map(group => (
+            {groups.length && groups.map(group => (
               <Link to={`/groups/${group.id}`} className='group-link-wrap'>
                 <div className='group-element'>
-                  <img src={group.previewImage} />
+                  <img src={
+                    group.previewImage &&
+                      group.previewImage !== 'No preview image' ?
+                      require(`../../images/${group.previewImage}`) :
+                      null
+                  } alt={group.previewImage} className='group-img' />
                   <div className='group-text-elements'>
                     <h3>{group.name}</h3>
                     <p>{group.about}</p>
