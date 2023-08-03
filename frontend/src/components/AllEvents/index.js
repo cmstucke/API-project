@@ -14,6 +14,9 @@ const GetAllEvents = () => {
 
   console.log('EVENTS: ', Events);
 
+  // SHORT CIRCUIT
+  if (!Events) return null;
+
   return (
     <>
       <h1>Events in Meetup</h1>
