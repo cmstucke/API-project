@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchGroupDetails } from '../../store/groups';
+import { groupDetailsFetch } from '../../store/groups';
 
 const GetGroupDetails = () => {
   // GET GROUP DETAILS
@@ -12,7 +12,7 @@ const GetGroupDetails = () => {
   ));
 
   useEffect(() => {
-    dispatch(fetchGroupDetails(groupId));
+    dispatch(groupDetailsFetch(groupId));
   }, [dispatch, groupId]);
 
   // AUTHENTICATED USER

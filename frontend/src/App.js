@@ -8,7 +8,8 @@ import GetGroupDetails from "./components/GroupDetails";
 import GetGroupEvents from "./components/GroupEvents";
 import GetEventDetails from "./components/EventDetails";
 import GetAllEvents from "./components/AllEvents";
-import CreateGroupForm from "./components/Forms/CreateGroupForm";
+import GroupCreateForm from "./components/Forms/GroupCreateForm";
+import GroupUpdateForm from "./components/Forms/GroupUpdateForm";
 
 function App() {
   const dispatch = useDispatch();
@@ -26,10 +27,13 @@ function App() {
       {isLoaded &&
         <Switch>
           <Route path='/groups/create'>
-            <CreateGroupForm />
+            <GroupCreateForm />
           </Route>
           <Route path='/groups/:groupId/events'>
             <GetGroupEvents />
+          </Route>
+          <Route path='/groups/:groupId/update'>
+            <GroupUpdateForm />
           </Route>
           <Route path='/groups/:groupId'>
             <GetGroupDetails />
