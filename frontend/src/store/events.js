@@ -68,6 +68,20 @@ export const eventCreate = (groupId, data) => async dispatch => {
   catch (error) { throw error };
 };
 
+// export const eventUpdate = (eventId, data) => async dispatch => {
+//   try {
+//     const res = await csrfFetch(`/api/events/${eventId}/update`, {
+//       method: 'PUT',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify(data)
+//     });
+//     const event = await res.json();
+//     dispatch(addEvent(event));
+//     return event;
+//   }
+//   catch (error) { throw error };
+// };
+
 // EVENTS REDUCER
 const eventsReducer = (state = {}, action) => {
   switch (action.type) {

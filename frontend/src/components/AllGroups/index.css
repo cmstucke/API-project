@@ -1,0 +1,28 @@
+#all-groups-body {
+  display: flex;
+  justify-content: center;
+}
+
+#headings-container {
+  display: flex;
+  align-self: flex-start;
+  gap: 10px;
+}
+
+#all-groups-container {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  align-items: flex-start;
+}
+
+.group-element {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  width: 600px;
+}
+
+.group-link-wrap {
+  text-decoration: none;
+}

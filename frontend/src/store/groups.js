@@ -5,27 +5,28 @@ export const LOAD_GROUPS = 'groups/LOAD_GROUPS';
 export const LOAD_GROUP_DETAILS = 'groups/LOAD_GROUP_DETAILS';
 export const ADD_GROUP = 'groups/ADD_GROUP';
 export const UPDATE_GROUP = 'groups/UPDATE_GROUP';
+export const REMOVE_GROUP = 'groups/REMOVE_GROUP';
 
 // ACTIONS
-export const loadGroups = (groups) => ({
+const loadGroups = (groups) => ({
   type: LOAD_GROUPS,
   groups
 });
 
-export const loadGroupDetails = (group) => ({
+const loadGroupDetails = (group) => ({
   type: LOAD_GROUP_DETAILS,
   group
 });
 
-export const addGroup = group => ({
+const addGroup = group => ({
   type: ADD_GROUP,
   group
 });
 
-// export const updateGroup = group => ({
-//   type: UPDATE_GROUP,
-//   group
-// })
+const removeGroup = groupId => ({
+  type: REMOVE_GROUP,
+  groupId
+})
 
 // THUNK ACTION CREATORS
 export const groupsFetch = () => async (dispatch) => {
@@ -58,7 +59,7 @@ export const groupCreate = data => async dispatch => {
   catch (error) { throw error };
 };
 
-export const updateGroupFetch = (groupId, data) => async dispatch => {
+export const groupUpdate = (groupId, data) => async dispatch => {
   try {
     const res = await csrfFetch(`/api/groups/${groupId}/update`, {
       method: 'PUT',
@@ -70,6 +71,15 @@ export const updateGroupFetch = (groupId, data) => async dispatch => {
     return group;
   }
   catch (error) { throw error };
+};
+
+export const groupDelete = groupId => async dispatch => {
+  const res = await csrfFetch(`/api/groups/${groupId}`, {
+    method: 'DELETE'
+  });
+  const resJSON = await res.json();
+  dispatch(removeGroup(groupId));
+  return resJSON;
 };
 
 // GROUPS REDUCER
@@ -98,6 +108,9 @@ const groupsReducer = (state = {}, action) => {
           ...action.group
         }
       };
+    case REMOVE_GROUP:
+      console.log('STATE: ', state);
+      return { ...state };
     default:
       return state;
   };

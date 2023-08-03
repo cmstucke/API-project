@@ -14,7 +14,7 @@ module.exports = {
     await GroupImage.bulkCreate([
       {
         groupId: 1,
-        url: 'image.url/one',
+        url: 'images/group-img-01.jpg',
         preview: true
       },
       {

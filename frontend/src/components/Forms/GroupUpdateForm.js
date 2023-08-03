@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { groupDetailsFetch, updateGroupFetch } from '../../store/groups';
+import { groupDetailsFetch, groupUpdate } from '../../store/groups';
 
 const GroupUpdateForm = () => {
   const dispatch = useDispatch();
@@ -16,8 +16,6 @@ const GroupUpdateForm = () => {
   const group = useSelector((state) => (
     state.groups ? state.groups[groupId] : null
   ));
-
-  // console.log('GROUP STATE: ', group);
 
   useEffect(() => {
     dispatch(groupDetailsFetch(groupId));
@@ -44,7 +42,7 @@ const GroupUpdateForm = () => {
 
     let createdGroup;
     try {
-      createdGroup = await dispatch(updateGroupFetch(groupId, payload));
+      createdGroup = await dispatch(groupUpdate(groupId, payload));
     } catch (error) { throw new Error() }
     if (createdGroup) history.push(`/groups/${createdGroup.id}`);
   };
