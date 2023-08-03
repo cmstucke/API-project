@@ -20,7 +20,7 @@ export const loadEvents = events => ({
 });
 
 // THUNK ACTION CREATORS
-export const fetchGroupEvents = groupId => async dispatch => {
+export const groupEventsFetch = groupId => async dispatch => {
   const res = await fetch(`/api/groups/${groupId}/events`);
   if (res.ok) {
     const events = await res.json();
@@ -28,7 +28,7 @@ export const fetchGroupEvents = groupId => async dispatch => {
   };
 };
 
-export const fetchEventDetails = eventId => async dispatch => {
+export const eventDetailsFetch = eventId => async dispatch => {
   const res = await fetch(`/api/events/${eventId}`);
   if (res.ok) {
     const event = await res.json();
@@ -36,11 +36,11 @@ export const fetchEventDetails = eventId => async dispatch => {
   };
 };
 
-export const fetchEvents = () => async dispatch => {
+export const eventsFetch = () => async dispatch => {
   const res = await fetch('/api/events');
   if (res.ok) {
-    const { Events } = await res.json();
-    dispatch(loadEvents(Events));
+    const events = await res.json();
+    dispatch(loadEvents(events));
   };
 };
 

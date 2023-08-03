@@ -3,10 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { groupsFetch } from "../../store/groups";
 
 const GetAllGroups = () => {
+  const dispatch = useDispatch();
   const groupsObj = useSelector(state => state.groups ? state.groups : []);
   const groups = Object.values(groupsObj)
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(groupsFetch());
