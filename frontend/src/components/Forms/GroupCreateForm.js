@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { createGroup } from '../../store/groups';
+import { groupCreate } from '../../store/groups';
 
-const CreateGroupForm = () => {
+const GroupCreateForm = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [city, setCity] = useState('');
@@ -34,7 +34,7 @@ const CreateGroupForm = () => {
 
     let createdGroup;
     try {
-      createdGroup = await dispatch(createGroup(payload));
+      createdGroup = await dispatch(groupCreate(payload));
     } catch (error) { throw new Error() }
     if (createdGroup) history.push(`/groups/${createdGroup.id}`);
   };
@@ -91,4 +91,4 @@ const CreateGroupForm = () => {
   );
 };
 
-export default CreateGroupForm;
+export default GroupCreateForm;

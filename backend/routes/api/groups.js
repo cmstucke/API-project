@@ -586,7 +586,7 @@ router.post('/:groupId/images', requireAuth, async (req, res) => {
 });
 
 // EDIT A GROUP
-router.put('/:groupId', requireAuth, validateGroup, async (req, res) => {
+router.put('/:groupId/update', requireAuth, validateGroup, async (req, res) => {
   const group = await Group.findByPk(req.params.groupId);
 
   // No such group
