@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchEventDetails } from '../../store/events';
+import { eventDetailsFetch } from '../../store/events';
 
 const GetEventDetails = () => {
   //GET EVENT DETAILS
@@ -14,7 +14,7 @@ const GetEventDetails = () => {
   console.log('EVENT STATE: ', event)
 
   useEffect(() => {
-    dispatch(fetchEventDetails(eventId));
+    dispatch(eventDetailsFetch(eventId));
   }, [dispatch, eventId]);
 
   // SHORT CIRCUIT

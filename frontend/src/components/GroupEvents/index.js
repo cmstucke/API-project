@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchGroupEvents } from '../../store/events';
+import { groupEventsFetch } from '../../store/events';
 
 const GetGroupEvents = () => {
   const dispatch = useDispatch();
@@ -10,8 +10,8 @@ const GetGroupEvents = () => {
 
 
   useEffect(() => {
-    dispatch(fetchGroupEvents(groupId));
-  }, []);
+    dispatch(groupEventsFetch(groupId));
+  }, [dispatch, groupId]);
 
   if (events.length) {
     for (const event of events) {
