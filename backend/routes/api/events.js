@@ -362,7 +362,7 @@ router.get('/:eventId', async (req, res) => {
 });
 
 // EDIT AN EVENT SPECIFIED BY ITS ID
-router.put('/:eventId', requireAuth, validateEvent, async (req, res) => {
+router.put('/:eventId/update', requireAuth, validateEvent, async (req, res) => {
   const event = await Event.findByPk(req.params.eventId)
   const {
     venueId,
