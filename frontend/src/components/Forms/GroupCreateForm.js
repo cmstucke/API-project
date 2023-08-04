@@ -35,7 +35,10 @@ const GroupCreateForm = () => {
     let createdGroup;
     try {
       createdGroup = await dispatch(groupCreate(payload));
-    } catch (error) { throw new Error() }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
     if (createdGroup) history.push(`/groups/${createdGroup.id}`);
   };
 

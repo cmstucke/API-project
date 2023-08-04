@@ -74,7 +74,7 @@ export const groupUpdate = (groupId, data) => async dispatch => {
 };
 
 export const groupDelete = groupId => async dispatch => {
-  const res = await csrfFetch(`/api/groups/${groupId}`, {
+  const res = await csrfFetch(`/api/groups/${groupId}/delete`, {
     method: 'DELETE'
   });
   const resJSON = await res.json();

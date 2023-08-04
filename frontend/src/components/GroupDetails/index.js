@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { groupDetailsFetch } from '../../store/groups';
+import OpenModalButton from "../OpenModalButton";
+import GroupDeleteModal from '../GroupDeleteModal';
 
 const GetGroupDetails = () => {
   // GET GROUP DETAILS
@@ -18,11 +20,23 @@ const GetGroupDetails = () => {
   // AUTHENTICATED USER
   const [user, setUser] = useState(null);
   const [join, setJoin] = useState(false);
-  const userObj = useSelector(state => state.session.user);
+  const sessionUser = useSelector(state => state.session.user);
   useEffect(() => {
-    if (!user && userObj) setUser(userObj)
+    if (!user && sessionUser) setUser(sessionUser)
     if (user && group && !join && user.id !== group.organizerId) setJoin(true);
-  }, [user, group, join, userObj]);
+  }, [user, group, join, sessionUser]);
+
+  let sessionLinks;
+  if (sessionUser && group && sessionUser.id === group.organizerId) {
+    sessionLinks = (
+      <div>
+        <OpenModalButton
+          buttonText='Delete Group'
+          modalComponent={<GroupDeleteModal groupId={groupId} />}
+        />
+      </div>
+    );
+  };
 
   // SHORT CIRCUIT
   if (!group || !group.Organizer) return null;
@@ -42,6 +56,7 @@ const GetGroupDetails = () => {
         <h2>What we're about</h2>
         <p>{group.about}</p>
       </div>
+      {sessionLinks}
     </>
   );
 };
