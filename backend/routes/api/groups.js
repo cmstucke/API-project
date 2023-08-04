@@ -771,12 +771,13 @@ router.post('/create', requireAuth, validateGroup, async (req, res) => {
   return res.json(safeGroup);
 });
 
-// Get all Groups
+// GET ALL GROUPS
 router.get('/', async (req, res) => {
   const groups = await Group.findAll({
     include: [
       { model: Membership },
-      { model: GroupImage }
+      { model: GroupImage },
+      { model: Event }
     ]
   });
 

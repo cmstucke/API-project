@@ -39,7 +39,7 @@ const GetAllGroups = () => {
                   <div className='group-text-elements'>
                     <h3>{group.name}</h3>
                     <p>{group.about}</p>
-                    <p>{group.type} · {group.private ? 'Private' : 'Public'}</p>
+                    <p>{group.Events.length} Events · {group.private ? 'Private' : 'Public'}</p>
                   </div>
                 </div>
               </Link>
