@@ -1,0 +1,24 @@
+#group-img {
+  width: 25rem;
+}
+
+#body {
+  display: flex;
+  justify-content: center;
+}
+
+#body-container {
+  display: flex;
+  flex-direction: column;
+}
+
+#upper-container {
+  display: flex;
+  gap: 1rem;
+}
+
+#upper-container-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
