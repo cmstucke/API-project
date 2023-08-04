@@ -43,15 +43,17 @@ const GetGroupDetails = () => {
 
   return (
     <>
-      <h1>{group.name}</h1>
-      <p>{`${group.city}, ${group.state}`}</p>
-      <p>{group.type}</p>
-      <div>
-        <label>Organized by:
-          <span>{` ${group.Organizer.firstName} ${group.Organizer.lastName}`}</span>
-        </label>
+      <div id='body-container'>
+        <h1>{group.name}</h1>
+        <p>{`${group.city}, ${group.state}`}</p>
+        {group.Events && <p>{group.Events.length} Events · {group.private ? 'Private' : 'Public'}</p>}
+        <div>
+          <label>Organized by:
+            <span>{` ${group.Organizer.firstName} ${group.Organizer.lastName}`}</span>
+          </label>
+        </div>
+        {join && <button>Join this group</button>}
       </div>
-      {join && <button>Join this group</button>}
       <div>
         <h2>What we're about</h2>
         <p>{group.about}</p>
