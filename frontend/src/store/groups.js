@@ -109,8 +109,10 @@ const groupsReducer = (state = {}, action) => {
         }
       };
     case REMOVE_GROUP:
-      console.log('STATE: ', state);
-      return { ...state };
+      // console.log('STATE: ', state[action.groupId]);
+      const newState = { ...state }
+      delete newState[action.groupId]
+      return newState;
     default:
       return state;
   };

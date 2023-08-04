@@ -5,26 +5,32 @@ export const LOAD_GROUP_EVENTS = 'groups/LOAD_GROUP_EVENTS';
 export const LOAD_EVENT_DETAILS = 'events/LOAD_EVENT_DETAILS';
 export const LOAD_EVENTS = 'events/LOAD_EVENTS';
 export const ADD_EVENT = 'events/ADD_EVENT';
+export const REMOVE_EVENT = 'events/REMOVE_EVENT';
 
 // ACTION
-export const loadGroupEvents = groupEvents => ({
+const loadGroupEvents = groupEvents => ({
   type: LOAD_GROUP_EVENTS,
   groupEvents
 });
 
-export const loadEventDetails = event => ({
+const loadEventDetails = event => ({
   type: LOAD_EVENT_DETAILS,
   event
 });
 
-export const loadEvents = events => ({
+const loadEvents = events => ({
   type: LOAD_EVENTS,
   events
 });
 
-export const addEvent = event => ({
+const addEvent = event => ({
   type: ADD_EVENT,
   event
+});
+
+const removeEvent = eventId => ({
+  type: REMOVE_EVENT,
+  eventId
 });
 
 // THUNK ACTION CREATORS
@@ -82,6 +88,15 @@ export const eventCreate = (groupId, data) => async dispatch => {
 //   catch (error) { throw error };
 // };
 
+export const eventDelete = eventId => async dispatch => {
+  const res = await csrfFetch(`/api/events/${eventId}/delete`, {
+    method: 'DELETE'
+  });
+  const resJSON = await res.json();
+  dispatch(removeEvent(eventId));
+  return resJSON;
+};
+
 // EVENTS REDUCER
 const eventsReducer = (state = {}, action) => {
   switch (action.type) {
@@ -110,6 +125,10 @@ const eventsReducer = (state = {}, action) => {
           ...action.event
         }
       };
+    case REMOVE_EVENT:
+      const newState = { ...state }
+      delete newState[action.eventId]
+      return newState;
     default:
       return state;
   }

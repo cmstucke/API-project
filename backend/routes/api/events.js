@@ -457,7 +457,7 @@ router.put('/:eventId/update', requireAuth, validateEvent, async (req, res) => {
 });
 
 // DELETE AN EVENT SPECIFIED BY ITS ID
-router.delete('/:eventId', requireAuth, async (req, res) => {
+router.delete('/:eventId/delete', requireAuth, async (req, res) => {
   const event = await Event.findByPk(req.params.eventId);
 
   // No such Event

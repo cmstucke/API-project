@@ -13,8 +13,6 @@ const GetAllGroups = () => {
     dispatch(groupsFetch());
   }, [dispatch]);
 
-  // if (!groups.length) return null;
-
   return (
     <>
       <div id='all-groups-body'>
@@ -27,7 +25,7 @@ const GetAllGroups = () => {
             <h2>Groups in Meetup</h2>
           </div>
           <div>
-            {groups.length && groups.map(group => (
+            {groups.map(group => (
               <Link to={`/groups/${group.id}`} className='group-link-wrap'>
                 <div className='group-element'>
                   <img src={
@@ -39,7 +37,7 @@ const GetAllGroups = () => {
                   <div className='group-text-elements'>
                     <h3>{group.name}</h3>
                     <p>{group.about}</p>
-                    <p>{group.Events.length} Events · {group.private ? 'Private' : 'Public'}</p>
+                    {group.Events && <p>{group.Events.length} Events · {group.private ? 'Private' : 'Public'}</p>}
                   </div>
                 </div>
               </Link>
