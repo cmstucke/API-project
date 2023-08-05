@@ -41,7 +41,7 @@ function Navigation({ isLoaded }) {
       </div>
       <div id="nav-upper-right">
         <NavLink to="/groups/create">
-          Create a group
+          Start a new group
         </NavLink>
         {isLoaded && sessionLinks}
       </div>
