@@ -45,18 +45,34 @@ export const groupDetailsFetch = (groupId) => async (dispatch) => {
   };
 };
 
+// export const groupCreate = data => async dispatch => {
+//   // console.log('CREATE OBJECT: ', data);
+//   try {
+//     const res = await csrfFetch('/api/groups/create', {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify(data)
+//     });
+//     const group = await res.json();
+//     dispatch(addGroup(group));
+//     return group;
+//   }
+//   catch (err) {
+//     console.log('ERROR: ', err);
+//     const errRes = await err.json();
+//     dispatch(addGroup(errRes));
+//   };
+// };
+
 export const groupCreate = data => async dispatch => {
-  try {
-    const res = await csrfFetch('/api/groups/create', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    const group = await res.json();
-    dispatch(addGroup(group));
-    return group;
-  }
-  catch (error) { throw error };
+  const res = await csrfFetch('/api/groups/create', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  const group = await res.json();
+  dispatch(addGroup(group));
+  return group;
 };
 
 export const groupUpdate = (groupId, data) => async dispatch => {

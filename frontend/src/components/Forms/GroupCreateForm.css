@@ -1,0 +1,8 @@
+.err-text {
+  color: red;
+}
+
+#location-inputs {
+  display: flex;
+
+}

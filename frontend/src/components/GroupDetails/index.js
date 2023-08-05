@@ -5,6 +5,7 @@ import { groupDetailsFetch } from '../../store/groups';
 import OpenModalButton from "../OpenModalButton";
 import GroupDeleteModal from '../GroupDeleteModal';
 import './index.css'
+import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 const GetGroupDetails = () => {
   // GET GROUP DETAILS
@@ -32,6 +33,16 @@ const GetGroupDetails = () => {
   if (sessionUser && group && sessionUser.id === group.organizerId) {
     sessionLinks = (
       <div>
+        <Link to={`/groups/${groupId}/events/create`}>
+          <button>
+            Create event
+          </button>
+        </Link>
+        <Link to={`/groups/${groupId}/update`}>
+          <button>
+            Update
+          </button>
+        </Link>
         <OpenModalButton
           buttonText='Delete Group'
           modalComponent={<GroupDeleteModal groupId={groupId} />}
@@ -43,7 +54,7 @@ const GetGroupDetails = () => {
   // // SELECT PREVIEW IMAGE
   useEffect(() => {
     if (group && group.GroupImages) {
-      console.log('GROUP IMAGES: ', group.GroupImages)
+      // console.log('GROUP IMAGES: ', group.GroupImages)
       for (const img of group.GroupImages) {
         if (img.preview) {
           setImgUrl(img.url)
@@ -52,7 +63,7 @@ const GetGroupDetails = () => {
     }
   }, [group]);
 
-  console.log('IMG URL: ', imgUrl);
+  // console.log('IMG URL: ', imgUrl);
 
   // SHORT CIRCUIT
   if (!group || !group.Organizer) return null;
@@ -70,10 +81,19 @@ const GetGroupDetails = () => {
               <div id='group-text'>
                 <h1>{group.name}</h1>
                 <p>{`${group.city}, ${group.state}`}</p>
-                {group.Events && <p>{group.Events.length} Events · {group.private ? 'Private' : 'Public'}</p>}
+                {
+                  group.Events &&
+                  <p>
+                    {group.Events.length} Events · {group.private ? 'Private' : 'Public'}
+                  </p>
+                }
                 <div>
                   <label>Organized by:
-                    <span>{` ${group.Organizer.firstName} ${group.Organizer.lastName}`}</span>
+                    <span>
+                      {
+                        ` ${group.Organizer.firstName} ${group.Organizer.lastName}`
+                      }
+                    </span>
                   </label>
                 </div>
               </div>
