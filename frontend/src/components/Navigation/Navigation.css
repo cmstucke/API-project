@@ -11,3 +11,7 @@
   display: flex;
   gap: 10px;
 }
+
+#nav-logo {
+  height: 3rem;
+}

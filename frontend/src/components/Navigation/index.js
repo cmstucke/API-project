@@ -36,7 +36,7 @@ function Navigation({ isLoaded }) {
     <div id="nav-bar">
       <div>
         <NavLink exact to="/">
-          Meetup
+          <img id='nav-logo' src={require('../../images/meetup-logo.png')} />
         </NavLink>
       </div>
       <div id="nav-upper-right">
