@@ -7,15 +7,16 @@ import './index.css';
 const GroupEvents = () => {
   const dispatch = useDispatch();
   const { groupId } = useParams();
-  const events = useSelector(state => (state.events));
-
+  const upcomingEvents = useSelector(state => state.events.upcomingEvents);
+  const pastEvents = useSelector(state => state.events.pastEvents);
+  console.log('EVENTS: ', upcomingEvents)
 
   useEffect(() => {
     dispatch(groupEventsFetch(groupId));
   }, [dispatch, groupId]);
 
-  if (events.length) {
-    for (const event of events) {
+  if (upcomingEvents && upcomingEvents.length) {
+    for (const event of upcomingEvents) {
       const date = new Date(event.startDate).toLocaleDateString();
       const time = new Date(event.startDate).toLocaleTimeString();
       event.startDateStr = date;
@@ -23,29 +24,63 @@ const GroupEvents = () => {
     }
   }
 
-  console.log('EVENTS: ', events)
+  if (pastEvents && pastEvents.length) {
+    for (const event of pastEvents) {
+      const date = new Date(event.startDate).toLocaleDateString();
+      const time = new Date(event.startDate).toLocaleTimeString();
+      event.startDateStr = date;
+      event.startTimeStr = time;
+    }
+  }
+
 
   // SHORT CIRCUIT
-  if (!events.length) return null;
+  // if (!upcomingEvents || !upcomingEvents.length) return null;
+  // if (!pastEvents || !pastEvents.length) return null;
 
   return (
-    <>
-      <h1>Events ({events.length})</h1>
-      <div>
-        {events.length && events.map(event => (
-          <Link to={`/events/${event.id}`} className='event-link-wrap'>
-            <div>
-              <div>
-                <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
-                <h2>{event.name}</h2>
-                {event.Venue && <p>{`${event.Venue.city} ${event.Venue.state}`}</p>}
-              </div>
-              <p>{event.description}</p>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </>
+
+    <div>
+      {upcomingEvents && upcomingEvents.length &&
+        <div id='upcoming-container'>
+          <h1>Upcoming Events ({upcomingEvents.length})</h1>
+          <div>
+            {upcomingEvents.map(event => (
+              <Link key={event.id} to={`/events/${event.id}`} className='event-link-wrap'>
+                <div>
+                  <div>
+                    <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
+                    <h2>{event.name}</h2>
+                    {event.Venue && <p>{`${event.Venue.city} ${event.Venue.state}`}</p>}
+                  </div>
+                  <p>{event.description}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      }
+      {pastEvents && pastEvents.length &&
+        <div id='past-container'>
+          <h1>Past Events ({pastEvents.length})</h1>
+          <div>
+            {pastEvents.map(event => (
+              <Link key={event.id} to={`/events/${event.id}`} className='event-link-wrap'>
+                <div>
+                  <div>
+                    <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
+                    <h2>{event.name}</h2>
+                    {event.Venue && <p>{`${event.Venue.city} ${event.Venue.state}`}</p>}
+                  </div>
+                  <p>{event.description}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      }
+    </div>
+
   )
 };
 

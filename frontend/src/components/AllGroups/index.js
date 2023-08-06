@@ -28,12 +28,14 @@ const GetAllGroups = () => {
             {groups.map(group => (
               <Link to={`/groups/${group.id}`} className='group-link-wrap'>
                 <div className='group-element'>
-                  <img src={
-                    group.previewImage &&
-                      group.previewImage !== 'No preview image' ?
-                      require(`../../images/${group.previewImage}`) :
-                      null
-                  } alt={group.previewImage} className='group-img' />
+                  <div className='img-container'>
+                    <img src={
+                      group.previewImage &&
+                        group.previewImage !== 'No preview image' ?
+                        require(`../../images/${group.previewImage}`) :
+                        null
+                    } alt={group.previewImage} className='group-img' />
+                  </div>
                   <div className='group-text-elements'>
                     <h3>{group.name}</h3>
                     <p>{group.about}</p>

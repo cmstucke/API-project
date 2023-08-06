@@ -12,6 +12,7 @@ const GetGroupDetails = () => {
   const dispatch = useDispatch();
   const { groupId } = useParams();
   const [imgUrl, setImgUrl] = useState();
+  const breadCrumbLabelVal = '<';
   const group = useSelector((state) => (
     state.groups ? state.groups[groupId] : null
   ));
@@ -74,6 +75,9 @@ const GetGroupDetails = () => {
     <>
       <div id='body'>
         <div id='body-container'>
+          <label>{breadCrumbLabelVal}
+            <Link to={'/groups'} id='groups-bread-crumb'> Groups</Link>
+          </label>
           <div id='upper-container'>
             {imgUrl && <img
               id='group-img'
@@ -102,13 +106,13 @@ const GetGroupDetails = () => {
               {join && <button >Join this group</button>}
             </div>
           </div>
-          <div id='about-section'>
-            <h2>What we're about</h2>
-            <p>{group.about}</p>
-            {sessionLinks}
-          </div>
-          <div>
-            <GroupEvents component={GroupEvents} />
+          <div id='lower-container'>
+            <div id='about-section'>
+              <h2>What we're about</h2>
+              <p>{group.about}</p>
+              {sessionLinks}
+            </div>
+            {<GroupEvents component={GroupEvents} />}
           </div>
         </div>
       </div>

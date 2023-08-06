@@ -18,22 +18,22 @@ module.exports = {
         preview: true
       },
       {
-        groupId: 1,
+        groupId: 2,
         url: 'group-img-02.jpg',
-        preview: false
+        preview: true
       },
       {
-        groupId: 2,
+        groupId: 3,
         url: 'group-img-03.jpg',
         preview: true
       },
       {
         groupId: 4,
         url: 'group-img-04.jpg',
-        preview: false
+        preview: true
       },
       {
-        groupId: 4,
+        groupId: 5,
         url: 'group-img-05.jpg',
         preview: true
       }
