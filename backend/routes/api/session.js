@@ -14,9 +14,11 @@ const validateLogin = [
   check('credential')
     .exists({ checkFalsy: true })
     .notEmpty()
+    .isLength({ min: 4 })
     .withMessage('Please provide a valid email or username.'),
   check('password')
     .exists({ checkFalsy: true })
+    .isLength({ min: 6 })
     .withMessage('Please provide a password.'),
   handleValidationErrors
 ];
