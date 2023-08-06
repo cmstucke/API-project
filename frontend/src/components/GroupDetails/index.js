@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { groupDetailsFetch } from '../../store/groups';
 import OpenModalButton from "../OpenModalButton";
 import GroupDeleteModal from '../GroupDeleteModal';
 import './index.css'
-import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 const GetGroupDetails = () => {
   // GET GROUP DETAILS
@@ -33,8 +32,10 @@ const GetGroupDetails = () => {
   if (sessionUser && group && sessionUser.id === group.organizerId) {
     sessionLinks = (
       <div>
-        <Link to={`/groups/${groupId}/events/create`}>
-          <button>
+        <Link
+          to={`/groups/${groupId}/events/create`}
+        >
+          <button group={group}>
             Create event
           </button>
         </Link>
