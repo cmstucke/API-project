@@ -41,6 +41,8 @@ function SignupFormModal() {
     });
   };
 
+  console.log('SIGNUP ERR OBJ: ', errors);
+
   return (
     <>
       <h1>Sign Up</h1>
@@ -51,7 +53,6 @@ function SignupFormModal() {
             type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
           />
         </label>
         {errors.email && <p>{errors.email}</p>}
@@ -61,7 +62,6 @@ function SignupFormModal() {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            required
           />
         </label>
         {errors.username && <p>{errors.username}</p>}
@@ -71,7 +71,6 @@ function SignupFormModal() {
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            required
           />
         </label>
         {errors.firstName && <p>{errors.firstName}</p>}
@@ -81,7 +80,6 @@ function SignupFormModal() {
             type="text"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            required
           />
         </label>
         {errors.lastName && <p>{errors.lastName}</p>}
@@ -91,7 +89,6 @@ function SignupFormModal() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
         </label>
         {errors.password && <p>{errors.password}</p>}
@@ -101,7 +98,6 @@ function SignupFormModal() {
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            required
           />
         </label>
         {errors.confirmPassword && (

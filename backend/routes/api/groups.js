@@ -425,7 +425,8 @@ router.get('/:groupId/events', async (req, res) => {
       "name",
       "type",
       "startDate",
-      "endDate"
+      "endDate",
+      'description'
     ],
     include: [
       { model: Attendance },
@@ -620,7 +621,7 @@ router.put('/:groupId/update', requireAuth, validateGroup, async (req, res) => {
   return res.json(group);
 });
 
-// Get all Groups joined or organized by the Current User
+// GET ALL GROUPS ORGANIZED OR JOINED BY THE CURRENT USER
 router.get('/current', requireAuth, async (req, res) => {
   // Get created groups
   const groups = await Group.findAll({
@@ -669,7 +670,7 @@ router.get('/current', requireAuth, async (req, res) => {
   return res.json({ Groups: groupObjs });
 });
 
-// Get details of a Group from an id
+// GET DETAILS OF A GROUP FROM AN ID
 router.get('/:groupId', async (req, res) => {
   const group = await Group.findByPk(req.params.groupId, {
     include: [

@@ -35,8 +35,8 @@ const GetEventDetails = () => {
     sessionLinks = (
       <div>
         <OpenModalButton
-          buttonText='Delete Group'
-          modalComponent={<EventDeleteModal eventId={eventId} />}
+          buttonText='Delete Event'
+          modalComponent={<EventDeleteModal event={event} />}
         />
       </div>
     );
