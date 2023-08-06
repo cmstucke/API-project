@@ -26,8 +26,12 @@ const GetEventDetails = () => {
   if (!event) return null;
 
   // DATE AND TIME FORMAT
-  event.startDateStr = new Date(event.startDate).toLocaleString();
-  event.endDateStr = new Date(event.endDate).toLocaleString();
+  event.startDateStr = new Date(event.startDate).toLocaleString()
+    .split(', ')
+    .join(' · ');
+  event.endDateStr = new Date(event.endDate).toLocaleString()
+    .split(', ')
+    .join(' · ');
 
 
   let sessionLinks;
