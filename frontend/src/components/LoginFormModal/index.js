@@ -25,6 +25,8 @@ function LoginFormModal() {
       });
   };
 
+  console.log('ERR RES OBJ: ', errors);
+
   return (
     <>
       <h1>Log In</h1>
@@ -35,21 +37,29 @@ function LoginFormModal() {
             type="text"
             value={credential}
             onChange={(e) => setCredential(e.target.value)}
-            required
           />
         </label>
+        {errors.credential &&
+          errors.credential === 'Please provide a valid email or username.' &&
+
+          <p>{errors.credential}</p>
+        }
         <label>
           Password
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
         </label>
-        {errors.credential && (
-          <p>{errors.credential}</p>
+        {errors.password && (
+          <p>{errors.password}</p>
         )}
+        {errors.credential &&
+          errors.credential === 'The provided credentials were invalid.' &&
+
+          <p>{errors.credential}</p>
+        }
         <button type="submit">Log In</button>
       </form>
     </>
