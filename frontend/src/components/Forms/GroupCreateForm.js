@@ -12,7 +12,7 @@ const GroupCreateForm = () => {
   const [name, setName] = useState('');
   const [about, setAbout] = useState('');
   const [type, setType] = useState('');
-  const [isPrivate, setIsPrivate] = useState('(select one)');
+  const [isPrivate, setIsPrivate] = useState('');
   const [errs, setErrs] = useState({});
 
   const updateCity = e => setCity(e.target.value);
@@ -129,7 +129,7 @@ const GroupCreateForm = () => {
                 value={type}
               // defaultValue={''}
               >
-                <option>{`${type}`}</option>
+                <option>(select one)</option>
                 <option value='Online'>Online</option>
                 <option value='In person'>In person</option>
               </select>
@@ -138,7 +138,7 @@ const GroupCreateForm = () => {
               }
             </div>
             <div>
-              <p>Is this an in-person or online group?</p>
+              <p>Is this group private or public?</p>
               <select
                 onChange={updatePrivate}
               >

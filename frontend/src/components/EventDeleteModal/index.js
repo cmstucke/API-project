@@ -4,16 +4,18 @@ import { useHistory } from 'react-router-dom';
 import { useModal } from "../../context/Modal";
 import { eventDelete } from "../../store/events";
 
-function EventDeleteModal({ eventId }) {
+function EventDeleteModal({ event }) {
   const history = useHistory();
   const dispatch = useDispatch();
   const { closeModal } = useModal();
 
+  console.log('PROP: ', event)
+
   const handleSubmit = e => {
     e.preventDefault();
-    return dispatch(eventDelete(eventId))
+    return dispatch(eventDelete(event.id))
       .then(closeModal)
-      .then(history.push('/events'));
+      .then(history.push(`/groups/${event.groupId}`));
   };
 
   return (

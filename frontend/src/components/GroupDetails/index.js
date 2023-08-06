@@ -5,6 +5,7 @@ import { groupDetailsFetch } from '../../store/groups';
 import OpenModalButton from "../OpenModalButton";
 import GroupDeleteModal from '../GroupDeleteModal';
 import './index.css'
+import GroupEvents from '../GroupEvents';
 
 const GetGroupDetails = () => {
   // GET GROUP DETAILS
@@ -98,13 +99,16 @@ const GetGroupDetails = () => {
                   </label>
                 </div>
               </div>
-              {join && <button>Join this group</button>}
+              {join && <button >Join this group</button>}
             </div>
           </div>
           <div id='about-section'>
             <h2>What we're about</h2>
             <p>{group.about}</p>
             {sessionLinks}
+          </div>
+          <div>
+            <GroupEvents component={GroupEvents} />
           </div>
         </div>
       </div>

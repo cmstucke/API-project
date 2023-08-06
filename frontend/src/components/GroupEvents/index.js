@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { groupEventsFetch } from '../../store/events';
+import './index.css';
 
-const GetGroupEvents = () => {
+const GroupEvents = () => {
   const dispatch = useDispatch();
   const { groupId } = useParams();
   const events = useSelector(state => (state.events));
@@ -22,7 +23,7 @@ const GetGroupEvents = () => {
     }
   }
 
-  // console.log('EVENTS: ', events)
+  console.log('EVENTS: ', events)
 
   // SHORT CIRCUIT
   if (!events.length) return null;
@@ -32,15 +33,20 @@ const GetGroupEvents = () => {
       <h1>Events ({events.length})</h1>
       <div>
         {events.length && events.map(event => (
-          <div>
-            <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
-            <h2>{event.name}</h2>
-            {event.Venue && <p>{`${event.Venue.city} ${event.Venue.state}`}</p>}
-          </div>
+          <Link to={`/events/${event.id}`} className='event-link-wrap'>
+            <div>
+              <div>
+                <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
+                <h2>{event.name}</h2>
+                {event.Venue && <p>{`${event.Venue.city} ${event.Venue.state}`}</p>}
+              </div>
+              <p>{event.description}</p>
+            </div>
+          </Link>
         ))}
       </div>
     </>
   )
 };
 
-export default GetGroupEvents;
+export default GroupEvents;

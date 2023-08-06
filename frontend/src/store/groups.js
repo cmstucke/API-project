@@ -76,6 +76,7 @@ export const groupCreate = data => async dispatch => {
 };
 
 export const groupUpdate = (groupId, data) => async dispatch => {
+  console.log('REQUEST BODY: ', data)
   try {
     const res = await csrfFetch(`/api/groups/${groupId}/update`, {
       method: 'PUT',

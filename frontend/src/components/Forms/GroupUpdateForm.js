@@ -6,16 +6,29 @@ import { groupDetailsFetch, groupUpdate } from '../../store/groups';
 const GroupUpdateForm = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const [errs, setErrs] = useState({});
+  const { groupId } = useParams();
+  const group = useSelector((state) => (
+    state.groups ? state.groups[groupId] : null
+  ));
+
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [name, setName] = useState('');
   const [about, setAbout] = useState('');
   const [type, setType] = useState('');
-  const [isPrivate, setIsPrivate] = useState(false);
-  const { groupId } = useParams();
-  const group = useSelector((state) => (
-    state.groups ? state.groups[groupId] : null
-  ));
+  const [isPrivate, setIsPrivate] = useState('');
+
+  useEffect(() => {
+    if (group) {
+      setCity(group.city);
+      setState(group.state);
+      setName(group.name);
+      setAbout(group.about);
+      setType(group.type);
+      setIsPrivate(group.isPrivate);
+    }
+  }, [group])
 
   useEffect(() => {
     dispatch(groupDetailsFetch(groupId));
@@ -26,8 +39,13 @@ const GroupUpdateForm = () => {
   const updateName = e => setName(e.target.value);
   const updateAbout = e => setAbout(e.target.value);
   const updateType = e => setType(e.target.value);
-  const updatePrivate = e => setIsPrivate(e.target.value);
+  const updatePrivate = e => {
+    console.log('INPUT VALUE: ', e.target.value);
+    if (e.target.value === 'Private') setIsPrivate(true);
+    if (e.target.value === 'Public') setIsPrivate(false);
+  };
 
+  let errRes;
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -43,7 +61,12 @@ const GroupUpdateForm = () => {
     let createdGroup;
     try {
       createdGroup = await dispatch(groupUpdate(groupId, payload));
-    } catch (error) { throw new Error() }
+    } catch (err) {
+      errRes = await err.json();
+      console.log('COMPONENT ERROR RESPONSE: ', errRes);
+      // throw errRes;
+      setErrs(errRes.errors);
+    }
     if (createdGroup) history.push(`/groups/${createdGroup.id}`);
   };
 
@@ -55,45 +78,95 @@ const GroupUpdateForm = () => {
       <h1>Update your Group</h1>
       <section>
         <form onSubmit={handleSubmit}>
-          <section>
-            <input
-              type='text'
-              placeholder={group.city}
-              required
-              value={city}
-              onChange={updateCity} />
-            <input
-              type='text'
-              placeholder={group.state}
-              required
-              value={state}
-              onChange={updateState} />
+          <section className='form-section'>
+            <h2>Set your group's location</h2>
+            <p>Meetup groups meet locally, in person, and online. We'll connect you with people in your area.</p>
+            <div id='location-inputs'>
+              <div>
+                <input
+                  type='text'
+                  placeholder={group.city}
+                  // required
+                  // defaultValue={''}
+                  value={city}
+                  onChange={updateCity} />
+                {errs && errs.city &&
+                  <p className='err-text'>City is required</p>
+                }
+              </div>
+              <div>
+                <input
+                  type='text'
+                  placeholder={group.state}
+                  // required
+                  value={state}
+                  onChange={updateState} />
+                {errs && errs.state &&
+                  <p className='err-text'>State is required</p>
+                }
+              </div>
+            </div>
           </section>
           <section>
+            <h2>What will your group's name be?</h2>
+            <p>Choose a name that will give people a clear idea of what the group is about. Feel free to get creative! You can edit this later if you change your mind.</p>
             <input
               type='text'
               placeholder={group.name}
-              required
+              // required
+              // defaultValue={''}
               value={name}
               onChange={updateName} />
+            {errs && errs.name &&
+              <p className='err-text'>Name is required</p>
+            }
           </section>
           <section>
+            <h2>Describe the purpose of your group.</h2>
+            <p>
+              People will see this when we promote your group, but you'll be able to add to it later, too.
+            </p>
+            <p>1. What's the purpose of the group?</p>
+            <p>2. Who should join?</p>
+            <p>3. What will you do at your events?</p>
             <input
               type='textarea'
               placeholder={group.about}
-              required
+              // required
+              // defaultValue={''}
               value={about}
               onChange={updateAbout} />
+            {errs && errs.about &&
+              <p className='err-text'>Description needs 30 or more characters</p>
+            }
           </section>
           <section>
-            <select onChange={updateType} value={type} placeholder={group.type}>
-              <option value='Online'>Online</option>
-              <option value='In person'>In person</option>
+            <div>
+              <p>Is this an in-person or online group?</p>
+              <select
+                onChange={updateType}
+                value={type}
+                placeholder={group.type}
+              >
+                {/* <option>(select one)</option> */}
+                <option value='Online'>Online</option>
+                <option value='In person'>In person</option>
+              </select>
+              {errs && errs.type &&
+                <p className='err-text'>Group Type is required</p>
+              }
+            </div>
+            <p>Is this group private or public?</p>
+            <select
+              onChange={updatePrivate}
+            >
+              <option>(select one)</option>
+              <option value={'Public'}>Public</option>
+              <option value={'Private'}>Private</option>
             </select>
-            <select onChange={updatePrivate} value={isPrivate} placeholder={group.private ? 'Private' : 'Public'}>
-              <option value={false}>Public</option>
-              <option value={true}>Private</option>
-            </select>
+            {errs && errs.isPrivate &&
+              <p className='err-text'>Visibility Type is required</p>
+            }
           </section>
           <button type="submit">Create Group</button>
         </form>
