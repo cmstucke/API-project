@@ -14,7 +14,7 @@ module.exports = {
     await GroupImage.bulkCreate([
       {
         groupId: 1,
-        url: 'group-img-01.jpg',
+        url: 'https://www.meetup.com/blog/wp-content/uploads/2021/05/priscilla-du-preez-GobsYxc_H_0-unsplash-945x630.jpg',
         preview: true
       },
       {

@@ -26,7 +26,7 @@ module.exports = {
       {
         venueId: 4,
         groupId: 1,
-        name: 'Event Four',
+        name: 'Event Two',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
         type: 'In person',
         capacity: 50,
@@ -48,7 +48,7 @@ module.exports = {
       {
         venueId: null,
         groupId: 1,
-        name: 'Event Five',
+        name: 'Event Four',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
         type: 'Online',
         capacity: 50,
@@ -59,7 +59,7 @@ module.exports = {
       {
         venueId: 2,
         groupId: 1,
-        name: 'Event Two',
+        name: 'Event Five',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
         type: 'In person',
         capacity: 50,

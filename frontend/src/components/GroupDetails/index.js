@@ -79,10 +79,24 @@ const GetGroupDetails = () => {
             <Link to={'/groups'} id='groups-bread-crumb'> Groups</Link>
           </label>
           <div id='upper-container'>
-            {imgUrl && <img
-              id='group-img'
-              src={require(`../../images/${imgUrl}`)}
-              alt='No group images' />}
+            {
+              imgUrl &&
+              imgUrl.startsWith('group-img-') &&
+              <img
+                id='group-img'
+                src={require(`../../images/${imgUrl}`)}
+                alt='No group images'
+              />
+            }
+            {
+              imgUrl &&
+              !imgUrl.startsWith('group-img-') &&
+              <img
+                id='group-img'
+                src={imgUrl}
+                alt='group'
+              />
+            }
             <div id='upper-container-info'>
               <div id='group-text'>
                 <h1>{group.name}</h1>
@@ -112,7 +126,7 @@ const GetGroupDetails = () => {
               <p>{group.about}</p>
               {sessionLinks}
             </div>
-            {<GroupEvents component={GroupEvents} />}
+            <GroupEvents component={GroupEvents} />
           </div>
         </div>
       </div>

@@ -35,23 +35,41 @@ const GroupEvents = () => {
 
 
   // SHORT CIRCUIT
-  // if (!upcomingEvents || !upcomingEvents.length) return null;
-  // if (!pastEvents || !pastEvents.length) return null;
+  if (!upcomingEvents) return null;
+  if (!pastEvents) return null;
 
   return (
 
     <div>
-      {upcomingEvents && upcomingEvents.length &&
+      {upcomingEvents.length > 0 &&
         <div id='upcoming-container'>
           <h1>Upcoming Events ({upcomingEvents.length})</h1>
           <div>
             {upcomingEvents.map(event => (
               <Link key={event.id} to={`/events/${event.id}`} className='event-link-wrap'>
                 <div>
-                  <div>
-                    <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
-                    <h2>{event.name}</h2>
-                    {event.Venue && <p>{`${event.Venue.city} ${event.Venue.state}`}</p>}
+                  <div className='event-upper'>
+                    {
+                      event.previewImage.startsWith('event-img-') &&
+                      <img
+                        className='event-img'
+                        src={require(`../../images/${event.previewImage}`)}
+                        alt='No event img'
+                      />
+                    }
+                    {
+                      !event.previewImage.startsWith('event-img-') &&
+                      <img
+                        className='event-img'
+                        src={event.previewImage}
+                        alt='No event img'
+                      />
+                    }
+                    <div>
+                      <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
+                      <h2>{event.name}</h2>
+                      {event.Venue && <p>{`${event.Venue.city} ${event.Venue.state}`}</p>}
+                    </div>
                   </div>
                   <p>{event.description}</p>
                 </div>
@@ -60,17 +78,35 @@ const GroupEvents = () => {
           </div>
         </div>
       }
-      {pastEvents && pastEvents.length &&
+      {pastEvents.length > 0 &&
         <div id='past-container'>
           <h1>Past Events ({pastEvents.length})</h1>
           <div>
             {pastEvents.map(event => (
               <Link key={event.id} to={`/events/${event.id}`} className='event-link-wrap'>
                 <div>
-                  <div>
-                    <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
-                    <h2>{event.name}</h2>
-                    {event.Venue && <p>{`${event.Venue.city} ${event.Venue.state}`}</p>}
+                  <div className='event-upper'>
+                    {
+                      event.previewImage.startsWith('event-img-') &&
+                      <img
+                        className='event-img'
+                        src={require(`../../images/${event.previewImage}`)}
+                        alt='No event img'
+                      />
+                    }
+                    {
+                      !event.previewImage.startsWith('event-img-') &&
+                      <img
+                        className='event-img'
+                        src={event.previewImage}
+                        alt='No event img'
+                      />
+                    }
+                    <div>
+                      <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
+                      <h2>{event.name}</h2>
+                      {event.Venue && <p>{`${event.Venue.city} ${event.Venue.state}`}</p>}
+                    </div>
                   </div>
                   <p>{event.description}</p>
                 </div>
