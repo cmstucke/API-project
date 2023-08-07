@@ -1,3 +1,13 @@
 .event-link-wrap {
   text-decoration: none;
 }
+
+.event-img {
+  width: 12rem;
+  /* height: 6rem; */
+}
+
+.event-upper {
+  display: flex;
+  gap: 1rem;
+}

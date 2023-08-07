@@ -97,14 +97,36 @@ export const eventDelete = eventId => async dispatch => {
   return resJSON;
 };
 
+const getTimeHelper = dateData => {
+  const date = new Date(dateData);
+  return date.getTime();
+};
+
 // EVENTS REDUCER
 const eventsReducer = (state = {}, action) => {
   switch (action.type) {
     case LOAD_GROUP_EVENTS:
-      const groupEventsState = [];
-      action.groupEvents.forEach(groupEvent => {
-        groupEventsState.push(groupEvent);
-      });
+      const groupEventsState = { allEvents: [...action.groupEvents] };
+      const past = [];
+      const upcoming = [];
+      for (const i in groupEventsState.allEvents) {
+        const event = groupEventsState.allEvents[i];
+        const now = Date.now();
+        const start = new Date(event.startDate).getTime();
+        if (now < start) {
+          upcoming.push(event);
+        } else {
+          past.push(event);
+        };
+      };
+      const orderedUpcoming = upcoming.sort((a, b) => (
+        getTimeHelper(a.startDate) - getTimeHelper(b.startDate)
+      ));
+      const orderedPast = past.sort((a, b) => (
+        getTimeHelper(a.startDate) - getTimeHelper(b.startDate)
+      ));
+      groupEventsState.upcomingEvents = orderedUpcoming;
+      groupEventsState.pastEvents = orderedPast;
       return groupEventsState;
     case LOAD_EVENT_DETAILS:
       return { ...state, [action.event.id]: action.event };

@@ -14,28 +14,28 @@ module.exports = {
     await EventImage.bulkCreate([
       {
         eventId: 1,
-        url: 'image.url/one',
-        preview: false,
-      },
-      {
-        eventId: 1,
-        url: 'image.url/two',
+        url: 'https://www.meetup.com/blog/wp-content/uploads/2021/05/priscilla-du-preez-GobsYxc_H_0-unsplash-945x630.jpg',
         preview: true,
       },
       {
-        eventId: 1,
-        url: 'image.url/three',
-        preview: false,
+        eventId: 2,
+        url: 'event-img-02.jpg',
+        preview: true,
       },
       {
-        eventId: 4,
-        url: 'image.url/four',
+        eventId: 3,
+        url: 'event-img-03.jpg',
         preview: true,
       },
       {
         eventId: 4,
-        url: 'image.url/five',
-        preview: false,
+        url: 'event-img-04.jpg',
+        preview: true,
+      },
+      {
+        eventId: 5,
+        url: 'event-img-05.jpg',
+        preview: true,
       }
     ], { validate: true })
   },

@@ -15,6 +15,11 @@
 #upper-container {
   display: flex;
   gap: 1rem;
+  width: 40rem;
+}
+
+#lower-container {
+  width: 40rem;
 }
 
 #upper-container-info {

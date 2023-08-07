@@ -1,0 +1,14 @@
+#body-container {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  width: 60%;
+}
+
+#upper-container {
+  display: flex;
+}
+
+.event-img {
+  width: 20rem;
+}

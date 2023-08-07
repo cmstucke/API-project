@@ -14,26 +14,26 @@ module.exports = {
     await GroupImage.bulkCreate([
       {
         groupId: 1,
-        url: 'group-img-01.jpg',
+        url: 'https://www.meetup.com/blog/wp-content/uploads/2021/05/priscilla-du-preez-GobsYxc_H_0-unsplash-945x630.jpg',
         preview: true
       },
       {
-        groupId: 1,
+        groupId: 2,
         url: 'group-img-02.jpg',
-        preview: false
+        preview: true
       },
       {
-        groupId: 2,
+        groupId: 3,
         url: 'group-img-03.jpg',
         preview: true
       },
       {
         groupId: 4,
         url: 'group-img-04.jpg',
-        preview: false
+        preview: true
       },
       {
-        groupId: 4,
+        groupId: 5,
         url: 'group-img-05.jpg',
         preview: true
       }

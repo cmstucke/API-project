@@ -337,12 +337,15 @@ router.get('/:eventId', async (req, res) => {
       },
       {
         model: Group,
-        attributes: ['id', 'name', 'private', 'city', 'state']
+        attributes: ['id', 'organizerId', 'name', 'private', 'city', 'state'],
+        include: {
+          model: User
+        }
       },
       {
         model: Venue,
         attributes: ['id', 'address', 'city', 'state', 'lat', 'lng']
-      },
+      }
     ]
   });
 
@@ -357,6 +360,19 @@ router.get('/:eventId', async (req, res) => {
   const eventObj = event.toJSON()
   eventObj.numAttending = event.Attendances.length;
   delete eventObj.Attendances;
+
+  for (const user of eventObj.Group.Users) {
+    if (user.id === eventObj.Group.organizerId) {
+      eventObj.user = user;
+    };
+  };
+  delete eventObj.Group.Users;
+
+  for (const img of eventObj.EventImages) {
+    if (img.preview) {
+      eventObj.previewImage = img.url;
+    };
+  };
 
   return res.json(eventObj);
 });

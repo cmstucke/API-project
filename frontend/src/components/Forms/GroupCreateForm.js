@@ -13,6 +13,7 @@ const GroupCreateForm = () => {
   const [about, setAbout] = useState('');
   const [type, setType] = useState('');
   const [isPrivate, setIsPrivate] = useState('');
+  const [imgUrl, setImgUrl] = useState('');
   const [errs, setErrs] = useState({});
 
   const updateCity = e => setCity(e.target.value);
@@ -45,7 +46,6 @@ const GroupCreateForm = () => {
     } catch (err) {
       errRes = await err.json();
       console.log('COMPONENT ERROR RESPONSE: ', errRes);
-      // throw errRes;
       setErrs(errRes.errors);
     }
 
@@ -67,8 +67,6 @@ const GroupCreateForm = () => {
                 <input
                   type='text'
                   placeholder='City'
-                  // required
-                  // defaultValue={''}
                   value={city}
                   onChange={updateCity} />
                 {errs && errs.city &&
@@ -79,7 +77,6 @@ const GroupCreateForm = () => {
                 <input
                   type='text'
                   placeholder='State'
-                  // required
                   value={state}
                   onChange={updateState} />
                 {errs && errs.state &&
@@ -94,8 +91,6 @@ const GroupCreateForm = () => {
             <input
               type='text'
               placeholder='What is your group name?'
-              // required
-              // defaultValue={''}
               value={name}
               onChange={updateName} />
             {errs && errs.name &&
@@ -113,8 +108,6 @@ const GroupCreateForm = () => {
             <input
               type='textarea'
               placeholder='Please write at least 30 characters.'
-              // required
-              // defaultValue={''}
               value={about}
               onChange={updateAbout} />
             {errs && errs.about &&
@@ -127,7 +120,6 @@ const GroupCreateForm = () => {
               <select
                 onChange={updateType}
                 value={type}
-              // defaultValue={''}
               >
                 <option>(select one)</option>
                 <option value='Online'>Online</option>
@@ -148,6 +140,17 @@ const GroupCreateForm = () => {
               </select>
               {errs && errs.isPrivate &&
                 <p className='err-text'>Visibility Type is required</p>
+              }
+            </div>
+            <div>
+              <input
+                type='text'
+                placeholder='Image Url'
+                value={imgUrl}
+              // onChange={updateImgUrl}
+              />
+              {errs && errs.city &&
+                <p className='err-text'>Img url is required</p>
               }
             </div>
           </section>
