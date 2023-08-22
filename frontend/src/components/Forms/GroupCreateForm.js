@@ -63,6 +63,7 @@ const GroupCreateForm = () => {
   };
 
   // console.log('ERROR STATE : ', errs);
+  if (!errs) return null;
 
   return (
     <>
