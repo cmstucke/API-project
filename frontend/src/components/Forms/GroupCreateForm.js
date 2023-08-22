@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { groupCreate } from '../../store/groups';
+import { groupCreate, groupImage } from '../../store/groups';
 import './GroupCreateForm.css';
 
 const GroupCreateForm = () => {
@@ -26,12 +26,13 @@ const GroupCreateForm = () => {
     if (e.target.value === 'Private') setIsPrivate(true);
     if (e.target.value === 'Public') setIsPrivate(false);
   };
+  const updateImgUrl = e => setImgUrl(e.target.value);
 
   let errRes;
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const payload = {
+    const groupPayload = {
       city,
       state,
       name,
@@ -40,19 +41,28 @@ const GroupCreateForm = () => {
       isPrivate
     };
 
-    let createdGroup;
+    const preview = true;
+
+    const imgPayload = {
+      url: imgUrl,
+      preview
+    };
+
+    let createGroupRes;
+    let imgRes;
     try {
-      createdGroup = await dispatch(groupCreate(payload));
+      createGroupRes = await dispatch(groupCreate(groupPayload));
+      imgRes = await dispatch(groupImage(createGroupRes.id, imgPayload));
     } catch (err) {
       errRes = await err.json();
-      console.log('COMPONENT ERROR RESPONSE: ', errRes);
+      console.error('COMPONENT ERROR RESPONSE: ', errRes);
       setErrs(errRes.errors);
     }
 
-    if (createdGroup) history.push(`/groups/${createdGroup.id}`);
+    if (createGroupRes && imgRes) history.push(`/groups/${createGroupRes.id}`);
   };
 
-  console.log('ERROR STATE : ', errs);
+  // console.log('ERROR STATE : ', errs);
 
   return (
     <>
@@ -69,7 +79,7 @@ const GroupCreateForm = () => {
                   placeholder='City'
                   value={city}
                   onChange={updateCity} />
-                {errs && errs.city &&
+                {errs.city &&
                   <p className='err-text'>City is required</p>
                 }
               </div>
@@ -79,7 +89,7 @@ const GroupCreateForm = () => {
                   placeholder='State'
                   value={state}
                   onChange={updateState} />
-                {errs && errs.state &&
+                {errs.state &&
                   <p className='err-text'>State is required</p>
                 }
               </div>
@@ -93,7 +103,7 @@ const GroupCreateForm = () => {
               placeholder='What is your group name?'
               value={name}
               onChange={updateName} />
-            {errs && errs.name &&
+            {errs.name &&
               <p className='err-text'>Name is required</p>
             }
           </section>
@@ -110,7 +120,7 @@ const GroupCreateForm = () => {
               placeholder='Please write at least 30 characters.'
               value={about}
               onChange={updateAbout} />
-            {errs && errs.about &&
+            {errs.about &&
               <p className='err-text'>Description needs 30 or more characters</p>
             }
           </section>
@@ -125,7 +135,7 @@ const GroupCreateForm = () => {
                 <option value='Online'>Online</option>
                 <option value='In person'>In person</option>
               </select>
-              {errs && errs.type &&
+              {errs.type &&
                 <p className='err-text'>Group Type is required</p>
               }
             </div>
@@ -138,20 +148,20 @@ const GroupCreateForm = () => {
                 <option value={'Public'}>Public</option>
                 <option value={'Private'}>Private</option>
               </select>
-              {errs && errs.isPrivate &&
+              {errs.isPrivate &&
                 <p className='err-text'>Visibility Type is required</p>
               }
             </div>
             <div>
               <input
-                type='text'
-                placeholder='Image Url'
+                type='url'
+                placeholder='Image URL'
                 value={imgUrl}
-              // onChange={updateImgUrl}
+                onChange={updateImgUrl}
               />
-              {errs && errs.city &&
+              {/* {errs.imgUrl &&
                 <p className='err-text'>Img url is required</p>
-              }
+              } */}
             </div>
           </section>
           <button type="submit">Create Group</button>
