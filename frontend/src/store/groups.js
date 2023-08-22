@@ -1,11 +1,12 @@
 import { csrfFetch } from "./csrf";
 
 // ACTION TYPE CONSTANTS:
-export const LOAD_GROUPS = 'groups/LOAD_GROUPS';
-export const LOAD_GROUP_DETAILS = 'groups/LOAD_GROUP_DETAILS';
-export const ADD_GROUP = 'groups/ADD_GROUP';
-export const UPDATE_GROUP = 'groups/UPDATE_GROUP';
-export const REMOVE_GROUP = 'groups/REMOVE_GROUP';
+const LOAD_GROUPS = 'groups/LOAD_GROUPS';
+const LOAD_GROUP_DETAILS = 'groups/LOAD_GROUP_DETAILS';
+const ADD_GROUP = 'groups/ADD_GROUP';
+const REMOVE_GROUP = 'groups/REMOVE_GROUP';
+const ADD_IMG = 'groups/ADD_IMG';
+
 
 // ACTIONS
 const loadGroups = (groups) => ({
@@ -26,7 +27,12 @@ const addGroup = group => ({
 const removeGroup = groupId => ({
   type: REMOVE_GROUP,
   groupId
-})
+});
+
+const addImage = groupId => ({
+  type: ADD_IMG,
+  groupId
+});
 
 // THUNK ACTION CREATORS
 export const groupsFetch = () => async (dispatch) => {
@@ -44,25 +50,6 @@ export const groupDetailsFetch = (groupId) => async (dispatch) => {
     dispatch(loadGroupDetails(group));
   };
 };
-
-// export const groupCreate = data => async dispatch => {
-//   // console.log('CREATE OBJECT: ', data);
-//   try {
-//     const res = await csrfFetch('/api/groups/create', {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify(data)
-//     });
-//     const group = await res.json();
-//     dispatch(addGroup(group));
-//     return group;
-//   }
-//   catch (err) {
-//     console.log('ERROR: ', err);
-//     const errRes = await err.json();
-//     dispatch(addGroup(errRes));
-//   };
-// };
 
 export const groupCreate = data => async dispatch => {
   const res = await csrfFetch('/api/groups/create', {
@@ -88,6 +75,18 @@ export const groupUpdate = (groupId, data) => async dispatch => {
     return group;
   }
   catch (error) { throw error };
+};
+
+export const groupImage = (groupId, data) => async dispatch => {
+  console.log('DATA: ', !data.url);
+  const res = await csrfFetch(`/api/groups/${groupId}/images`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  const img = await res.json();
+  dispatch(addImage(img));
+  return img;
 };
 
 export const groupDelete = groupId => async dispatch => {
