@@ -28,7 +28,6 @@ const GroupCreateForm = () => {
   };
   const updateImgUrl = e => setImgUrl(e.target.value);
 
-  let errRes;
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -50,6 +49,7 @@ const GroupCreateForm = () => {
 
     let createGroupRes;
     let imgRes;
+    let errRes;
     try {
       createGroupRes = await dispatch(groupCreate(groupPayload));
       imgRes = await dispatch(groupImage(createGroupRes.id, imgPayload));
