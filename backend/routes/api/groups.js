@@ -386,7 +386,7 @@ const validateEvent = [
   check('price')
     .exists({ checkFalsy: true })
     .isDecimal()
-    .withMessage("City is required"),
+    .withMessage("Price is required"),
   check('description')
     .exists({ checkFalsy: true })
     .withMessage("Description is required"),
@@ -607,12 +607,12 @@ router.put('/:groupId/update', requireAuth, validateGroup, async (req, res) => {
   };
 
   // Handler
-  const { name, about, type, private, city, state } = req.body;
+  const { name, about, type, isPrivate, city, state } = req.body;
 
   group.name = name;
   group.about = about;
   group.type = type;
-  group.private = private;
+  group.private = isPrivate;
   group.city = city;
   group.state = state;
 

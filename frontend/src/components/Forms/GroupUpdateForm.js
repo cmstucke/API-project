@@ -6,11 +6,13 @@ import { groupDetailsFetch, groupUpdate } from '../../store/groups';
 const GroupUpdateForm = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const [errs, setErrs] = useState({});
   const { groupId } = useParams();
   const group = useSelector((state) => (
     state.groups ? state.groups[groupId] : null
   ));
+
+  console.log('GROUP: ', group);
+  // console.log('STATE: ', group.state);
 
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
@@ -18,6 +20,9 @@ const GroupUpdateForm = () => {
   const [about, setAbout] = useState('');
   const [type, setType] = useState('');
   const [isPrivate, setIsPrivate] = useState('');
+  const [errs, setErrs] = useState({});
+
+  console.log('PRIVATE: ', isPrivate)
 
   useEffect(() => {
     if (group) {
@@ -26,7 +31,7 @@ const GroupUpdateForm = () => {
       setName(group.name);
       setAbout(group.about);
       setType(group.type);
-      setIsPrivate(group.isPrivate);
+      setIsPrivate(group.private);
     }
   }, [group])
 
@@ -34,16 +39,16 @@ const GroupUpdateForm = () => {
     dispatch(groupDetailsFetch(groupId));
   }, [dispatch, groupId]);
 
-  const updateCity = e => setCity(e.target.value);
+  // const updateCity = e => setCity(e.target.value);
   const updateState = e => setState(e.target.value);
   const updateName = e => setName(e.target.value);
   const updateAbout = e => setAbout(e.target.value);
   const updateType = e => setType(e.target.value);
-  const updatePrivate = e => {
-    console.log('INPUT VALUE: ', e.target.value);
-    if (e.target.value === 'Private') setIsPrivate(true);
-    if (e.target.value === 'Public') setIsPrivate(false);
-  };
+  // const updatePrivate = e => {
+  //   console.log('INPUT VALUE: ', e.target.value);
+  //   if (e.target.value === 'Private') setIsPrivate(true);
+  //   if (e.target.value === 'Public') setIsPrivate(false);
+  // };
 
   let errRes;
   const handleSubmit = async (e) => {
@@ -64,7 +69,6 @@ const GroupUpdateForm = () => {
     } catch (err) {
       errRes = await err.json();
       console.log('COMPONENT ERROR RESPONSE: ', errRes);
-      // throw errRes;
       setErrs(errRes.errors);
     }
     if (createdGroup) history.push(`/groups/${createdGroup.id}`);
@@ -86,10 +90,8 @@ const GroupUpdateForm = () => {
                 <input
                   type='text'
                   placeholder={group.city}
-                  // required
-                  // defaultValue={''}
                   value={city}
-                  onChange={updateCity} />
+                  onChange={e => setCity(e.target.value)} />
                 {errs && errs.city &&
                   <p className='err-text'>City is required</p>
                 }
@@ -98,7 +100,6 @@ const GroupUpdateForm = () => {
                 <input
                   type='text'
                   placeholder={group.state}
-                  // required
                   value={state}
                   onChange={updateState} />
                 {errs && errs.state &&
@@ -113,8 +114,6 @@ const GroupUpdateForm = () => {
             <input
               type='text'
               placeholder={group.name}
-              // required
-              // defaultValue={''}
               value={name}
               onChange={updateName} />
             {errs && errs.name &&
@@ -132,8 +131,6 @@ const GroupUpdateForm = () => {
             <input
               type='textarea'
               placeholder={group.about}
-              // required
-              // defaultValue={''}
               value={about}
               onChange={updateAbout} />
             {errs && errs.about &&
@@ -148,7 +145,6 @@ const GroupUpdateForm = () => {
                 value={type}
                 placeholder={group.type}
               >
-                {/* <option>(select one)</option> */}
                 <option value='Online'>Online</option>
                 <option value='In person'>In person</option>
               </select>
@@ -158,13 +154,14 @@ const GroupUpdateForm = () => {
             </div>
             <p>Is this group private or public?</p>
             <select
-              onChange={updatePrivate}
+              onChange={e => setIsPrivate(e.target.value)}
+              value={isPrivate}
+              placeholder={group.private}
             >
-              <option>(select one)</option>
-              <option value={'Public'}>Public</option>
-              <option value={'Private'}>Private</option>
+              <option value={false}>Public</option>
+              <option value={true}>Private</option>
             </select>
-            {errs && errs.isPrivate &&
+            {errs.isPrivate &&
               <p className='err-text'>Visibility Type is required</p>
             }
           </section>

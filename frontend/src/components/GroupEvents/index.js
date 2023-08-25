@@ -9,7 +9,7 @@ const GroupEvents = () => {
   const { groupId } = useParams();
   const upcomingEvents = useSelector(state => state.events.upcomingEvents);
   const pastEvents = useSelector(state => state.events.pastEvents);
-  console.log('EVENTS: ', upcomingEvents)
+  // console.log('EVENTS: ', upcomingEvents);
 
   useEffect(() => {
     dispatch(groupEventsFetch(groupId));

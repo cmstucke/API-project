@@ -22,14 +22,12 @@ const GroupCreateForm = () => {
   const updateAbout = e => setAbout(e.target.value);
   const updateType = e => setType(e.target.value);
   const updatePrivate = e => {
-    console.log('INPUT VALUE: ', e.target.value);
     if (e.target.value === 'Private') setIsPrivate(true);
     if (e.target.value === 'Public') setIsPrivate(false);
   };
   const updateImgUrl = e => setImgUrl(e.target.value);
 
-  let errRes;
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
     const groupPayload = {
@@ -41,28 +39,27 @@ const GroupCreateForm = () => {
       isPrivate
     };
 
-    const preview = true;
-
     const imgPayload = {
       url: imgUrl,
-      preview
+      preview: true
     };
 
     let createGroupRes;
     let imgRes;
+    let errRes;
     try {
       createGroupRes = await dispatch(groupCreate(groupPayload));
       imgRes = await dispatch(groupImage(createGroupRes.id, imgPayload));
     } catch (err) {
       errRes = await err.json();
-      console.error('COMPONENT ERROR RESPONSE: ', errRes);
       setErrs(errRes.errors);
-    }
+    };
 
-    if (createGroupRes && imgRes) history.push(`/groups/${createGroupRes.id}`);
+    if (createGroupRes && imgRes) {
+      history.push(`/groups/${createGroupRes.id}`);
+    };
   };
 
-  // console.log('ERROR STATE : ', errs);
   if (!errs) return null;
 
   return (
@@ -160,9 +157,6 @@ const GroupCreateForm = () => {
                 value={imgUrl}
                 onChange={updateImgUrl}
               />
-              {/* {errs.imgUrl &&
-                <p className='err-text'>Img url is required</p>
-              } */}
             </div>
           </section>
           <button type="submit">Create Group</button>

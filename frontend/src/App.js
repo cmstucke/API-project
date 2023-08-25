@@ -15,6 +15,10 @@ import EventCreateForm from "./components/Forms/EventCreateForm";
 function App() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
+  // const groups = useSelector(state => state);
+
+  // console.log('state: ', groups);
+
   useEffect(() => {
     dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
   }, [dispatch]);
