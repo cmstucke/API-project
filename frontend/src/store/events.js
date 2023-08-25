@@ -38,7 +38,7 @@ export const groupEventsFetch = groupId => async dispatch => {
   const res = await fetch(`/api/groups/${groupId}/events`);
   if (res.ok) {
     const { Events } = await res.json();
-    console.log('EVENTS FETCH: ', Events);
+    // console.log('EVENTS FETCH: ', Events);
     dispatch(loadGroupEvents(Events))
   };
 };
@@ -67,7 +67,7 @@ export const eventCreate = (groupId, data) => async dispatch => {
       body: JSON.stringify(data)
     });
     const event = await res.json();
-    console.log('EVENT FETCH', event)
+    // console.log('EVENT FETCH', event);
     dispatch(addEvent(event));
     return event;
   }

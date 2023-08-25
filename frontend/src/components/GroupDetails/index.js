@@ -6,6 +6,7 @@ import OpenModalButton from "../OpenModalButton";
 import GroupDeleteModal from '../GroupDeleteModal';
 import './index.css'
 import GroupEvents from '../GroupEvents';
+// import GroupUpdateForm from '../Forms/GroupUpdateForm';
 
 const GetGroupDetails = () => {
   // GET GROUP DETAILS
@@ -13,9 +14,9 @@ const GetGroupDetails = () => {
   const { groupId } = useParams();
   const [imgUrl, setImgUrl] = useState();
   const breadCrumbLabelVal = '<';
-  const group = useSelector((state) => (
-    state.groups ? state.groups[groupId] : null
-  ));
+  const group = useSelector((state) => state.groups[groupId]);
+
+  console.log('group useSelector: ', group);
 
   useEffect(() => {
     dispatch(groupDetailsFetch(groupId));
@@ -25,6 +26,7 @@ const GetGroupDetails = () => {
   const [user, setUser] = useState(null);
   const [join, setJoin] = useState(false);
   const sessionUser = useSelector(state => state.session.user);
+
   useEffect(() => {
     if (!user && sessionUser) setUser(sessionUser)
     if (user && group && !join && user.id !== group.organizerId) setJoin(true);
@@ -41,8 +43,10 @@ const GetGroupDetails = () => {
             Create event
           </button>
         </Link>
-        <Link to={`/groups/${groupId}/update`}>
-          <button>
+        <Link
+          to={`/groups/${groupId}/update`}
+        >
+          <button >
             Update
           </button>
         </Link>

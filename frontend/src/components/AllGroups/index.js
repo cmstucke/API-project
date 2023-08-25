@@ -6,8 +6,10 @@ import './index.css';
 
 const GetAllGroups = () => {
   const dispatch = useDispatch();
-  const groupsObj = useSelector(state => state.groups ? state.groups : []);
-  const groups = Object.values(groupsObj)
+  // const groupsObj = useSelector(state => state.groups ? state.groups : []);
+  const groups = Object.values(
+    useSelector(state => state.groups ? state.groups : [])
+  );
 
   useEffect(() => {
     dispatch(groupsFetch());

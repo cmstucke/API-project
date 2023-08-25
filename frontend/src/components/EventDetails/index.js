@@ -16,7 +16,7 @@ const GetEventDetails = () => {
     state.events ? state.events[eventId] : null
   ));
 
-  console.log('EVENT STATE: ', event)
+  // console.log('EVENT STATE: ', event)
 
   useEffect(() => {
     dispatch(eventDetailsFetch(eventId));
