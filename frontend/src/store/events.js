@@ -33,12 +33,20 @@ const removeEvent = eventId => ({
   eventId
 });
 
-// THUNK ACTION CREATORS
+// THUNKS
+
+export const eventsFetch = () => async dispatch => {
+  const res = await fetch('/api/events');
+  if (res.ok) {
+    const events = await res.json();
+    dispatch(loadEvents(events));
+  };
+};
+
 export const groupEventsFetch = groupId => async dispatch => {
   const res = await fetch(`/api/groups/${groupId}/events`);
   if (res.ok) {
     const { Events } = await res.json();
-    // console.log('EVENTS FETCH: ', Events);
     dispatch(loadGroupEvents(Events))
   };
 };
@@ -51,14 +59,6 @@ export const eventDetailsFetch = eventId => async dispatch => {
   };
 };
 
-export const eventsFetch = () => async dispatch => {
-  const res = await fetch('/api/events');
-  if (res.ok) {
-    const events = await res.json();
-    dispatch(loadEvents(events));
-  };
-};
-
 export const eventCreate = (groupId, data) => async dispatch => {
   try {
     const res = await csrfFetch(`/api/groups/${groupId}/events/create`, {
@@ -67,26 +67,11 @@ export const eventCreate = (groupId, data) => async dispatch => {
       body: JSON.stringify(data)
     });
     const event = await res.json();
-    // console.log('EVENT FETCH', event);
     dispatch(addEvent(event));
     return event;
   }
   catch (error) { throw error };
 };
-
-// export const eventUpdate = (eventId, data) => async dispatch => {
-//   try {
-//     const res = await csrfFetch(`/api/events/${eventId}/update`, {
-//       method: 'PUT',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify(data)
-//     });
-//     const event = await res.json();
-//     dispatch(addEvent(event));
-//     return event;
-//   }
-//   catch (error) { throw error };
-// };
 
 export const eventDelete = eventId => async dispatch => {
   const res = await csrfFetch(`/api/events/${eventId}/delete`, {
@@ -105,6 +90,20 @@ const getTimeHelper = dateData => {
 // EVENTS REDUCER
 const eventsReducer = (state = {}, action) => {
   switch (action.type) {
+    case LOAD_EVENTS:
+      // console.log('EVENTS STATE: ', action.events);
+      const { Events } = { ...action.events }
+      // console.log('EVENTS: ', Events)
+      const allUpcoming = [];
+      for (const i in Events) {
+        const event = Events[i];
+        const now = Date.now();
+        const start = new Date(event.startDate).getTime();
+        if (now > start) {
+          allUpcoming.push(event);
+        };
+      };
+      return { ...state, ...action.events, ...action.events.Events = [...allUpcoming] };
     case LOAD_GROUP_EVENTS:
       const groupEventsState = { allEvents: [...action.groupEvents] };
       const past = [];
@@ -130,8 +129,6 @@ const eventsReducer = (state = {}, action) => {
       return groupEventsState;
     case LOAD_EVENT_DETAILS:
       return { ...state, [action.event.id]: action.event };
-    case LOAD_EVENTS:
-      return { ...state, ...action.events };
     case ADD_EVENT:
       if (!state[action.event.id]) {
         const newState = {

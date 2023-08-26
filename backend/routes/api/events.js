@@ -565,7 +565,8 @@ router.get('/', validateGetEvents, async (req, res) => {
       "name",
       "type",
       "startDate",
-      "endDate"
+      "endDate",
+      "description"
     ],
     include: [
       { model: Attendance },

@@ -9,6 +9,15 @@ const GetAllEvents = () => {
     state.events ? state.events : []
   ));
 
+  if (Events) {
+    for (const event of Events) {
+      const date = new Date(event.startDate).toLocaleDateString();
+      const time = new Date(event.startDate).toLocaleTimeString();
+      event.startDateStr = date;
+      event.startTimeStr = time;
+    }
+  }
+
   useEffect(() => {
     dispatch(eventsFetch());
   }, [dispatch]);
@@ -27,11 +36,33 @@ const GetAllEvents = () => {
       <h2>Events in Meetup</h2>
       <div>
         {Events.map(event => (
-          <Link to={`/events/${event.id}`} className='event-link-wrap'>
+          <Link key={event.id} to={`/events/${event.id}`} className='event-link-wrap'>
             <div>
-              <h3>{event.name}</h3>
-              <p>{event.about}</p>
-              <p>{event.type}</p>
+              <div className='event-upper'>
+                {
+                  event.previewImage.startsWith('event-img-') &&
+                  <img
+                    className='event-img'
+                    src={require(`../../images/${event.previewImage}`)}
+                    alt='No event img'
+                  />
+                }
+                {
+                  !event.previewImage.startsWith('event-img-') &&
+                  <img
+                    className='event-img'
+                    src={event.previewImage}
+                    alt='No event img'
+                  />
+                }
+                <div>
+                  <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
+                  <h2>{event.name}</h2>
+                  {event.Venue && <p>{`${event.Venue.city} ${event.Venue.state}`}</p>}
+                  {!event.Venue && <p>Online</p>}
+                </div>
+              </div>
+              <p>{event.description}</p>
             </div>
           </Link>
         ))}
