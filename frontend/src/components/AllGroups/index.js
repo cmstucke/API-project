@@ -6,7 +6,6 @@ import './index.css';
 
 const GetAllGroups = () => {
   const dispatch = useDispatch();
-  // const groupsObj = useSelector(state => state.groups ? state.groups : []);
   const groups = Object.values(
     useSelector(state => state.groups ? state.groups : [])
   );
@@ -28,7 +27,7 @@ const GetAllGroups = () => {
           </div>
           <div>
             {groups.map(group => (
-              <Link to={`/groups/${group.id}`} className='group-link-wrap'>
+              <Link key={group.id} to={`/groups/${group.id}`} className='group-link-wrap'>
                 <div className='group-element'>
                   <div className='img-container'>
                     {

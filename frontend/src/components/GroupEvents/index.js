@@ -15,7 +15,7 @@ const GroupEvents = () => {
     dispatch(groupEventsFetch(groupId));
   }, [dispatch, groupId]);
 
-  if (upcomingEvents && upcomingEvents.length) {
+  if (upcomingEvents) {
     for (const event of upcomingEvents) {
       const date = new Date(event.startDate).toLocaleDateString();
       const time = new Date(event.startDate).toLocaleTimeString();
@@ -24,7 +24,7 @@ const GroupEvents = () => {
     }
   }
 
-  if (pastEvents && pastEvents.length) {
+  if (pastEvents) {
     for (const event of pastEvents) {
       const date = new Date(event.startDate).toLocaleDateString();
       const time = new Date(event.startDate).toLocaleTimeString();
