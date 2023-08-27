@@ -92,18 +92,34 @@ const eventsReducer = (state = {}, action) => {
   switch (action.type) {
     case LOAD_EVENTS:
       // console.log('EVENTS STATE: ', action.events);
-      const { Events } = { ...action.events }
-      // console.log('EVENTS: ', Events)
+      const allEvents = [...action.events.Events]
+      // console.log('ALL EVENTS: ', allEvents)
       const allUpcoming = [];
-      for (const i in Events) {
-        const event = Events[i];
+      const allPast = [];
+      for (const i in allEvents) {
+        const event = allEvents[i];
         const now = Date.now();
         const start = new Date(event.startDate).getTime();
-        if (now > start) {
+        if (now < start) {
           allUpcoming.push(event);
+        } else {
+          allPast.push(event);
         };
       };
-      return { ...state, ...action.events, ...action.events.Events = [...allUpcoming] };
+      const allUpcomingSort = allUpcoming.sort((a, b) => (
+        getTimeHelper(a.startDate) - getTimeHelper(b.startDate)
+      ));
+      const allPastSort = allPast.sort((a, b) => (
+        getTimeHelper(a.startDate) - getTimeHelper(b.startDate)
+      ));
+      return {
+        ...state,
+        ...action.events,
+        ...action.events.Events = {
+          allUpcomingSort,
+          allPastSort
+        }
+      };
     case LOAD_GROUP_EVENTS:
       const groupEventsState = { allEvents: [...action.groupEvents] };
       const past = [];
