@@ -5,12 +5,21 @@ import { Link } from 'react-router-dom';
 
 const GetAllEvents = () => {
   const dispatch = useDispatch();
-  const { Events } = useSelector(state => (
+  const { allPastSort, allUpcomingSort } = useSelector(state => (
     state.events ? state.events : []
   ));
 
-  if (Events) {
-    for (const event of Events) {
+  if (allUpcomingSort) {
+    for (const event of allUpcomingSort) {
+      const date = new Date(event.startDate).toLocaleDateString();
+      const time = new Date(event.startDate).toLocaleTimeString();
+      event.startDateStr = date;
+      event.startTimeStr = time;
+    }
+  }
+
+  if (allPastSort) {
+    for (const event of allPastSort) {
       const date = new Date(event.startDate).toLocaleDateString();
       const time = new Date(event.startDate).toLocaleTimeString();
       event.startDateStr = date;
@@ -22,10 +31,10 @@ const GetAllEvents = () => {
     dispatch(eventsFetch());
   }, [dispatch]);
 
-  console.log('EVENTS: ', Events);
+  console.log('EVENTS: ', allUpcomingSort);
 
   // SHORT CIRCUIT
-  if (!Events) return null;
+  if (!allUpcomingSort) return null;
 
   return (
     <>
@@ -35,7 +44,40 @@ const GetAllEvents = () => {
       </div>
       <h2>Events in Meetup</h2>
       <div>
-        {Events.map(event => (
+        {allUpcomingSort.map(event => (
+          <Link key={event.id} to={`/events/${event.id}`} className='event-link-wrap'>
+            <div>
+              <div className='event-upper'>
+                {
+                  event.previewImage.startsWith('event-img-') &&
+                  <img
+                    className='event-img'
+                    src={require(`../../images/${event.previewImage}`)}
+                    alt='No event img'
+                  />
+                }
+                {
+                  !event.previewImage.startsWith('event-img-') &&
+                  <img
+                    className='event-img'
+                    src={event.previewImage}
+                    alt='No event img'
+                  />
+                }
+                <div>
+                  <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
+                  <h2>{event.name}</h2>
+                  {event.Venue && <p>{`${event.Venue.city} ${event.Venue.state}`}</p>}
+                  {!event.Venue && <p>Online</p>}
+                </div>
+              </div>
+              <p>{event.description}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+      <div>
+        {allPastSort.map(event => (
           <Link key={event.id} to={`/events/${event.id}`} className='event-link-wrap'>
             <div>
               <div className='event-upper'>

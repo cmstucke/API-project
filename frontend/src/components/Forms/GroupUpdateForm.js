@@ -165,7 +165,7 @@ const GroupUpdateForm = () => {
               <p className='err-text'>Visibility Type is required</p>
             }
           </section>
-          <button type="submit">Create Group</button>
+          <button type="submit">Update Group</button>
         </form>
       </section>
     </>
