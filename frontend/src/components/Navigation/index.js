@@ -36,13 +36,10 @@ function Navigation({ isLoaded }) {
     <div id="nav-bar">
       <div>
         <NavLink exact to="/">
-          <img id='nav-logo' src={require('../../images/meetup-logo.png')} />
+          <img id='nav-logo' alt="Meetup Home" src={require('../../images/meetup-logo.png')} />
         </NavLink>
       </div>
       <div id="nav-upper-right">
-        <NavLink to="/groups/create">
-          Start a new group
-        </NavLink>
         {isLoaded && sessionLinks}
       </div>
     </div>
