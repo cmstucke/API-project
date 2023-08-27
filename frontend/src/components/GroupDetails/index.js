@@ -16,8 +16,6 @@ const GetGroupDetails = () => {
   const breadCrumbLabelVal = '<';
   const group = useSelector((state) => state.groups[groupId]);
 
-  console.log('group useSelector: ', group);
-
   useEffect(() => {
     dispatch(groupDetailsFetch(groupId));
   }, [dispatch, groupId]);
@@ -61,16 +59,13 @@ const GetGroupDetails = () => {
   // // SELECT PREVIEW IMAGE
   useEffect(() => {
     if (group && group.GroupImages) {
-      // console.log('GROUP IMAGES: ', group.GroupImages)
       for (const img of group.GroupImages) {
         if (img.preview) {
           setImgUrl(img.url)
         };
       };
-    }
+    };
   }, [group]);
-
-  // console.log('IMG URL: ', imgUrl);
 
   // SHORT CIRCUIT
   if (!group || !group.Organizer) return null;
@@ -79,8 +74,8 @@ const GetGroupDetails = () => {
     <>
       <div id='body'>
         <div id='body-container'>
-          <label>{breadCrumbLabelVal}
-            <Link to={'/groups'} id='groups-bread-crumb'> Groups</Link>
+          <label id='groups-bread-crumb'>{breadCrumbLabelVal}
+            <Link to={'/groups'}> Groups</Link>
           </label>
           <div id='upper-container'>
             {

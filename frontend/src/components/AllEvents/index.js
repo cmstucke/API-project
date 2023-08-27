@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { eventsFetch } from '../../store/events';
 import { Link } from 'react-router-dom';
+import './index.css';
 
 const GetAllEvents = () => {
   const dispatch = useDispatch();
@@ -38,76 +39,80 @@ const GetAllEvents = () => {
 
   return (
     <>
-      <div>
-        <h1>Events</h1>
-        <h1>Groups</h1>
-      </div>
-      <h2>Events in Meetup</h2>
-      <div>
-        {allUpcomingSort.map(event => (
-          <Link key={event.id} to={`/events/${event.id}`} className='event-link-wrap'>
-            <div>
-              <div className='event-upper'>
-                {
-                  event.previewImage.startsWith('event-img-') &&
-                  <img
-                    className='event-img'
-                    src={require(`../../images/${event.previewImage}`)}
-                    alt='No event img'
-                  />
-                }
-                {
-                  !event.previewImage.startsWith('event-img-') &&
-                  <img
-                    className='event-img'
-                    src={event.previewImage}
-                    alt='No event img'
-                  />
-                }
-                <div>
-                  <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
-                  <h2>{event.name}</h2>
-                  {event.Venue && <p>{`${event.Venue.city} ${event.Venue.state}`}</p>}
-                  {!event.Venue && <p>Online</p>}
-                </div>
-              </div>
-              <p>{event.description}</p>
-            </div>
+      <div id='body-container'>
+        <div id='headings-container'>
+          <h1>Events</h1>
+          <Link id='groups-link' to='/groups'>
+            <h1>Groups</h1>
           </Link>
-        ))}
-      </div>
-      <div>
-        {allPastSort.map(event => (
-          <Link key={event.id} to={`/events/${event.id}`} className='event-link-wrap'>
-            <div>
-              <div className='event-upper'>
-                {
-                  event.previewImage.startsWith('event-img-') &&
-                  <img
-                    className='event-img'
-                    src={require(`../../images/${event.previewImage}`)}
-                    alt='No event img'
-                  />
-                }
-                {
-                  !event.previewImage.startsWith('event-img-') &&
-                  <img
-                    className='event-img'
-                    src={event.previewImage}
-                    alt='No event img'
-                  />
-                }
-                <div>
-                  <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
-                  <h2>{event.name}</h2>
-                  {event.Venue && <p>{`${event.Venue.city} ${event.Venue.state}`}</p>}
-                  {!event.Venue && <p>Online</p>}
+        </div>
+        <h2 id='subheading'>Events in Meetup</h2>
+        <div id='upcoming-container' className='events-list-container'>
+          {allUpcomingSort.map(event => (
+            <Link key={event.id} to={`/events/${event.id}`} className='event-link-wrap'>
+              <div className='event-element'>
+                <div className='event-upper'>
+                  {
+                    event.previewImage.startsWith('event-img-') &&
+                    <img
+                      className='event-img'
+                      src={require(`../../images/${event.previewImage}`)}
+                      alt='No event img'
+                    />
+                  }
+                  {
+                    !event.previewImage.startsWith('event-img-') &&
+                    <img
+                      className='event-img'
+                      src={event.previewImage}
+                      alt='No event img'
+                    />
+                  }
+                  <div>
+                    <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
+                    <h2>{event.name}</h2>
+                    {event.Venue && <p>{`${event.Venue.city} ${event.Venue.state}`}</p>}
+                    {!event.Venue && <p>Online</p>}
+                  </div>
                 </div>
+                <p className='description'>{event.description}</p>
               </div>
-              <p>{event.description}</p>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
+        </div>
+        <div id='past-container' className='events-list-container'>
+          {allPastSort.map(event => (
+            <Link key={event.id} to={`/events/${event.id}`} className='event-link-wrap'>
+              <div className='event-element'>
+                <div className='event-upper'>
+                  {
+                    event.previewImage.startsWith('event-img-') &&
+                    <img
+                      className='event-img'
+                      src={require(`../../images/${event.previewImage}`)}
+                      alt='No event img'
+                    />
+                  }
+                  {
+                    !event.previewImage.startsWith('event-img-') &&
+                    <img
+                      className='event-img'
+                      src={event.previewImage}
+                      alt='No event img'
+                    />
+                  }
+                  <div>
+                    <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
+                    <h2>{event.name}</h2>
+                    {event.Venue && <p>{`${event.Venue.city} ${event.Venue.state}`}</p>}
+                    {!event.Venue && <p>Online</p>}
+                  </div>
+                </div>
+                <p className='description'>{event.description}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </>
   );

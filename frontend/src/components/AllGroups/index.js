@@ -19,7 +19,9 @@ const GetAllGroups = () => {
       <div id='all-groups-body'>
         <div id='all-groups-container'>
           <div id='headings-container'>
-            <h1>Events</h1>
+            <Link id='events-link' to='/events'>
+              <h1>Events</h1>
+            </Link>
             <h1>Groups</h1>
           </div>
           <div>

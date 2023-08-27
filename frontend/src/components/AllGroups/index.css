@@ -2,10 +2,6 @@
   width: 15rem;
 }
 
-.img-container {
-  /* width: 12rem; */
-}
-
 #all-groups-body {
   display: flex;
   justify-content: center;
@@ -32,5 +28,9 @@
 }
 
 .group-link-wrap {
+  text-decoration: none;
+}
+
+#events-link {
   text-decoration: none;
 }
