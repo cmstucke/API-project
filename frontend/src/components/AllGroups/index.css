@@ -25,6 +25,8 @@
   align-items: center;
   gap: 25px;
   width: fit-content;
+  border-top: solid #CCCCCC 2px;
+  padding: .5rem 0;
 }
 
 .group-link-wrap {
@@ -33,4 +35,27 @@
 
 #events-link {
   text-decoration: none;
+}
+
+h1 {
+  font-size: 24px;
+  color: black;
+}
+
+#active-list-heading {
+  text-decoration: underline;
+  color: #00525E;
+}
+
+h2 {
+  font-size: 18px;
+  color: black;
+}
+
+p {
+  color: #CCCCCC;
+}
+
+#subheading {
+  font-weight: bold;
 }

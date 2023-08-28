@@ -4,49 +4,50 @@ import { Link, useParams } from 'react-router-dom';
 import { groupDetailsFetch } from '../../store/groups';
 import OpenModalButton from "../OpenModalButton";
 import GroupDeleteModal from '../GroupDeleteModal';
-import './index.css'
 import GroupEvents from '../GroupEvents';
-// import GroupUpdateForm from '../Forms/GroupUpdateForm';
+import './index.css'
 
 const GetGroupDetails = () => {
   // GET GROUP DETAILS
   const dispatch = useDispatch();
   const { groupId } = useParams();
-  const [imgUrl, setImgUrl] = useState();
-  const breadCrumbLabelVal = '<';
-  const group = useSelector((state) => state.groups[groupId]);
+  const [imgUrl, setImgUrl] = useState('');
+  const breadCrumb = '<';
+  const group = useSelector(state => state.groups.singleGroup);
 
   useEffect(() => {
     dispatch(groupDetailsFetch(groupId));
   }, [dispatch, groupId]);
 
   // AUTHENTICATED USER
-  const [user, setUser] = useState(null);
-  const [join, setJoin] = useState(false);
+  const [join, setJoin] = useState(null);
   const sessionUser = useSelector(state => state.session.user);
 
   useEffect(() => {
-    if (!user && sessionUser) setUser(sessionUser)
-    if (user && group && !join && user.id !== group.organizerId) setJoin(true);
-  }, [user, group, join, sessionUser]);
+    if (
+      group &&
+      sessionUser &&
+      group.organizerId === sessionUser.id
+    ) {
+      setJoin(false)
+    } else {
+      setJoin(true)
+    };
+  }, [group, sessionUser]);
 
-  let sessionLinks;
-  if (sessionUser && group && sessionUser.id === group.organizerId) {
-    sessionLinks = (
-      <div>
+  let organizerLinks;
+  if (group && sessionUser && group.organizerId === sessionUser.id) {
+    organizerLinks = (
+      <div id='group-organizer-links-container'>
         <Link
           to={`/groups/${groupId}/events/create`}
         >
-          <button group={group}>
-            Create event
-          </button>
+          <button>Create event</button>
         </Link>
         <Link
           to={`/groups/${groupId}/update`}
         >
-          <button >
-            Update
-          </button>
+          <button>Update</button>
         </Link>
         <OpenModalButton
           buttonText='Delete Group'
@@ -68,13 +69,13 @@ const GetGroupDetails = () => {
   }, [group]);
 
   // SHORT CIRCUIT
-  if (!group || !group.Organizer) return null;
+  if (!group) return null;
 
   return (
     <>
       <div id='body'>
         <div id='body-container'>
-          <label id='groups-bread-crumb'>{breadCrumbLabelVal}
+          <label id='groups-bread-crumb'>{breadCrumb}
             <Link to={'/groups'}> Groups</Link>
           </label>
           <div id='upper-container'>
@@ -123,7 +124,7 @@ const GetGroupDetails = () => {
             <div id='about-section'>
               <h2>What we're about</h2>
               <p>{group.about}</p>
-              {sessionLinks}
+              {organizerLinks}
             </div>
             <GroupEvents component={GroupEvents} />
           </div>

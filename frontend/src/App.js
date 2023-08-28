@@ -19,18 +19,19 @@ import { groupsFetch } from "./store/groups";
 function App() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
-  const allGroups = Object.values(useSelector(state => (
+  const allGroups = useSelector(state => (
     state.groups.allGroups ?
       state.groups.allGroups :
       {}
-  )));
+  ));
+
+  // const store = useSelector(store => store);
+  // console.log('STORE: ', store);
 
   useEffect(() => {
     dispatch(sessionActions.restoreUser());
     dispatch(groupsFetch()).then(() => setIsLoaded(true));
   }, [dispatch]);
-
-  // if (!allGroups.length) return null;
 
   return (
     <>
@@ -50,7 +51,7 @@ function App() {
             <GroupUpdateForm />
           </Route>
           <Route path='/groups/:groupId'>
-            <GetGroupDetails />
+            <GetGroupDetails allGroups={allGroups} />
           </Route>
           <Route path='/groups'>
             <GetAllGroups allGroups={allGroups} />

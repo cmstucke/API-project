@@ -107,7 +107,7 @@ const groupsReducer = (state = {}, action) => {
       });
       return { ...state, allGroups: { ...allGroups } };
     case LOAD_GROUP_DETAILS:
-      return { ...state, [action.group.id]: action.group }
+      return { ...state, singleGroup: { ...action.group } }
     case ADD_GROUP:
       if (!state[action.group.id]) {
         const newState = {
