@@ -18,6 +18,10 @@
   display: flex;
 }
 
+#intro-description {
+  width: 25rem;
+}
+
 #how-to-container {
   display: flex;
   flex-direction: column;

@@ -106,7 +106,8 @@ const GroupCreateForm = () => {
               value={name}
               onChange={updateName}
             />
-            {errs.name &&
+            {
+              errs.name &&
               <p className='err-text'>Name is required</p>
             }
           </section>
@@ -122,7 +123,8 @@ const GroupCreateForm = () => {
               value={about}
               onChange={updateAbout}
             />
-            {errs.about &&
+            {
+              errs.about &&
               <p className='err-text'>Description needs 30 or more characters</p>
             }
           </section>
@@ -137,7 +139,8 @@ const GroupCreateForm = () => {
                 <option value='Online'>Online</option>
                 <option value='In person'>In person</option>
               </select>
-              {errs.type &&
+              {
+                errs.type &&
                 <p className='err-text'>Group Type is required</p>
               }
             </div>
@@ -150,7 +153,8 @@ const GroupCreateForm = () => {
                 <option value={'Public'}>Public</option>
                 <option value={'Private'}>Private</option>
               </select>
-              {errs.isPrivate &&
+              {
+                errs.isPrivate &&
                 <p className='err-text'>Visibility Type is required</p>
               }
             </div>
