@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import * as sessionActions from "./store/session";
+import LandingPage from "./components/Landing";
 import Navigation from "./components/Navigation";
 import GetAllGroups from "./components/AllGroups";
 import GetGroupDetails from "./components/GroupDetails";
@@ -26,9 +27,6 @@ function App() {
   return (
     <>
       <Navigation isLoaded={isLoaded} />
-      {/* <div>
-        <Link to='/groups'>All Groups</Link>
-      </div> */}
       {isLoaded &&
         <Switch>
           <Route path='/groups/create'>
@@ -54,6 +52,9 @@ function App() {
           </Route>
           <Route path='/events'>
             <GetAllEvents />
+          </Route>
+          <Route exact path='/'>
+            <LandingPage />
           </Route>
         </Switch>}
     </>
