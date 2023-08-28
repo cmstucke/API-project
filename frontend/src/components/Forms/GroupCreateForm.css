@@ -1,8 +1,22 @@
-.err-text {
-  color: red;
+#body-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #location-inputs {
   display: flex;
+  gap: 1rem;
+}
 
+.err-text {
+  color: red;
+}
+
+#description {
+  width: 40rem;
+}
+
+#submit-button {
+  margin-top: 1rem;
 }

@@ -12,6 +12,11 @@
   flex-direction: column;
 }
 
+#groups-bread-crumb {
+  display: flex;
+  align-self: flex-start;
+}
+
 #upper-container {
   display: flex;
   gap: 1rem;

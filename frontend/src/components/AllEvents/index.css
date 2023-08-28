@@ -1,3 +1,39 @@
+#body-container {
+  display: flex;
+  justify-content: center;
+  width: fit-content;
+}
+
+#headings-container {
+  display: flex;
+  align-self: flex-start;
+  gap: 10px;
+}
+
+#subheading {
+  display: flex;
+  align-self: flex-start;
+}
+
 .event-link-wrap {
   text-decoration: none;
+}
+
+.event-img {
+  width: 15rem;
+}
+
+#groups-link {
+  text-decoration: none;
+}
+
+.events-list-container {
+  display: flex;
+  flex-direction: column;
+  width: 40rem;
+  align-items: flex-start;
+}
+
+.description {
+  width: 40rem;
 }

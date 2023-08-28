@@ -64,20 +64,22 @@ const GroupCreateForm = () => {
 
   return (
     <>
-      <h1>Start a New Group</h1>
-      <section>
+      <div id='body-container'>
+        <h1>Start a New Group</h1>
         <form onSubmit={handleSubmit}>
           <section className='form-section'>
             <h2>Set your group's location</h2>
-            <p>Meetup groups meet locally, in person, and online. We'll connect you with people in your area.</p>
+            <p className='description'>Meetup groups meet locally, in person, and online. We'll connect you with people in your area.</p>
             <div id='location-inputs'>
               <div>
                 <input
                   type='text'
                   placeholder='City'
                   value={city}
-                  onChange={updateCity} />
-                {errs.city &&
+                  onChange={updateCity}
+                />
+                {
+                  errs.city &&
                   <p className='err-text'>City is required</p>
                 }
               </div>
@@ -86,8 +88,10 @@ const GroupCreateForm = () => {
                   type='text'
                   placeholder='State'
                   value={state}
-                  onChange={updateState} />
-                {errs.state &&
+                  onChange={updateState}
+                />
+                {
+                  errs.state &&
                   <p className='err-text'>State is required</p>
                 }
               </div>
@@ -95,36 +99,36 @@ const GroupCreateForm = () => {
           </section>
           <section>
             <h2>What will your group's name be?</h2>
-            <p>Choose a name that will give people a clear idea of what the group is about. Feel free to get creative! You can edit this later if you change your mind.</p>
+            <p className='description'>Choose a name that will give people a clear idea of what the group is about. Feel free to get creative! You can edit this later if you change your mind.</p>
             <input
               type='text'
               placeholder='What is your group name?'
               value={name}
-              onChange={updateName} />
+              onChange={updateName}
+            />
             {errs.name &&
               <p className='err-text'>Name is required</p>
             }
           </section>
           <section>
             <h2>Describe the purpose of your group.</h2>
-            <p>
-              People will see this when we promote your group, but you'll be able to add to it later, too.
-            </p>
-            <p>1. What's the purpose of the group?</p>
-            <p>2. Who should join?</p>
-            <p>3. What will you do at your events?</p>
+            <p className='description'>People will see this when we promote your group, but you'll be able to add to it later, too.</p>
+            <p className='description'>1. What's the purpose of the group?</p>
+            <p className='description'>2. Who should join?</p>
+            <p className='description'>3. What will you do at your events?</p>
             <input
-              type='textarea'
+              type='text'
               placeholder='Please write at least 30 characters.'
               value={about}
-              onChange={updateAbout} />
+              onChange={updateAbout}
+            />
             {errs.about &&
               <p className='err-text'>Description needs 30 or more characters</p>
             }
           </section>
           <section>
             <div>
-              <p>Is this an in-person or online group?</p>
+              <p className='description'>Is this an in-person or online group?</p>
               <select
                 onChange={updateType}
                 value={type}
@@ -138,7 +142,7 @@ const GroupCreateForm = () => {
               }
             </div>
             <div>
-              <p>Is this group private or public?</p>
+              <p className='description'>Is this group private or public?</p>
               <select
                 onChange={updatePrivate}
               >
@@ -151,6 +155,7 @@ const GroupCreateForm = () => {
               }
             </div>
             <div>
+              <p className='description'>Please add an image url for your group below:</p>
               <input
                 type='url'
                 placeholder='Image URL'
@@ -159,9 +164,9 @@ const GroupCreateForm = () => {
               />
             </div>
           </section>
-          <button type="submit">Create Group</button>
+          <button id='submit-button' type="submit">Create Group</button>
         </form>
-      </section>
+      </div>
     </>
   );
 };

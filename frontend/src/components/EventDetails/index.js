@@ -50,16 +50,18 @@ const GetEventDetails = () => {
   return (
     <>
       <div id='body-container'>
-        <label>{breadCrumbLabelVal}
-          <Link to={'/events'} id='groups-bread-crumb'> Events</Link>
+        <label id='events-bread-crumb'>{breadCrumbLabelVal}
+          <Link to={'/events'}> Events</Link>
         </label>
-        <h1>{event.name}</h1>
-        <p>Hosted by {event.user.firstName} {event.user.lastName}</p>
+        <div id='heading-container'>
+          <h1>{event.name}</h1>
+          <p>Hosted by {event.user.firstName} {event.user.lastName}</p>
+        </div>
         <div id='upper-container'>
           {
             event.previewImage.startsWith('event-img-') &&
             <img
-              className='event-img'
+              id='event-img'
               src={require(`../../images/${event.previewImage}`)}
               alt='No event img'
             />
@@ -67,7 +69,7 @@ const GetEventDetails = () => {
           {
             !event.previewImage.startsWith('event-img-') &&
             <img
-              className='event-img'
+              id='event-img'
               src={event.previewImage}
               alt='No event img'
             />
@@ -84,7 +86,7 @@ const GetEventDetails = () => {
         </div>
         <div>
           <h2>Description</h2>
-          <p>{event.description}</p>
+          <p id='description'>{event.description}</p>
         </div>
       </div>
     </>

@@ -2,13 +2,24 @@
   display: flex;
   justify-content: center;
   margin: auto;
-  width: 60%;
+}
+
+#events-bread-crumb {
+  align-self: flex-start;
+}
+
+#heading-container {
+  align-self: flex-start;
 }
 
 #upper-container {
   display: flex;
 }
 
-.event-img {
-  width: 20rem;
+#event-img {
+  width: 25rem;
+}
+
+#description {
+  width: 40rem;
 }
