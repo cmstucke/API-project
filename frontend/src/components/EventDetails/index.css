@@ -23,3 +23,21 @@
 #description {
   width: 40rem;
 }
+
+#type-session-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#session-buttons-container {
+  display: flex;
+  gap: .5rem;
+}
+
+.session-button {
+  background-color: #999999;
+  padding: .25rem .5rem;
+  border: solid black 1px;
+  box-shadow: 2px 2px black;
+}

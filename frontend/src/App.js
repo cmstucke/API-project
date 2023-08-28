@@ -12,6 +12,7 @@ import GetAllEvents from "./components/AllEvents";
 import GroupCreateForm from "./components/Forms/GroupCreateForm";
 import GroupUpdateForm from "./components/Forms/GroupUpdateForm";
 import EventCreateForm from "./components/Forms/EventCreateForm";
+import EventUpdateForm from "./components/Forms/EventUpdateForm";
 
 function App() {
   const dispatch = useDispatch();
@@ -46,6 +47,9 @@ function App() {
           </Route>
           <Route path='/groups'>
             <GetAllGroups />
+          </Route>
+          <Route path='/events/:eventId/update'>
+            <EventUpdateForm />
           </Route>
           <Route path='/events/:eventId'>
             <GetEventDetails />

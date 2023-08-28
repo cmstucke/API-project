@@ -78,3 +78,14 @@ Link {
 #start-group-static {
   color: #999999;
 }
+
+#join-meetup-button {
+  margin-bottom: 1rem;
+  font-size: 18px;
+  font-weight: 500;
+  color: white;
+  background-color: #00525E;
+  padding: 0.5rem 1rem;
+  border: solid black 2px;
+  box-shadow: 2px 2px black;
+}

@@ -1,0 +1,65 @@
+.hidden {
+  display: none;
+}
+
+#nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: solid #CCCCCC 2px;
+}
+
+#nav-upper-right {
+  margin-right: 1rem;
+  display: flex;
+  gap: .5rem;
+}
+
+#nav-logo {
+  margin: 1rem 0 0 1rem;
+  height: 3rem;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+#profile-container {
+  margin-right: 1rem;
+}
+
+#profile-button {
+  font-size: 2rem;
+  color: #FF5A5F;
+}
+
+#drop-down {
+  border: solid black 2px;
+  padding: 0 1rem 1rem;
+  position: absolute;
+  right: 1rem;
+  top: 3.5rem;
+  background-color: white;
+}
+
+.drop-down-text {
+  font-weight: bold;
+}
+
+#log-out-section {
+  display: flex;
+  align-items: center;
+  border-top: solid black 2px;
+  width: 100%;
+  padding: 0 1rem;
+  position: relative;
+  right: 1rem;
+}
+
+#log-out {
+  margin-top: 1rem;
+  padding: 0;
+  font-weight: 700;
+  font-size: 1rem;
+}

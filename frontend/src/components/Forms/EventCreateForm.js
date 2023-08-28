@@ -57,7 +57,6 @@ const EventCreateForm = () => {
     } catch (err) {
       const { errors } = await err.json();
       setErrs(errors);
-      console.log(errors);
     };
     if (createdEvent) history.push(`/events/${createdEvent.id}`);
   };
@@ -78,13 +77,17 @@ const EventCreateForm = () => {
               type='text'
               placeholder='Event name'
               value={name}
-              onChange={updateName} />
+              onChange={updateName}
+            />
             {errs && errs.name &&
               <p className='error-text'>Name is required</p>
             }
           </section>
-          <p>Is this an in-person or online group?</p>
-          <select onChange={updateType} value={type}>
+          <p>Is this an in person or online group?</p>
+          <select
+            onChange={updateType}
+            value={type}
+          >
             <option>(select one)</option>
             <option value='Online'>Online</option>
             <option value='In person'>In person</option>
@@ -109,7 +112,8 @@ const EventCreateForm = () => {
               type='text'
               placeholder='MM/DD/YYYY, HH/mm PM'
               value={startDate}
-              onChange={updateStartDate} />
+              onChange={updateStartDate}
+            />
             {errs && errs.startDate &&
               <p className='error-text'>Event start date and time required</p>
             }
@@ -131,12 +135,13 @@ const EventCreateForm = () => {
               type='textarea'
               placeholder='Please write at least 30 characters.'
               value={description}
-              onChange={updateDescription} />
+              onChange={updateDescription}
+            />
             {errs && errs.description &&
               <p className='error-text'>Description needs 30 or more characters</p>
             }
           </section>
-          <button type="submit">Create Group</button>
+          <button type="submit">Create Event</button>
         </form>
       </section>
     </>
