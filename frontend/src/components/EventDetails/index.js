@@ -83,7 +83,7 @@ const GetEventDetails = () => {
             event.previewImage.startsWith('event-img-') &&
             <img
               id='event-img'
-              src={require(`../../images/${event.previewImage}`)}
+              src={require(`../../assets/images/${event.previewImage}`)}
               alt='No event img'
             />
           }
