@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import * as sessionActions from '../../store/session';
 import './index.css';
@@ -45,6 +45,12 @@ function ProfileButton({ user }) {
       <div id="drop-down" className={ulClassName} ref={ulRef}>
         <p className="drop-down-text">Hello, {user.firstName}</p>
         <p className="drop-down-text">{user.email}</p>
+        <Link className='drop-down-link' to='/groups'>
+          <p className="drop-down-text">View groups</p>
+        </Link>
+        <Link className='drop-down-link' to='/events'>
+          <p className="drop-down-text">View events</p>
+        </Link>
         <section id="log-out-section">
           <button id="log-out" onClick={logout}>Log Out</button>
         </section>

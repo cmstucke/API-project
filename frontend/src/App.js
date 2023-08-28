@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import * as sessionActions from "./store/session";
 import LandingPage from "./components/Landing";
@@ -13,17 +13,24 @@ import GroupCreateForm from "./components/Forms/GroupCreateForm";
 import GroupUpdateForm from "./components/Forms/GroupUpdateForm";
 import EventCreateForm from "./components/Forms/EventCreateForm";
 import EventUpdateForm from "./components/Forms/EventUpdateForm";
+import { groupsFetch } from "./store/groups";
+
 
 function App() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
-  // const groups = useSelector(state => state);
-
-  // console.log('state: ', groups);
+  const allGroups = Object.values(useSelector(state => (
+    state.groups.allGroups ?
+      state.groups.allGroups :
+      {}
+  )));
 
   useEffect(() => {
-    dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
+    dispatch(sessionActions.restoreUser());
+    dispatch(groupsFetch()).then(() => setIsLoaded(true));
   }, [dispatch]);
+
+  // if (!allGroups.length) return null;
 
   return (
     <>
@@ -46,7 +53,7 @@ function App() {
             <GetGroupDetails />
           </Route>
           <Route path='/groups'>
-            <GetAllGroups />
+            <GetAllGroups allGroups={allGroups} />
           </Route>
           <Route path='/events/:eventId/update'>
             <EventUpdateForm />

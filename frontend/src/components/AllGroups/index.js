@@ -1,18 +1,10 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { groupsFetch } from "../../store/groups";
 import { Link } from 'react-router-dom';
 import './index.css';
 
-const GetAllGroups = () => {
-  const dispatch = useDispatch();
-  const groups = Object.values(
-    useSelector(state => state.groups ? state.groups : [])
-  );
+const GetAllGroups = ({ allGroups }) => {
+  // const eventsPrivate = (events, groupPrivate) => {
 
-  useEffect(() => {
-    dispatch(groupsFetch());
-  }, [dispatch]);
+  // };
 
   return (
     <>
@@ -28,8 +20,12 @@ const GetAllGroups = () => {
             <h2>Groups in Meetup</h2>
           </div>
           <div>
-            {groups.map(group => (
-              <Link key={group.id} to={`/groups/${group.id}`} className='group-link-wrap'>
+            {allGroups.map(group => (
+              <Link
+                key={group.id}
+                to={`/groups/${group.id}`}
+                className='group-link-wrap'
+              >
                 <div className='group-element'>
                   <div className='img-container'>
                     {
@@ -54,7 +50,10 @@ const GetAllGroups = () => {
                   <div className='group-text-elements'>
                     <h3>{group.name}</h3>
                     <p>{group.about}</p>
-                    {group.Events && <p>{group.Events.length} Events · {group.private ? 'Private' : 'Public'}</p>}
+                    {
+                      group.Events &&
+                      <p>{group.Events.length} Events · {group.private ? 'Private' : 'Public'}</p>
+                    }
                   </div>
                 </div>
               </Link>
