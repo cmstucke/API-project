@@ -19,7 +19,7 @@ function Navigation({ isLoaded }) {
     );
   } else {
     sessionLinks = (
-      <div>
+      <div id="nav-upper-right">
         <OpenModalButton
           buttonText="Log In"
           modalComponent={<LoginFormModal />}
@@ -36,12 +36,14 @@ function Navigation({ isLoaded }) {
     <div id="nav-bar">
       <div>
         <NavLink exact to="/">
-          <img id='nav-logo' alt="Meetup Home" src={require('../../images/meetup-logo.png')} />
+          <img
+            id='nav-logo'
+            alt="Meetup Home"
+            src={require('../../images/meetup-logo.png')}
+          />
         </NavLink>
       </div>
-      <div id="nav-upper-right">
-        {isLoaded && sessionLinks}
-      </div>
+      {isLoaded && sessionLinks}
     </div>
   );
 }

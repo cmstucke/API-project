@@ -1,7 +1,32 @@
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import './index.css';
 
 const LandingPage = () => {
+  const sessionUser = useSelector(state => state.session.user);
+  console.log('SESSION USER: ', sessionUser);
+
+  const startGroupElement = (
+    <div
+      id={sessionUser ? "start-group-linked" : "start-group-static"}
+      className='lower-container'
+    >
+      <img
+        className="lower-img"
+        alt="Start a new group"
+        src="https://thumbs.dreamstime.com/b/online-meetup-abstract-concept-vector-illustration-conference-call-join-group-video-service-distance-communication-informal-267314906.jpg"
+      />
+      <h3>Start a new group</h3>
+      <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.</p>
+    </div>
+  );
+
+  const sessionLink = (
+    <Link to='/groups/create' className='lower-link'>
+      {startGroupElement}
+    </Link>
+  );
+
   return (
     <>
       <div id="body-container">
@@ -43,17 +68,7 @@ const LandingPage = () => {
               <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.</p>
             </div>
           </Link>
-          <Link to='/groups/create' className='lower-link'>
-            <div id="start-group-container" className='lower-container'>
-              <img
-                className="lower-img"
-                alt="Start a new group"
-                src="https://thumbs.dreamstime.com/b/online-meetup-abstract-concept-vector-illustration-conference-call-join-group-video-service-distance-communication-informal-267314906.jpg"
-              />
-              <h3>Start a new group</h3>
-              <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.</p>
-            </div>
-          </Link>
+          {sessionUser ? sessionLink : startGroupElement}
         </div>
         <button id='join-meetup-button'>Join Meetup</button>
       </div >

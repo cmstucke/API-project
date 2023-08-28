@@ -60,7 +60,7 @@ function LoginFormModal() {
 
           <p>{errors.credential}</p>
         }
-        <button type="submit">Log In</button>
+        <button id='login' type="submit">Log In</button>
       </form>
     </>
   );
