@@ -1,3 +1,24 @@
+body {
+  font-family: 'Open Sans';
+}
+
+h1 {
+  font-weight: bold;
+}
+
+h2 {
+  font-size: 18pt;
+  color: #999999;
+}
+
+p {
+  font-weight: 500;
+}
+
+Link {
+  color: #00525E;
+}
+
 #body-container {
   display: flex;
   flex-direction: column;
@@ -5,21 +26,22 @@
   gap: 1rem;
 }
 
-#intro-title {
-  width: 20rem;
+#intro-text {
+  width: fit-content;
 }
 
 #intro-img {
-  width: 22rem;
-  height: 16rem;
+  width: auto;
+  height: 18.5rem;
 }
 
 #intro-container {
   display: flex;
+  width: auto;
 }
 
 #intro-description {
-  width: 25rem;
+  width: 23rem;
 }
 
 #how-to-container {
@@ -37,6 +59,7 @@
 
 .lower-link {
   text-decoration: none;
+  color: #00525E;
 }
 
 .lower-container {
@@ -51,5 +74,3 @@
   width: 8rem;
   height: 6rem;
 }
-
-#see-groups-container {}

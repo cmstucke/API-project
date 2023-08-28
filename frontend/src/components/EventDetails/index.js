@@ -59,6 +59,14 @@ const GetEventDetails = () => {
         </div>
         <div id='upper-container'>
           {
+            !event.previewImage &&
+            <img
+              id='event-img'
+              alt='No event img'
+            />
+          }
+          {
+            event.previewImage &&
             event.previewImage.startsWith('event-img-') &&
             <img
               id='event-img'
@@ -67,6 +75,7 @@ const GetEventDetails = () => {
             />
           }
           {
+            event.previewImage &&
             !event.previewImage.startsWith('event-img-') &&
             <img
               id='event-img'
