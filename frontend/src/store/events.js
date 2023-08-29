@@ -1,13 +1,18 @@
 import { csrfFetch } from "./csrf";
 
 // ACTION TYPE CONSTANTS:
+export const LOAD_EVENTS = 'events/LOAD_EVENTS';
 export const LOAD_GROUP_EVENTS = 'groups/LOAD_GROUP_EVENTS';
 export const LOAD_EVENT_DETAILS = 'events/LOAD_EVENT_DETAILS';
-export const LOAD_EVENTS = 'events/LOAD_EVENTS';
 export const ADD_EVENT = 'events/ADD_EVENT';
 export const REMOVE_EVENT = 'events/REMOVE_EVENT';
 
 // ACTION
+const loadEvents = events => ({
+  type: LOAD_EVENTS,
+  events
+});
+
 const loadGroupEvents = groupEvents => ({
   type: LOAD_GROUP_EVENTS,
   groupEvents
@@ -16,11 +21,6 @@ const loadGroupEvents = groupEvents => ({
 const loadEventDetails = event => ({
   type: LOAD_EVENT_DETAILS,
   event
-});
-
-const loadEvents = events => ({
-  type: LOAD_EVENTS,
-  events
 });
 
 const addEvent = event => ({
@@ -34,7 +34,6 @@ const removeEvent = eventId => ({
 });
 
 // THUNKS
-
 export const eventsFetch = () => async dispatch => {
   const res = await fetch('/api/events');
   if (res.ok) {
@@ -73,15 +72,6 @@ export const eventCreate = (groupId, data) => async dispatch => {
   catch (error) { throw error };
 };
 
-export const eventDelete = eventId => async dispatch => {
-  const res = await csrfFetch(`/api/events/${eventId}/delete`, {
-    method: 'DELETE'
-  });
-  const resJSON = await res.json();
-  dispatch(removeEvent(eventId));
-  return resJSON;
-};
-
 export const eventUpdate = (eventId, data) => async dispatch => {
   console.log('REQUEST BODY: ', data);
   try {
@@ -97,70 +87,75 @@ export const eventUpdate = (eventId, data) => async dispatch => {
   } catch (err) { throw err }
 };
 
-const getTimeHelper = dateData => {
-  const date = new Date(dateData);
-  return date.getTime();
+export const eventDelete = eventId => async dispatch => {
+  const res = await csrfFetch(`/api/events/${eventId}/delete`, {
+    method: 'DELETE'
+  });
+  const resJSON = await res.json();
+  dispatch(removeEvent(eventId));
+  return resJSON;
 };
+
+// const getTimeHelper = dateData => {
+//   const date = new Date(dateData);
+//   return date.getTime();
+// };
 
 // EVENTS REDUCER
 const eventsReducer = (state = {}, action) => {
   switch (action.type) {
     case LOAD_EVENTS:
       // console.log('EVENTS STATE: ', action.events);
-      const allEvents = [...action.events.Events]
+      const { Events } = action.events
       // console.log('ALL EVENTS: ', allEvents)
-      const allUpcoming = [];
-      const allPast = [];
-      for (const i in allEvents) {
-        const event = allEvents[i];
-        const now = Date.now();
-        const start = new Date(event.startDate).getTime();
-        if (now < start) {
-          allUpcoming.push(event);
-        } else {
-          allPast.push(event);
-        };
-      };
-      const allUpcomingSort = allUpcoming.sort((a, b) => (
-        getTimeHelper(a.startDate) - getTimeHelper(b.startDate)
-      ));
-      const allPastSort = allPast.sort((a, b) => (
-        getTimeHelper(a.startDate) - getTimeHelper(b.startDate)
-      ));
-      return {
-        ...state,
-        ...action.events,
-        ...action.events.Events = {
-          allUpcomingSort,
-          allPastSort
-        }
-      };
-    case LOAD_GROUP_EVENTS:
-      const groupEventsState = { allEvents: [...action.groupEvents] };
-      const past = [];
-      const upcoming = [];
-      for (const i in groupEventsState.allEvents) {
-        const event = groupEventsState.allEvents[i];
-        const now = Date.now();
-        const start = new Date(event.startDate).getTime();
-        if (now < start) {
-          upcoming.push(event);
-        } else {
-          past.push(event);
-        };
-      };
-      const orderedUpcoming = upcoming.sort((a, b) => (
-        getTimeHelper(a.startDate) - getTimeHelper(b.startDate)
-      ));
-      const orderedPast = past.sort((a, b) => (
-        getTimeHelper(a.startDate) - getTimeHelper(b.startDate)
-      ));
-      groupEventsState.upcomingEvents = orderedUpcoming;
-      groupEventsState.pastEvents = orderedPast;
-      return groupEventsState;
+      // const allUpcoming = [];
+      // const allPast = [];
+      // for (const event of Events) {
+      //   const now = Date.now();
+      //   const start = new Date(event.startDate).getTime();
+      //   if (now < start) {
+      //     allUpcoming.push(event);
+      //   } else {
+      //     allPast.push(event);
+      //   };
+      // };
+      // const allUpcomingSort = allUpcoming.sort((a, b) => (
+      //   getTimeHelper(a.startDate) - getTimeHelper(b.startDate)
+      // ));
+      // const allPastSort = allPast.sort((a, b) => (
+      //   getTimeHelper(a.startDate) - getTimeHelper(b.startDate)
+      // ));
+      const allEvents = {};
+      Events.forEach(event => allEvents[event.id] = { ...event });
+      return { ...state, allEvents: { ...allEvents } }
+    // case LOAD_GROUP_EVENTS:
+    //   const groupEventsState = { allEvents: [...action.groupEvents] };
+    //   const past = [];
+    //   const upcoming = [];
+    //   for (const i in groupEventsState.allEvents) {
+    //     const event = groupEventsState.allEvents[i];
+    //     const now = Date.now();
+    //     const start = new Date(event.startDate).getTime();
+    //     if (now < start) {
+    //       upcoming.push(event);
+    //     } else {
+    //       past.push(event);
+    //     };
+    //   };
+    //   const orderedUpcoming = upcoming.sort((a, b) => (
+    //     getTimeHelper(a.startDate) - getTimeHelper(b.startDate)
+    //   ));
+    //   const orderedPast = past.sort((a, b) => (
+    //     getTimeHelper(a.startDate) - getTimeHelper(b.startDate)
+    //   ));
+    //   groupEventsState.upcomingEvents = orderedUpcoming;
+    //   groupEventsState.pastEvents = orderedPast;
+    //   return groupEventsState;
     case LOAD_EVENT_DETAILS:
-      return { ...state, [action.event.id]: action.event };
+      return { ...state, singleEvent: { ...action.event } };
     case ADD_EVENT:
+      console.log('STATE: ', state)
+      console.log('SINGLE EVENT: ', action.event);
       if (!state[action.event.id]) {
         const newState = {
           ...state,

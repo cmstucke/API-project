@@ -14,6 +14,7 @@ import GroupUpdateForm from "./components/Forms/GroupUpdateForm";
 import EventCreateForm from "./components/Forms/EventCreateForm";
 import EventUpdateForm from "./components/Forms/EventUpdateForm";
 import { groupsFetch } from "./store/groups";
+import { eventsFetch } from "./store/events";
 
 
 function App() {
@@ -25,12 +26,20 @@ function App() {
       {}
   ));
 
+  const allEvents = useSelector(state => (
+    state.events.allEvents ?
+      state.events.allEvents :
+      {}
+  ));
+
   const store = useSelector(store => store);
-  console.log('STORE: ', store);
+  // console.log('STORE: ', store);
+  // console.log('EVENTS: ', allEvents);
 
   useEffect(() => {
     dispatch(sessionActions.restoreUser());
-    dispatch(groupsFetch()).then(() => setIsLoaded(true));
+    dispatch(groupsFetch());
+    dispatch(eventsFetch()).then(() => setIsLoaded(true));
   }, [dispatch]);
 
   return (
@@ -63,7 +72,7 @@ function App() {
             <GetEventDetails />
           </Route>
           <Route path='/events'>
-            <GetAllEvents />
+            <GetAllEvents allEvents={allEvents} />
           </Route>
           <Route exact path='/'>
             <LandingPage />

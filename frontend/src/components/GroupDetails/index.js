@@ -15,6 +15,8 @@ const GetGroupDetails = () => {
   const [imgUrl, setImgUrl] = useState('');
   const breadCrumb = '<';
   const group = useSelector(state => state.groups.singleGroup);
+  // const allEvents = useSelector(state => state.events.allEvents);
+  // if (group) console.log('GROUP EVENTS: ', group.Events);
 
   useEffect(() => {
     dispatch(groupDetailsFetch(groupId));
@@ -36,6 +38,7 @@ const GetGroupDetails = () => {
     };
   }, [group, sessionUser]);
 
+  // ORGANIZER LINKS
   let organizerLinks;
   if (group && sessionUser && group.organizerId === sessionUser.id) {
     organizerLinks = (
@@ -59,7 +62,7 @@ const GetGroupDetails = () => {
     );
   };
 
-  // // SELECT PREVIEW IMAGE
+  // SELECT PREVIEW IMAGE
   useEffect(() => {
     if (group && group.GroupImages) {
       for (const img of group.GroupImages) {
@@ -147,6 +150,7 @@ const GetGroupDetails = () => {
               group.Events.length ?
                 <GroupEvents
                   id='group-events-component'
+                  groupEvents={group.Events}
                   component={GroupEvents}
                 /> :
                 null

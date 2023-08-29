@@ -1,41 +1,12 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { eventsFetch } from '../../store/events';
 import { Link } from 'react-router-dom';
+import { eventSort, addDateStr } from '../../assets/helpers/event-sort-date';
 import './index.css';
 
-const GetAllEvents = () => {
-  const dispatch = useDispatch();
-  const { allPastSort, allUpcomingSort } = useSelector(state => (
-    state.events ? state.events : []
-  ));
-
-  if (allUpcomingSort) {
-    for (const event of allUpcomingSort) {
-      const date = new Date(event.startDate).toLocaleDateString();
-      const time = new Date(event.startDate).toLocaleTimeString();
-      event.startDateStr = date;
-      event.startTimeStr = time;
-    }
-  }
-
-  if (allPastSort) {
-    for (const event of allPastSort) {
-      const date = new Date(event.startDate).toLocaleDateString();
-      const time = new Date(event.startDate).toLocaleTimeString();
-      event.startDateStr = date;
-      event.startTimeStr = time;
-    }
-  }
-
-  useEffect(() => {
-    dispatch(eventsFetch());
-  }, [dispatch]);
-
-  console.log('EVENTS: ', allUpcomingSort);
-
-  // SHORT CIRCUIT
-  if (!allUpcomingSort) return null;
+const GetAllEvents = ({ allEvents }) => {
+  const events = Object.values(allEvents);
+  const { allUpcomingSort, allPastSort } = eventSort(events);
+  const upcomingEvents = addDateStr(allUpcomingSort);
+  const pastEvents = addDateStr(allPastSort);
 
   return (
     <>
@@ -48,7 +19,7 @@ const GetAllEvents = () => {
         </div>
         <h2 id='subheading'>Events in Meetup</h2>
         <div id='upcoming-container' className='events-list-container'>
-          {allUpcomingSort.map(event => (
+          {upcomingEvents.map(event => (
             <Link key={event.id} to={`/events/${event.id}`} className='event-link-wrap'>
               <div className='event-element'>
                 <div className='event-upper'>
@@ -81,7 +52,7 @@ const GetAllEvents = () => {
           ))}
         </div>
         <div id='past-container' className='events-list-container'>
-          {allPastSort.map(event => (
+          {pastEvents.map(event => (
             <Link key={event.id} to={`/events/${event.id}`} className='event-link-wrap'>
               <div className='event-element'>
                 <div className='event-upper'>
