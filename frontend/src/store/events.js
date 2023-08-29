@@ -82,6 +82,21 @@ export const eventDelete = eventId => async dispatch => {
   return resJSON;
 };
 
+export const eventUpdate = (eventId, data) => async dispatch => {
+  console.log('REQUEST BODY: ', data);
+  try {
+    const res = await csrfFetch(`/api/events/${eventId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const event = await res.json();
+    console.log('RESPONSE: ', event);
+    dispatch(addEvent(event));
+    return event;
+  } catch (err) { throw err }
+};
+
 const getTimeHelper = dateData => {
   const date = new Date(dateData);
   return date.getTime();

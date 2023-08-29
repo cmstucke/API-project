@@ -11,12 +11,12 @@ const GetEventDetails = () => {
   const dispatch = useDispatch();
   const { eventId } = useParams();
   const breadCrumbLabelVal = '<';
-  const sessionUser = useSelector(state => state.session.user);
+  const sessionUser = useSelector(state => (
+    state.session.user
+  ));
   const event = useSelector(state => (
     state.events ? state.events[eventId] : null
   ));
-
-  // console.log('EVENT STATE: ', event)
 
   useEffect(() => {
     dispatch(eventDetailsFetch(eventId));
@@ -24,11 +24,22 @@ const GetEventDetails = () => {
 
 
   let sessionLinks;
-  if (sessionUser) {
+  if (sessionUser && event) {
     sessionLinks = (
-      <div>
+      <div id='session-buttons-container'>
+        <Link
+          to={`/events/${eventId}/update`}
+        >
+          <button
+            className='session-button'
+            event={event}
+          >
+            Update
+          </button>
+        </Link>
         <OpenModalButton
-          buttonText='Delete Event'
+          className='management-modal'
+          buttonText='Delete'
           modalComponent={<EventDeleteModal event={event} />}
         />
       </div>
@@ -39,10 +50,12 @@ const GetEventDetails = () => {
   if (!event || !event.user) return null;
 
   // DATE AND TIME FORMAT
-  event.startDateStr = new Date(event.startDate).toLocaleString()
+  event.startDateStr = new Date(event.startDate)
+    .toLocaleString()
     .split(', ')
     .join(' · ');
-  event.endDateStr = new Date(event.endDate).toLocaleString()
+  event.endDateStr = new Date(event.endDate)
+    .toLocaleString()
     .split(', ')
     .join(' · ');
 
@@ -89,8 +102,10 @@ const GetEventDetails = () => {
             <p>END {event.endDateStr}</p>
             {event.price !== 0 && <p>{event.price}</p>}
             {event.price === 0 && <p>FREE</p>}
-            <p>{event.type}</p>
-            {sessionLinks}
+            <section id='type-session-buttons'>
+              <p>{event.type}</p>
+              {sessionLinks}
+            </section>
           </div>
         </div>
         <div>
