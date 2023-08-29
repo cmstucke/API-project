@@ -102,30 +102,54 @@ const groupsReducer = (state = {}, action) => {
   switch (action.type) {
     case LOAD_GROUPS:
       const allGroups = {};
-      action.groups.forEach((group) => {
+      action.groups.forEach(group => {
         allGroups[group.id] = { ...group };
       });
       return { ...state, allGroups: { ...allGroups } };
     case LOAD_GROUP_DETAILS:
       return { ...state, singleGroup: { ...action.group } }
     case ADD_GROUP:
-      if (!state[action.group.id]) {
+      console.log('STATE: ', state)
+      console.log('EVENTS: ', state.singleGroup.Events)
+      if (state.allGroups[action.group.id]) {
         const newState = {
           ...state,
-          [action.group.id]: action.group
+          singleGroup: {
+            ...action.group,
+            Organizer: { ...state.singleGroup.Organizer },
+            Events: [...state.singleGroup.Events],
+            Venues: [...state.singleGroup.Venues],
+            GroupImages: [...state.singleGroup.GroupImages]
+          },
+          allGroups: {
+            ...state.allGroups,
+            [action.group.id]: {
+              ...action.group,
+              Organizer: { ...state.singleGroup.Organizer },
+              Events: [...state.singleGroup.Events],
+              Venues: [...state.singleGroup.Venues]
+            }
+          }
+        };
+        return newState;
+      } else {
+        const newState = {
+          ...state,
+          singleGroup: { ...action.group },
+          allGroups: {
+            ...state.allGroups,
+            [action.group.id]: {
+              ...action.group,
+              Organizer: { ...state.singleGroup.Organizer }
+            }
+          }
         };
         return newState;
       };
-      return {
-        ...state,
-        [action.group.id]: {
-          ...state[action.group.id],
-          ...action.group
-        }
-      };
     case REMOVE_GROUP:
       const newState = { ...state }
-      delete newState[action.groupId]
+      delete newState.singleGroup;
+      delete newState.allGroups[action.groupId];
       return newState;
     default:
       return state;
