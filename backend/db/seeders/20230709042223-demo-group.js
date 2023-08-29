@@ -53,8 +53,8 @@ module.exports = {
         about: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
         type: 'In person',
         private: false,
-        city: 'Cincinnati',
-        state: 'IL'
+        city: 'Dayton',
+        state: 'OH'
       }
     ], { validate: true });
   },
