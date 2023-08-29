@@ -30,7 +30,7 @@
   justify-content: space-between;
 }
 
-#session-buttons-container {
+.session-buttons-container {
   display: flex;
   gap: .5rem;
 }

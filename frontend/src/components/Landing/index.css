@@ -3,16 +3,20 @@ body {
 }
 
 h1 {
-  font-weight: bold;
+  font-size: 24px;
+  color: black;
 }
 
 h2 {
-  font-size: 18pt;
-  color: #999999;
+  font-size: 18px;
+  color: black;
 }
 
 p {
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
+  color: #CCCCCC;
+  letter-spacing: .025rem;
 }
 
 Link {
@@ -32,7 +36,7 @@ Link {
 
 #intro-img {
   width: auto;
-  height: 18.5rem;
+  height: 16rem;
 }
 
 #intro-container {

@@ -26,7 +26,7 @@ const GetEventDetails = () => {
   let sessionLinks;
   if (sessionUser && event) {
     sessionLinks = (
-      <div id='session-buttons-container'>
+      <div className='session-buttons-container'>
         <Link
           to={`/events/${eventId}/update`}
         >

@@ -26,34 +26,29 @@
   gap: 25px;
   width: fit-content;
   border-top: solid #CCCCCC 2px;
-  padding: .5rem 0;
+  padding: .25rem 0;
 }
 
 .group-link-wrap {
   text-decoration: none;
 }
 
-#events-link {
-  text-decoration: none;
+.group-heading {
+  color: black;
 }
 
-h1 {
-  font-size: 24px;
+.group-about {
   color: black;
+  font-weight: 600;
+}
+
+#events-link {
+  text-decoration: none;
 }
 
 #active-list-heading {
   text-decoration: underline;
   color: #00525E;
-}
-
-h2 {
-  font-size: 18px;
-  color: black;
-}
-
-p {
-  color: #CCCCCC;
 }
 
 #subheading {

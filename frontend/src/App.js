@@ -25,8 +25,8 @@ function App() {
       {}
   ));
 
-  // const store = useSelector(store => store);
-  // console.log('STORE: ', store);
+  const store = useSelector(store => store);
+  console.log('STORE: ', store);
 
   useEffect(() => {
     dispatch(sessionActions.restoreUser());

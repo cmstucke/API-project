@@ -28,8 +28,9 @@ const GetAllGroups = ({ allGroups }) => {
                 <div className='group-element'>
                   <GroupImages group={group} />
                   <div className='group-text-elements'>
-                    <h2>{group.name}</h2>
-                    <p>{group.about}</p>
+                    <h2 className='group-heading'>{group.name}</h2>
+                    <p className='group-location'>{group.city}, {group.state}</p>
+                    <p className='group-about'>{group.about}</p>
                     {
                       group.Events &&
                       <p>{group.Events.length} Events · {group.private ? 'Private' : 'Public'}</p>
