@@ -101,11 +101,11 @@ export const groupDelete = groupId => async dispatch => {
 const groupsReducer = (state = {}, action) => {
   switch (action.type) {
     case LOAD_GROUPS:
-      const groupsState = {};
+      const allGroups = {};
       action.groups.forEach((group) => {
-        groupsState[group.id] = group;
+        allGroups[group.id] = { ...group };
       });
-      return groupsState;
+      return { ...state, allGroups: { ...allGroups } };
     case LOAD_GROUP_DETAILS:
       return { ...state, [action.group.id]: action.group }
     case ADD_GROUP:

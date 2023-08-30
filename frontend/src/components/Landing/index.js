@@ -4,7 +4,6 @@ import './index.css';
 
 const LandingPage = () => {
   const sessionUser = useSelector(state => state.session.user);
-  console.log('SESSION USER: ', sessionUser);
 
   const startGroupElement = (
     <div
@@ -70,7 +69,7 @@ const LandingPage = () => {
           </Link>
           {sessionUser ? sessionLink : startGroupElement}
         </div>
-        <button id='join-meetup-button'>Join Meetup</button>
+        {!sessionUser && <button id='join-meetup-button'>Join Meetup</button>}
       </div >
     </>
   );

@@ -25,8 +25,6 @@ function LoginFormModal() {
       });
   };
 
-  console.log('ERR RES OBJ: ', errors);
-
   return (
     <div id="modal-form-body">
       <h1 id="login-modal-heading">Log In</h1>

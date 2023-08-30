@@ -47,6 +47,11 @@ body {
   font-weight: bold;
 }
 
+.drop-down-link {
+  text-decoration: none;
+  color: black;
+}
+
 #log-out-section {
   display: flex;
   align-items: center;
