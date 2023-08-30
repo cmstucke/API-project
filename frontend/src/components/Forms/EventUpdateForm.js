@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { eventDetailsFetch, eventUpdate } from '../../store/events';
+import dateInputFormat from '../../assets/helpers/date-input-format';
 import './EventUpdateForm.css';
 
 const EventUpdateForm = () => {
@@ -16,8 +17,8 @@ const EventUpdateForm = () => {
   const [name, setName] = useState('');
   const [type, setType] = useState('');
   const [price, setPrice] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDateStr, setStartDateStr] = useState('');
+  const [endDateStr, setEndDateStr] = useState('');
   const [description, setDescription] = useState('');
   const [venueId, setvenueId] = useState(null);
   const [capacity, setCapacity] = useState(10);
@@ -32,8 +33,8 @@ const EventUpdateForm = () => {
       setName(event.name);
       setType(event.type);
       setPrice(event.price);
-      setStartDate(event.startDate);
-      setEndDate(event.endDate);
+      setStartDateStr(dateInputFormat(event.startDate));
+      setEndDateStr(dateInputFormat(event.endDate));
       setDescription(event.description);
       setvenueId(event.venueId);
       setCapacity(event.capacity);
@@ -47,8 +48,8 @@ const EventUpdateForm = () => {
       name,
       type,
       price,
-      startDate,
-      endDate,
+      startDate: startDateStr,
+      endDate: endDateStr,
       description,
       venueId,
       capacity,
@@ -63,20 +64,6 @@ const EventUpdateForm = () => {
     };
     if (createdEvent) history.push(`/events/${createdEvent.id}`);
   };
-
-  // DATE AND TIME FORMAT
-  if (event) {
-    event.startDateStr = new Date(event.startDate)
-      .toString()
-      .split(', ')
-      .join(' · ');
-    event.endDateStr = new Date(event.endDate)
-      .toLocaleString()
-      .split(', ')
-      .join(' · ');
-  };
-
-  console.log('START DATE', event.startDateStr)
 
   // SHORT CIRCUIT
   if (!event) return null;
@@ -114,7 +101,7 @@ const EventUpdateForm = () => {
             What is the price of your event?
             <input
               type='number'
-              placeholder={event.price}
+              // placeholder={event.price}
               value={price}
               onChange={e => setPrice(e.target.value)}
             />
@@ -124,21 +111,22 @@ const EventUpdateForm = () => {
             When does your event start?
             <input
               type='datetime-local'
-              placeholder={event.startDateStr}
-              value={event.startDateStr}
-              onChange={e => setStartDate(e.target.value)}
+              // placeholder={event.startDateStr}
+              value={startDateStr}
+              onChange={e => setStartDateStr(e.target.value)}
             />
           </label>
-          {errs.startDate && <p className='error-text'>Start date is required</p>}
+          {errs.startDate && <p className='error-text'>{errs.startDate}</p>}
           <label className={inputContainerClass}>
             When does your event end?
             <input
-              type='text'
-              placeholder={event.endDateStr}
-              value={event.endDate}
-              onChange={e => setEndDate(e.target.value)}
+              type='datetime-local'
+              // placeholder={event.endDate}
+              value={endDateStr}
+              onChange={e => setEndDateStr(e.target.value)}
             />
           </label>
+          {errs.endDate && <p className='error-text'>{errs.endDate}</p>}
           <label className={inputContainerClass}>
             Please describe your event.
             <input

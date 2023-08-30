@@ -83,7 +83,7 @@ const GetGroupDetails = () => {
               imgUrl.startsWith('group-img-') &&
               <img
                 id='group-img'
-                src={require(`../../images/${imgUrl}`)}
+                src={require(`../../assets/images/${imgUrl}`)}
                 alt='No group images'
               />
             }

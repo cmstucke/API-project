@@ -39,7 +39,7 @@ function Navigation({ isLoaded }) {
           <img
             id='nav-logo'
             alt="Meetup Home"
-            src={require('../../images/meetup-logo.png')}
+            src={require('../../assets/images/meetup-logo.png')}
           />
         </NavLink>
       </div>

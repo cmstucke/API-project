@@ -53,7 +53,7 @@ const GroupEvents = () => {
                       event.previewImage.startsWith('event-img-') &&
                       <img
                         className='event-img'
-                        src={require(`../../images/${event.previewImage}`)}
+                        src={require(`../../assets/images/${event.previewImage}`)}
                         alt='No event img'
                       />
                     }
@@ -90,7 +90,7 @@ const GroupEvents = () => {
                       event.previewImage.startsWith('event-img-') &&
                       <img
                         className='event-img'
-                        src={require(`../../images/${event.previewImage}`)}
+                        src={require(`../../assets/images/${event.previewImage}`)}
                         alt='No event img'
                       />
                     }

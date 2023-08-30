@@ -36,7 +36,7 @@ const GetAllGroups = () => {
                       group.previewImage &&
                       group.previewImage.startsWith('group-img-') &&
                       <img
-                        src={require(`../../images/${group.previewImage}`)}
+                        src={require(`../../assets/images/${group.previewImage}`)}
                         alt={group.previewImage}
                         className='group-img'
                       />
