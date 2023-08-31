@@ -34,7 +34,7 @@ const addImage = groupId => ({
   groupId
 });
 
-// THUNK ACTION CREATORS
+// THUNKS
 export const groupsFetch = () => async (dispatch) => {
   const res = await fetch('/api/groups');
   if (res.ok) {
@@ -109,8 +109,6 @@ const groupsReducer = (state = {}, action) => {
     case LOAD_GROUP_DETAILS:
       return { ...state, singleGroup: { ...action.group } }
     case ADD_GROUP:
-      console.log('STATE: ', state)
-      console.log('EVENTS: ', state.singleGroup.Events)
       if (state.allGroups[action.group.id]) {
         const newState = {
           ...state,
@@ -135,12 +133,17 @@ const groupsReducer = (state = {}, action) => {
       } else {
         const newState = {
           ...state,
-          singleGroup: { ...action.group },
+          singleGroup: {
+            ...action.group,
+            Organizer: { ...action.group.user },
+            Events: []
+          },
           allGroups: {
             ...state.allGroups,
             [action.group.id]: {
               ...action.group,
-              Organizer: { ...state.singleGroup.Organizer }
+              Organizer: { ...action.group.user },
+              Events: []
             }
           }
         };

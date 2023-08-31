@@ -533,7 +533,7 @@ const validateGroup = [
     .isLength({ min: 1, max: 60 })
     .withMessage("Name must be 60 characters or less"),
   check('about')
-    .isLength({ min: 50 })
+    .isLength({ min: 30 })
     .withMessage("About must be 50 characters or more"),
   check('type')
     .exists({ checkFalsy: true })
@@ -549,6 +549,42 @@ const validateGroup = [
   check('state')
     .exists({ checkFalsy: true })
     .withMessage("State is required"),
+  handleValidationErrors
+];
+
+const validateGroupCreate = [
+  check('name')
+    .exists({ checkFalsy: true })
+    .isLength({ min: 1, max: 60 })
+    .withMessage("Name must be 60 characters or less"),
+  check('about')
+    .isLength({ min: 30 })
+    .withMessage("About must be 50 characters or more"),
+  check('type')
+    .exists({ checkFalsy: true })
+    .isIn(['Online', 'In person'])
+    .withMessage("Type must be 'Online' or 'In person'"),
+  check('isPrivate')
+    .exists({ checkFalsy: false })
+    .isBoolean()
+    .withMessage("Private must be a boolean"),
+  check('city')
+    .exists({ checkFalsy: true })
+    .withMessage("City is required"),
+  check('state')
+    .exists({ checkFalsy: true })
+    .withMessage("State is required"),
+  check('url')
+    .exists({ checkFalsy: true })
+    .isURL()
+    .custom(async url => {
+      if (!(
+        url.endsWith('.png') ||
+        url.endsWith('.jpg') ||
+        url.endsWith('.jpg')
+      )) throw new Error
+    })
+    .withMessage("Image URL must end in .png, .jpg, or .jpeg"),
   handleValidationErrors
 ];
 
@@ -677,7 +713,10 @@ router.get('/:groupId', async (req, res) => {
       { model: Membership },
       { model: GroupImage },
       { model: Venue },
-      { model: Event }
+      {
+        model: Event,
+        include: [{ model: EventImage }]
+      }
     ],
   });
 
@@ -698,6 +737,17 @@ router.get('/:groupId', async (req, res) => {
   const groupObj = group.toJSON();
   groupObj.numMembers = groupObj.Memberships.length;
   delete groupObj.Memberships;
+
+  // Return preview img per included Event
+  for (const event of groupObj.Events) {
+    for (const img of event.EventImages) {
+      if (img.preview) {
+        event.previewImage = img.url;
+      }
+    };
+    if (!event.previewImage) event.previewImage = null;
+    delete event.EventImages;
+  };
 
   // Return necessary GroupImages properties
   for (const img of groupObj.GroupImages) {
@@ -744,8 +794,8 @@ router.delete('/:groupId/delete', requireAuth, async (req, res) => {
 });
 
 // CREATE A GROUP
-router.post('/create', requireAuth, validateGroup, async (req, res) => {
-  const { name, about, type, isPrivate, city, state } = req.body;
+router.post('/create', requireAuth, validateGroupCreate, async (req, res) => {
+  const { name, about, type, isPrivate, city, state, url } = req.body;
   const private = isPrivate;
   const organizerId = req.user.id
   const group = await Group.create({ organizerId, name, about, type, private, city, state });
@@ -755,6 +805,10 @@ router.post('/create', requireAuth, validateGroup, async (req, res) => {
   const userId = req.user.id;
   const membership = await Membership.create({ userId, groupId, status });
   await membership.save();
+  const preview = true;
+  const previewImg = await GroupImage.create({ groupId, url, preview });
+  await previewImg.save();
+  const user = await User.findByPk(userId);
 
   const safeGroup = {
     id: group.id,
@@ -766,7 +820,8 @@ router.post('/create', requireAuth, validateGroup, async (req, res) => {
     city: group.city,
     state: group.state,
     createdAt: group.createdAt,
-    updatedAt: group.updatedAt
+    updatedAt: group.updatedAt,
+    user
   };
 
   res.status(201);

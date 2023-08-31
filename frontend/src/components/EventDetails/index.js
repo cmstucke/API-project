@@ -15,7 +15,7 @@ const GetEventDetails = () => {
     state.session.user
   ));
   const event = useSelector(state => (
-    state.events ? state.events[eventId] : null
+    state.events.singleEvent ? state.events.singleEvent : null
   ));
 
   useEffect(() => {

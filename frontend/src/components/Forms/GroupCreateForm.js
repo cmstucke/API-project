@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { groupCreate, groupImage } from '../../store/groups';
+import { groupCreate } from '../../store/groups';
 import './GroupCreateForm.css';
 
 const GroupCreateForm = () => {
@@ -36,31 +36,26 @@ const GroupCreateForm = () => {
       name,
       about,
       type,
-      isPrivate
-    };
-
-    const imgPayload = {
-      url: imgUrl,
-      preview: true
+      isPrivate,
+      url: imgUrl
     };
 
     let createGroupRes;
-    let imgRes;
     let errRes;
     try {
       createGroupRes = await dispatch(groupCreate(groupPayload));
-      imgRes = await dispatch(groupImage(createGroupRes.id, imgPayload));
     } catch (err) {
+      console.log('ERROR CATCH: ', err);
       errRes = await err.json();
       setErrs(errRes.errors);
     };
 
-    if (createGroupRes && imgRes) {
+    if (createGroupRes) {
       history.push(`/groups/${createGroupRes.id}`);
     };
   };
 
-  if (!errs) return null;
+  // if (!errs) return null;
 
   return (
     <>
@@ -166,6 +161,10 @@ const GroupCreateForm = () => {
                 value={imgUrl}
                 onChange={updateImgUrl}
               />
+              {
+                errs.url &&
+                <p className='err-text'>{errs.url}</p>
+              }
             </div>
           </section>
           <button id='submit-button' type="submit">Create Group</button>

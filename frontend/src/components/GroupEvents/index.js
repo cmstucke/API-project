@@ -1,42 +1,43 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
-import { groupEventsFetch } from '../../store/events';
+import { Link } from 'react-router-dom';
+import { eventSort, addDateStr } from '../../assets/helpers/event-sort-date';
 import './index.css';
 
-const GroupEvents = () => {
-  const dispatch = useDispatch();
-  const { groupId } = useParams();
-  const upcomingEvents = useSelector(state => state.events.upcomingEvents);
-  const pastEvents = useSelector(state => state.events.pastEvents);
-  // console.log('EVENTS: ', upcomingEvents);
+const GroupEvents = ({ groupEvents }) => {
+  // const dispatch = useDispatch();
+  // const { groupId } = useParams();
+  // const upcomingEvents = useSelector(state => state.events.upcomingEvents);
+  // const pastEvents = useSelector(state => state.events.pastEvents);
+  console.log('GROUP EVENTS PROP: ', groupEvents);
+  const { allUpcomingSort, allPastSort } = eventSort(groupEvents);
+  const upcomingEvents = addDateStr(allUpcomingSort);
+  const pastEvents = addDateStr(allPastSort);
 
-  useEffect(() => {
-    dispatch(groupEventsFetch(groupId));
-  }, [dispatch, groupId]);
+  // useEffect(() => {
+  //   dispatch(groupEventsFetch(groupId));
+  // }, [dispatch, groupId]);
 
-  if (upcomingEvents) {
-    for (const event of upcomingEvents) {
-      const date = new Date(event.startDate).toLocaleDateString();
-      const time = new Date(event.startDate).toLocaleTimeString();
-      event.startDateStr = date;
-      event.startTimeStr = time;
-    }
-  }
+  // if (upcomingEvents) {
+  //   for (const event of upcomingEvents) {
+  //     const date = new Date(event.startDate).toLocaleDateString();
+  //     const time = new Date(event.startDate).toLocaleTimeString();
+  //     event.startDateStr = date;
+  //     event.startTimeStr = time;
+  //   }
+  // }
 
-  if (pastEvents) {
-    for (const event of pastEvents) {
-      const date = new Date(event.startDate).toLocaleDateString();
-      const time = new Date(event.startDate).toLocaleTimeString();
-      event.startDateStr = date;
-      event.startTimeStr = time;
-    }
-  }
+  // if (pastEvents) {
+  //   for (const event of pastEvents) {
+  //     const date = new Date(event.startDate).toLocaleDateString();
+  //     const time = new Date(event.startDate).toLocaleTimeString();
+  //     event.startDateStr = date;
+  //     event.startTimeStr = time;
+  //   }
+  // }
 
 
-  // SHORT CIRCUIT
-  if (!upcomingEvents) return null;
-  if (!pastEvents) return null;
+  // // SHORT CIRCUIT
+  // if (!upcomingEvents) return null;
+  // if (!pastEvents) return null;
 
   return (
 
@@ -49,7 +50,9 @@ const GroupEvents = () => {
               <Link key={event.id} to={`/events/${event.id}`} className='event-link-wrap'>
                 <div className='group-events-item'>
                   <div className='event-item-upper'>
+                    {!event.previewImage && <img alt='No event img' />}
                     {
+                      event.previewImage &&
                       event.previewImage.startsWith('event-img-') &&
                       <img
                         className='event-img'
@@ -58,6 +61,7 @@ const GroupEvents = () => {
                       />
                     }
                     {
+                      event.previewImage &&
                       !event.previewImage.startsWith('event-img-') &&
                       <img
                         className='event-img'
