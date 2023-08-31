@@ -63,9 +63,7 @@ const GetGroupDetails = () => {
   useEffect(() => {
     if (group && group.GroupImages) {
       for (const img of group.GroupImages) {
-        if (img.preview) {
-          setImgUrl(img.url)
-        };
+        if (img.preview) setImgUrl(img.url);
       };
     };
   }, [group]);

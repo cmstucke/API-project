@@ -8,10 +8,10 @@ const GroupUpdateForm = () => {
   const history = useHistory();
   const { groupId } = useParams();
   const group = useSelector((state) => (
-    state.groups ? state.groups[groupId] : null
+    state.groups ? state.groups.singleGroup : null
   ));
 
-  console.log('GROUP: ', group);
+  // console.log('GROUP: ', group);
   // console.log('STATE: ', group.state);
 
   const [city, setCity] = useState('');
@@ -22,7 +22,7 @@ const GroupUpdateForm = () => {
   const [isPrivate, setIsPrivate] = useState('');
   const [errs, setErrs] = useState({});
 
-  console.log('PRIVATE: ', isPrivate)
+  // console.log('PRIVATE: ', isPrivate)
 
   useEffect(() => {
     if (group) {
@@ -68,7 +68,7 @@ const GroupUpdateForm = () => {
       createdGroup = await dispatch(groupUpdate(groupId, payload));
     } catch (err) {
       errRes = await err.json();
-      console.log('COMPONENT ERROR RESPONSE: ', errRes);
+      // console.log('COMPONENT ERROR RESPONSE: ', errRes);
       setErrs(errRes.errors);
     }
     if (createdGroup) history.push(`/groups/${createdGroup.id}`);
@@ -156,7 +156,7 @@ const GroupUpdateForm = () => {
             <select
               onChange={e => setIsPrivate(e.target.value)}
               value={isPrivate}
-              placeholder={group.private}
+              placeholder={group.private ? 'Private' : 'Public'}
             >
               <option value={false}>Public</option>
               <option value={true}>Private</option>
