@@ -39,9 +39,16 @@ function ProfileButton({ user }) {
 
   return (
     <>
-      <button id="profile-button" onClick={openMenu}>
-        <i id="profile-button" className="fas fa-user-circle" />
-      </button>
+      <div id="profile-button-container">
+        <button id="profile-button" onClick={openMenu}>
+          <i className="fas fa-user-circle" />
+          {
+            showMenu ?
+              <i id="chevron-down" className="fas fa-chevron-down" /> :
+              <i id="chevron-up" className="fas fa-chevron-up" />
+          }
+        </button>
+      </div>
       <div id="drop-down" className={ulClassName} ref={ulRef}>
         <p className="drop-down-text">Hello, {user.firstName}</p>
         <p className="drop-down-text">{user.email}</p>

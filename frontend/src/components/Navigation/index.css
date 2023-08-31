@@ -23,6 +23,7 @@
 html,
 body {
   margin: 0;
+  min-height: 100vh;
 }
 
 #profile-container {
@@ -32,6 +33,19 @@ body {
 #profile-button {
   font-size: 2rem;
   color: #FF5A5F;
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+}
+
+#chevron-up {
+  font-size: 1.25rem;
+  color: #CCCCCC;
+}
+
+#chevron-down {
+  font-size: 1.25rem;
+  color: #CCCCCC;
 }
 
 #drop-down {
