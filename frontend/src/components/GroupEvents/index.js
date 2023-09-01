@@ -1,11 +1,35 @@
-import { Link } from 'react-router-dom';
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams } from 'react-router-dom';
 import { eventSort, addDateStr } from '../../assets/helpers/event-sort-date';
+import { groupEventsFetch } from "../../store/events";
 import './index.css';
 
-const GroupEvents = ({ groupEvents }) => {
-  const { allUpcomingSort, allPastSort } = eventSort(groupEvents);
+const GroupEvents = () => {
+  const dispatch = useDispatch();
+  const { groupId } = useParams();
+  // console.log('GROUP ID: ', groupId);
+  const groupEvents = useSelector(state => (
+    state.events.groupEvents ?
+      state.events.groupEvents :
+      {}
+  ));
+  const events = Object.values(groupEvents);
+  // console.log('ALL EVENTS: ', events);
+  // const groupEvents = events.filter(event => event.groupId === groupId);
+  // const groupEvents = [];
+  // for (const event of events) {
+  //   if (event.groupId == groupId) groupEvents.push(event);
+  // };
+  // console.log('GROUP EVENTS: ', groupEvents);
+  const { allUpcomingSort, allPastSort } = eventSort(events);
   const upcomingEvents = addDateStr(allUpcomingSort);
   const pastEvents = addDateStr(allPastSort);
+
+  useEffect(() => {
+    // dispatch(eventsFetch());
+    dispatch(groupEventsFetch(groupId));
+  }, [dispatch, groupId]);
 
   return (
     <div id='group-events-container'>

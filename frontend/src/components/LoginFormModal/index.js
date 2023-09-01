@@ -25,6 +25,22 @@ function LoginFormModal() {
       });
   };
 
+  const handleDemo = (e) => {
+    e.preventDefault();
+    // setErrors({});
+    return dispatch(sessionActions.login({
+      credential: 'Demo User',
+      password: 'password'
+    })).then(closeModal)
+    // .catch(async (res) => {
+    //   const data = await res.json();
+    //   if (data && data.errors) {
+    //     console.log(data.errors);
+    //     setErrors(data.errors);
+    //   }
+    // });
+  };
+
   return (
     <div id="modal-form-body">
       <h1 id="login-modal-heading">Log In</h1>
@@ -60,6 +76,11 @@ function LoginFormModal() {
 
           <p className="errors">{errors.credential}</p>
         }
+        <button
+          id='log-in'
+          type="submit"
+          onClick={handleDemo}
+        >Log in as Demo User</button>
         <button
           id='log-in'
           type="submit"

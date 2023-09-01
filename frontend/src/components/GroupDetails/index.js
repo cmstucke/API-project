@@ -146,7 +146,7 @@ const GetGroupDetails = () => {
             group.Events.length ?
               <GroupEvents
                 id='group-events-component'
-                groupEvents={group.Events}
+                groupEvents={groupId}
                 component={GroupEvents}
               /> :
               null

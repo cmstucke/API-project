@@ -1,9 +1,26 @@
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { groupsFetch } from '../../store/groups';
 import GroupImages from '../ImageComponents/group-images';
 import './index.css';
 
-const GetAllGroups = ({ allGroups }) => {
+const GetAllGroups = () => {
+  const dispatch = useDispatch();
+  const [isLoaded, setIsLoaded] = useState(false);
+  const allGroups = useSelector(state => (
+    state.groups.allGroups ?
+      state.groups.allGroups :
+      {}
+  ));
   const groups = Object.values(allGroups);
+
+  useEffect(() => {
+    dispatch(groupsFetch())
+      .then(() => setIsLoaded(true));
+  }, [dispatch]);
+
+  if (!isLoaded) return null;
 
   return (
     <>
