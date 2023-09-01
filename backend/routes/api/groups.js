@@ -403,6 +403,57 @@ const validateEvent = [
   handleValidationErrors
 ];
 
+const validateCreateEvent = [
+  check('venueId')
+    .optional()
+    .custom(async venueId => {
+      const venue = await Venue.findByPk(venueId);
+      if (venueId !== null && !venue || venueId !== null && typeof venueId !== 'number') throw new Error;
+    })
+    .withMessage('Venue does not exist'),
+  check('name')
+    .exists({ checkFalsy: true })
+    .isLength({ min: 5 })
+    .withMessage("Name must be at least 5 characters"),
+  check('type')
+    .exists({ checkFalsy: true })
+    .isIn(['Online', 'In person'])
+    .withMessage("Type must be 'Online' or 'In person'"),
+  check('capacity')
+    .exists({ checkFalsy: true })
+    .isInt()
+    .withMessage("Private must be a boolean"),
+  check('price')
+    .exists({ checkFalsy: true })
+    .isDecimal()
+    .withMessage("Price is required"),
+  check('description')
+    .exists({ checkFalsy: true })
+    .withMessage("Description is required"),
+  check('startDate')
+    .exists({ checkFalsy: true })
+    .isAfter()
+    .withMessage("Start date must be in the future"),
+  check('endDate')
+    .exists({ checkFalsy: true })
+    .withMessage('End date is less than start date')
+    .custom(async (endDate, req) => {
+      if (endDate < req.req.body.startDate) throw new Error("End date is less than start date")
+    }),
+  check('url')
+    .exists({ checkFalsy: true })
+    .isURL()
+    .custom(async url => {
+      if (!(
+        url.endsWith('.png') ||
+        url.endsWith('.jpg') ||
+        url.endsWith('.jpeg')
+      )) throw new Error
+    })
+    .withMessage("Image URL must end in .png, .jpg, or .jpeg"),
+  handleValidationErrors
+];
+
 // GET ALL EVENTS OF A GROUP SPECIFIED BY ITS ID
 router.get('/:groupId/events', async (req, res) => {
   const groupId = req.params.groupId;
@@ -459,68 +510,87 @@ router.get('/:groupId/events', async (req, res) => {
 });
 
 // CREATE AN EVENT FOR A GROUP SPECIFIED BY ITS ID
-router.post('/:groupId/events/create', requireAuth, validateEvent, async (req, res) => {
-  const userId = req.user.id;
-  const group = await Group.findByPk(req.params.groupId);
-  const { venueId, name, description, type, capacity, price, startDate, endDate } = req.body;
+router.post(
+  '/:groupId/events/create',
+  requireAuth,
+  validateCreateEvent,
+  async (req, res) => {
+    const userId = req.user.id;
+    const group = await Group.findByPk(req.params.groupId);
+    const {
+      venueId,
+      name,
+      description,
+      type,
+      capacity,
+      price,
+      startDate,
+      endDate,
+      url
+    } = req.body;
 
-  //No such Venue
-  const venue = await Venue.findByPk(venueId);
-  if (venueId && !venue) {
-    res.status(400);
-    const err = new Error("Venue does not exist")
-    console.error(err);
-    return res.json({
-      message: "Bad Request",
-      errors: { venueId: "Venue does not exist" }
+    //No such Venue
+    const venue = await Venue.findByPk(venueId);
+    if (venueId && !venue) {
+      res.status(400);
+      const err = new Error("Venue does not exist")
+      console.error(err);
+      return res.json({
+        message: "Bad Request",
+        errors: { venueId: "Venue does not exist" }
+      });
+    };
+
+    // No such group
+    if (!group) {
+      res.status(404);
+      const err = new Error("Couldn't find a Group with the specified id");
+      console.error(err);
+      return res.json({ message: "Group couldn't be found" });
+    };
+
+    const isCoHost = await coHost(userId, group.id);
+
+    // Unauthorized user
+    (isCoHost);
+    if (userId !== group.organizerId && !isCoHost) {
+      res.status(403);
+      const err = new Error("Group Event must be created by Organizer or Co-Host");
+      console.error(err);
+      return res.json({ message: "Group Event must be created by Organizer or Co-Host" });
+    };
+
+    // Handler
+    const groupId = group.id;
+    const event = await Event.create({
+      groupId,
+      venueId,
+      name,
+      description,
+      type,
+      capacity,
+      price,
+      startDate,
+      endDate
     });
-  };
 
-  // No such group
-  if (!group) {
-    res.status(404);
-    const err = new Error("Couldn't find a Group with the specified id");
-    console.error(err);
-    return res.json({ message: "Group couldn't be found" });
-  };
+    const eventObj = event.toJSON()
+    delete eventObj.updatedAt;
+    delete eventObj.createdAt;
 
-  const isCoHost = await coHost(userId, group.id);
+    const eventId = event.id;
+    const status = 'host';
+    const host = await Attendance.create({ eventId, userId, status });
+    await host.save();
 
-  // Unauthorized user
-  (isCoHost);
-  if (userId !== group.organizerId && !isCoHost) {
-    res.status(403);
-    const err = new Error("Group Event must be created by Organizer or Co-Host");
-    console.error(err);
-    return res.json({ message: "Group Event must be created by Organizer or Co-Host" });
-  };
+    const preview = true;
+    const img = await EventImage.create({ eventId, url, preview });
+    await img.save();
+    eventObj.previewImage = img.url;
 
-  // Handler
-  const groupId = group.id;
-  const event = await Event.create({
-    groupId,
-    venueId,
-    name,
-    description,
-    type,
-    capacity,
-    price,
-    startDate,
-    endDate
+    res.status(201);
+    return res.json(eventObj);
   });
-
-  const eventObj = event.toJSON()
-  delete eventObj.updatedAt;
-  delete eventObj.createdAt;
-
-  const eventId = event.id;
-  const status = 'host';
-  const host = await Attendance.create({ eventId, userId, status });
-  await host.save();
-
-  res.status(201);
-  return res.json(eventObj);
-});
 
 /*
   GROUPS
@@ -806,8 +876,8 @@ router.post('/create', requireAuth, validateGroupCreate, async (req, res) => {
   const membership = await Membership.create({ userId, groupId, status });
   await membership.save();
   const preview = true;
-  const previewImg = await GroupImage.create({ groupId, url, preview });
-  await previewImg.save();
+  const previewImage = await GroupImage.create({ groupId, url, preview });
+  await previewImage.save();
   const user = await User.findByPk(userId);
 
   const safeGroup = {
@@ -821,6 +891,7 @@ router.post('/create', requireAuth, validateGroupCreate, async (req, res) => {
     state: group.state,
     createdAt: group.createdAt,
     updatedAt: group.updatedAt,
+    previewImage: previewImage.url,
     user
   };
 
