@@ -3,45 +3,12 @@ import { eventSort, addDateStr } from '../../assets/helpers/event-sort-date';
 import './index.css';
 
 const GroupEvents = ({ groupEvents }) => {
-  // const dispatch = useDispatch();
-  // const { groupId } = useParams();
-  // const upcomingEvents = useSelector(state => state.events.upcomingEvents);
-  // const pastEvents = useSelector(state => state.events.pastEvents);
-  console.log('GROUP EVENTS PROP: ', groupEvents);
   const { allUpcomingSort, allPastSort } = eventSort(groupEvents);
   const upcomingEvents = addDateStr(allUpcomingSort);
   const pastEvents = addDateStr(allPastSort);
 
-  // useEffect(() => {
-  //   dispatch(groupEventsFetch(groupId));
-  // }, [dispatch, groupId]);
-
-  // if (upcomingEvents) {
-  //   for (const event of upcomingEvents) {
-  //     const date = new Date(event.startDate).toLocaleDateString();
-  //     const time = new Date(event.startDate).toLocaleTimeString();
-  //     event.startDateStr = date;
-  //     event.startTimeStr = time;
-  //   }
-  // }
-
-  // if (pastEvents) {
-  //   for (const event of pastEvents) {
-  //     const date = new Date(event.startDate).toLocaleDateString();
-  //     const time = new Date(event.startDate).toLocaleTimeString();
-  //     event.startDateStr = date;
-  //     event.startTimeStr = time;
-  //   }
-  // }
-
-
-  // // SHORT CIRCUIT
-  // if (!upcomingEvents) return null;
-  // if (!pastEvents) return null;
-
   return (
-
-    <div>
+    <div id='group-events-container'>
       {upcomingEvents.length > 0 &&
         <div id='upcoming-container'>
           <h1>Upcoming Events ({upcomingEvents.length})</h1>

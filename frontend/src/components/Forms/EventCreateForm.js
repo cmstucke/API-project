@@ -9,16 +9,9 @@ const EventCreateForm = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { groupId } = useParams();
-  // const [groupState, setGroupState] = useState('');
   const group = useSelector((state) => (
     state.groups ? state.groups[groupId] : null
   ));
-
-  useEffect(() => {
-    dispatch(groupDetailsFetch(groupId));
-  }, [dispatch, groupId]);
-
-  console.log('GROUP STATE: ', group);
 
   const [name, setName] = useState('');
   const [type, setType] = useState('');
@@ -26,16 +19,14 @@ const EventCreateForm = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [description, setDescription] = useState('');
-  const [venueId, setvenueId] = useState(null);
-  const [capacity, setCapacity] = useState(10);
+  const [imgUrl, setImgUrl] = useState('');
   const [errs, setErrs] = useState({});
+  const venueId = null;
+  const capacity = 10;
 
-  const updateName = e => setName(e.target.value);
-  const updateType = e => setType(e.target.value);
-  const updatePrice = e => setPrice(e.target.value);
-  const updateStartDate = e => setStartDate(e.target.value);
-  const updateEndDate = e => setEndDate(e.target.value);
-  const updateDescription = e => setDescription(e.target.value);
+  useEffect(() => {
+    dispatch(groupDetailsFetch(groupId));
+  }, [dispatch, groupId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,6 +40,7 @@ const EventCreateForm = () => {
       description,
       venueId,
       capacity,
+      url: imgUrl
     };
 
     let createdEvent;
@@ -60,8 +52,6 @@ const EventCreateForm = () => {
     };
     if (createdEvent) history.push(`/events/${createdEvent.id}`);
   };
-
-  console.log('ERRORS STATE: ', errs);
 
   // // SHORT CIRCUIT
   // if (!group) return null;
@@ -77,7 +67,7 @@ const EventCreateForm = () => {
               type='text'
               placeholder='Event name'
               value={name}
-              onChange={updateName}
+              onChange={e => setName(e.target.value)}
             />
             {errs && errs.name &&
               <p className='error-text'>Name is required</p>
@@ -85,7 +75,7 @@ const EventCreateForm = () => {
           </section>
           <p>Is this an in person or online group?</p>
           <select
-            onChange={updateType}
+            onChange={e => setType(e.target.value)}
             value={type}
           >
             <option>(select one)</option>
@@ -101,7 +91,7 @@ const EventCreateForm = () => {
               type='numeric'
               placeholder='0.00'
               value={price}
-              onChange={updatePrice} />
+              onChange={e => setPrice(e.target.value)} />
             {errs && errs.price &&
               <p className='error-text'>Price is required</p>
             }
@@ -112,7 +102,7 @@ const EventCreateForm = () => {
               type='text'
               placeholder='MM/DD/YYYY, HH/mm PM'
               value={startDate}
-              onChange={updateStartDate}
+              onChange={e => setStartDate(e.target.value)}
             />
             {errs && errs.startDate &&
               <p className='error-text'>Event start date and time required</p>
@@ -124,7 +114,8 @@ const EventCreateForm = () => {
               type='text'
               placeholder='MM/DD/YYYY, HH/mm PM'
               value={endDate}
-              onChange={updateEndDate} />
+              onChange={e => setEndDate(e.target.value)}
+            />
             {errs && errs.endDate &&
               <p className='error-text'>Event end date and time required</p>
             }
@@ -135,10 +126,22 @@ const EventCreateForm = () => {
               type='textarea'
               placeholder='Please write at least 30 characters.'
               value={description}
-              onChange={updateDescription}
+              onChange={e => setDescription(e.target.value)}
             />
             {errs && errs.description &&
               <p className='error-text'>Description needs 30 or more characters</p>
+            }
+          </section>
+          <section>
+            <p>Please add an image url for your event below:</p>
+            <input
+              type='url'
+              placeholder='Image URL'
+              value={imgUrl}
+              onChange={e => setImgUrl(e.target.value)}
+            />
+            {errs && errs.url &&
+              <p className='error-text'>{errs.url}</p>
             }
           </section>
           <button type="submit">Create Event</button>

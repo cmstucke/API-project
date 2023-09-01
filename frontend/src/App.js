@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import * as sessionActions from "./store/session";
-import LandingPage from "./components/Landing";
 import Navigation from "./components/Navigation";
+import LandingPage from "./components/Landing";
 import GetAllGroups from "./components/AllGroups";
 import GetGroupDetails from "./components/GroupDetails";
 import GetGroupEvents from "./components/GroupEvents";
@@ -32,7 +32,7 @@ function App() {
       {}
   ));
 
-  const store = useSelector(store => store);
+  // const store = useSelector(store => store);
   // console.log('STORE: ', store);
   // console.log('EVENTS: ', allEvents);
 
