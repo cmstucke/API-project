@@ -1,13 +1,14 @@
-#body-container {
+/* #body-container {
   display: flex;
   justify-content: center;
   width: fit-content;
-}
+} */
 
-#headings-container {
+#all-events-container {
   display: flex;
-  align-self: flex-start;
-  gap: 10px;
+  flex-direction: column;
+  width: 35rem;
+  align-items: center;
 }
 
 #subheading {
@@ -17,6 +18,16 @@
 
 .event-link-wrap {
   text-decoration: none;
+}
+
+.event-element {
+  border-top: solid #CCCCCC 2px;
+  padding: .75rem 0;
+}
+
+.event-upper {
+  display: flex;
+  gap: 1rem;
 }
 
 .event-img {
@@ -30,10 +41,10 @@
 .events-list-container {
   display: flex;
   flex-direction: column;
-  width: 40rem;
   align-items: flex-start;
 }
 
-.description {
-  width: 40rem;
+.all-events-description {
+  width: auto;
+  color: black;
 }

@@ -61,20 +61,23 @@ const GetEventDetails = () => {
 
   // JSX
   return (
-    <>
-      <div id='body-container'>
-        <label id='events-bread-crumb'>{breadCrumbLabelVal}
-          <Link to={'/events'}> Events</Link>
+    <div id='body-container'>
+      <div id='heading-container'>
+        <label className='breadcrumb'>{breadCrumbLabelVal}
+          <Link
+            to={'/events'}
+            className='breadcrumb'
+          > Events</Link>
         </label>
-        <div id='heading-container'>
-          <h1>{event.name}</h1>
-          <p>Hosted by {event.user.firstName} {event.user.lastName}</p>
-        </div>
-        <div id='upper-container'>
+        <h1>{event.name}</h1>
+        <p>Hosted by {event.user.firstName} {event.user.lastName}</p>
+      </div>
+      <div id='event-details-background'>
+        <div id='event-details-upper-container'>
           {
             !event.previewImage &&
             <img
-              id='event-img'
+              id='event-details-img'
               alt='No event img'
             />
           }
@@ -82,7 +85,7 @@ const GetEventDetails = () => {
             event.previewImage &&
             event.previewImage.startsWith('event-img-') &&
             <img
-              id='event-img'
+              id='event-details-img'
               src={require(`../../assets/images/${event.previewImage}`)}
               alt='No event img'
             />
@@ -91,29 +94,29 @@ const GetEventDetails = () => {
             event.previewImage &&
             !event.previewImage.startsWith('event-img-') &&
             <img
-              id='event-img'
+              id='event-details-img'
               src={event.previewImage}
               alt='No event img'
             />
           }
           <div id='upper-info'>
 
-            <p>START {event.startDateStr}</p>
-            <p>END {event.endDateStr}</p>
-            {event.price !== 0 && <p>{event.price}</p>}
-            {event.price === 0 && <p>FREE</p>}
+            <p className='event-details-text'>START {event.startDateStr}</p>
+            <p className='event-details-text'>END {event.endDateStr}</p>
+            {event.price !== 0 && <p className='event-details-text'>$ {event.price}</p>}
+            {event.price === 0 && <p className='event-details-text'>FREE</p>}
             <section id='type-session-buttons'>
-              <p>{event.type}</p>
+              <p className='event-details-text'>{event.type}</p>
               {sessionLinks}
             </section>
           </div>
         </div>
-        <div>
-          <h2>Description</h2>
-          <p id='description'>{event.description}</p>
+        <div id='event-details-description-container'>
+          <h2>Details</h2>
+          <p id='event-details-description'>{event.description}</p>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

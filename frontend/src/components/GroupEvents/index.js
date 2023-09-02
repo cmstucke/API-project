@@ -63,7 +63,11 @@ const GroupEvents = () => {
                     <div>
                       <p className='group-event-times'>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
                       <h2>{event.name}</h2>
-                      {event.Venue && <p>{`${event.Venue.city}, ${event.Venue.state}`}</p>}
+                      {
+                        event.venueId === null ?
+                          <p>Online</p> :
+                          <p>{`${event.Venue.city} ${event.Venue.state}`}</p>
+                      }
                     </div>
                   </div>
                   <p className='group-event-description'>{event.description}</p>
@@ -100,7 +104,11 @@ const GroupEvents = () => {
                     <div>
                       <p className='group-event-times'>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
                       <h2>{event.name}</h2>
-                      {event.Venue && <p>{`${event.Venue.city}, ${event.Venue.state}`}</p>}
+                      {
+                        event.venueId === null ?
+                          <p>Online</p> :
+                          <p>{`${event.Venue.city} ${event.Venue.state}`}</p>
+                      }
                     </div>
                   </div>
                   <p className='group-event-description'>{event.description}</p>

@@ -1,3 +1,13 @@
 .error-text {
   color: red;
 }
+
+#price-input-currency {
+  position: fixed;
+  left: 3px;
+  /* color: #999999; */
+}
+
+#price-input {
+  padding-left: .75rem;
+}

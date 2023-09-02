@@ -20,3 +20,32 @@
 #submit-button {
   margin-top: 1rem;
 }
+
+#group-form-container {
+  display: flex;
+  flex-direction: column;
+  width: 40rem;
+}
+
+#group-form-body-container {
+  display: flex;
+  justify-content: center;
+}
+
+.group-form-section {
+  border-top: #999999 solid 2px;
+  margin-top: 1rem;
+}
+
+.group-submit-button {
+  margin: 1rem 0;
+  background-color: #FF5A5F;
+  color: white;
+  padding: .5rem 2rem;
+  border: solid black 1px;
+  box-shadow: 2px 2px black;
+}
+
+.group-form-p {
+  color: black;
+}
