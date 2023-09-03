@@ -84,7 +84,7 @@ export const eventUpdate = (eventId, data) => async dispatch => {
     console.log('RESPONSE: ', event);
     dispatch(addEvent(event));
     return event;
-  } catch (err) { throw err }
+  } catch (err) { throw err };
 };
 
 export const eventDelete = eventId => async dispatch => {
@@ -102,8 +102,26 @@ const eventsReducer = (state = {}, action) => {
     case LOAD_EVENTS:
       const { Events } = action.events
       const allEvents = {};
-      Events.forEach(event => allEvents[event.id] = { ...event });
+      Events.forEach(event => {
+        allEvents[event.id] = {
+          ...event,
+          Group: { ...event.Group },
+          Venue: { ...event.Venue }
+        }
+      });
       return { ...state, allEvents: { ...allEvents } }
+    case LOAD_GROUP_EVENTS:
+      // console.log('ACTION GROUP EVENTS', action.groupEvents);
+      const groupEventsArr = [...action.groupEvents];
+      const groupEvents = {};
+      groupEventsArr.forEach(event => {
+        groupEvents[event.id] = {
+          ...event,
+          Group: { ...event.Group },
+          Venue: { ...event.Venue }
+        }
+      });
+      return { ...state, groupEvents: groupEvents };
     case LOAD_EVENT_DETAILS:
       return { ...state, singleEvent: { ...action.event } };
     case ADD_EVENT:

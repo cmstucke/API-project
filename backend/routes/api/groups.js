@@ -431,23 +431,35 @@ const validateCreateEvent = [
     .exists({ checkFalsy: true })
     .withMessage("Description is required"),
   check('startDate')
+    .custom(async (startDate, { req }) => {
+      console.log('START DATE INPUT: ', req.body.startDateTime)
+      // const startDateStr = new Date(req.body.startDateTime);
+      // console.log('START DATE STRING: ', startDateStr)
+      // const startTime = startDateStr.getTime();
+      // console.log('START TIME: ', startTime)
+      const now = new Date().getTime();
+      if (req.body.startDateTime <= now) throw new Error;
+    })
+    .withMessage('Start date must be in the future'),
+  check('startDate')
     .exists({ checkFalsy: true })
-    .isAfter()
-    .withMessage("Start date must be in the future"),
+    .withMessage("Start date is required"),
+  check('endDate')
+    .custom(async (endDate, { req }) => {
+      if (req.body.endDateTime < req.body.startDateTime) throw new Error
+    })
+    .withMessage('End date is less than start date'),
   check('endDate')
     .exists({ checkFalsy: true })
-    .withMessage('End date is less than start date')
-    .custom(async (endDate, req) => {
-      if (endDate < req.req.body.startDate) throw new Error("End date is less than start date")
-    }),
+    .withMessage('End date is required'),
   check('url')
     .exists({ checkFalsy: true })
     .isURL()
     .custom(async url => {
       if (!(
         url.endsWith('.png') ||
-        url.endsWith('.jpg') ||
-        url.endsWith('.jpeg')
+        url.endsWith('.jpeg') ||
+        url.endsWith('.jpg')
       )) throw new Error
     })
     .withMessage("Image URL must end in .png, .jpg, or .jpeg"),
@@ -560,6 +572,9 @@ router.post(
       return res.json({ message: "Group Event must be created by Organizer or Co-Host" });
     };
 
+    const startDateFormat = new Date(startDate);
+    const endDateFormat = new Date(endDate);
+
     // Handler
     const groupId = group.id;
     const event = await Event.create({
@@ -570,8 +585,8 @@ router.post(
       type,
       capacity,
       price,
-      startDate,
-      endDate
+      startDate: startDateFormat,
+      endDate: endDateFormat
     });
 
     const eventObj = event.toJSON()
@@ -650,7 +665,7 @@ const validateGroupCreate = [
     .custom(async url => {
       if (!(
         url.endsWith('.png') ||
-        url.endsWith('.jpg') ||
+        url.endsWith('.jpeg') ||
         url.endsWith('.jpg')
       )) throw new Error
     })

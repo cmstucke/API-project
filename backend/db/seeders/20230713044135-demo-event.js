@@ -46,7 +46,7 @@ module.exports = {
         endDate: "2023-08-13T14:30:00.815Z"
       },
       {
-        venueId: null,
+        venueId: 3,
         groupId: 1,
         name: 'Event Four',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',

@@ -103,29 +103,41 @@ const groupsReducer = (state = {}, action) => {
     case LOAD_GROUPS:
       const allGroups = {};
       action.groups.forEach(group => {
-        allGroups[group.id] = { ...group };
+        allGroups[group.id] = {
+          ...group,
+          Events: [...group.Events]
+        };
       });
       return { ...state, allGroups: { ...allGroups } };
     case LOAD_GROUP_DETAILS:
-      return { ...state, singleGroup: { ...action.group } }
+      return {
+        ...state,
+        singleGroup: {
+          ...action.group,
+          Organizer: { ...action.group.Organizer },
+          Events: [...action.group.Events],
+          Venues: [...action.group.Venues],
+          GroupImages: [...action.group.GroupImages]
+        }
+      }
     case ADD_GROUP:
       if (state.allGroups[action.group.id]) {
         const newState = {
           ...state,
           singleGroup: {
             ...action.group,
-            Organizer: { ...state.singleGroup.Organizer },
-            Events: [...state.singleGroup.Events],
-            Venues: [...state.singleGroup.Venues],
-            GroupImages: [...state.singleGroup.GroupImages]
+            Organizer: { ...action.group.Organizer },
+            Events: [...action.group.Events],
+            Venues: [...action.group.Venues],
+            GroupImages: [...action.group.GroupImages]
           },
           allGroups: {
             ...state.allGroups,
             [action.group.id]: {
               ...action.group,
-              Organizer: { ...state.singleGroup.Organizer },
-              Events: [...state.singleGroup.Events],
-              Venues: [...state.singleGroup.Venues]
+              Organizer: { ...action.group.Organizer },
+              Events: [...action.group.Events],
+              Venues: [...action.group.Venues]
             }
           }
         };

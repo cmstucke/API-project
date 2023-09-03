@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { groupDelete } from '../../store/groups'
+import { groupDelete, groupsFetch } from '../../store/groups'
 import { useHistory } from 'react-router-dom';
 import { useModal } from "../../context/Modal";
 
@@ -13,6 +13,7 @@ function GroupDeleteModal({ groupId }) {
   const handleSubmit = e => {
     e.preventDefault();
     return dispatch(groupDelete(groupId))
+      .then(dispatch(groupsFetch()))
       .then(closeModal)
       .then(history.push('/groups'));
   };

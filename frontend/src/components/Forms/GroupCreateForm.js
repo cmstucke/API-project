@@ -58,13 +58,13 @@ const GroupCreateForm = () => {
   // if (!errs) return null;
 
   return (
-    <>
-      <div id='body-container'>
+    <div id='group-form-body-container'>
+      <div id='group-form-container'>
         <h1>Start a New Group</h1>
         <form onSubmit={handleSubmit}>
-          <section className='form-section'>
+          <section className='group-form-section'>
             <h2>Set your group's location</h2>
-            <p className='description'>Meetup groups meet locally, in person, and online. We'll connect you with people in your area.</p>
+            <p className='group-form-p'>Meetup groups meet locally, in person, and online. We'll connect you with people in your area.</p>
             <div id='location-inputs'>
               <div>
                 <input
@@ -92,9 +92,9 @@ const GroupCreateForm = () => {
               </div>
             </div>
           </section>
-          <section>
+          <section className='group-form-section'>
             <h2>What will your group's name be?</h2>
-            <p className='description'>Choose a name that will give people a clear idea of what the group is about. Feel free to get creative! You can edit this later if you change your mind.</p>
+            <p className='group-form-p'>Choose a name that will give people a clear idea of what the group is about. Feel free to get creative! You can edit this later if you change your mind.</p>
             <input
               type='text'
               placeholder='What is your group name?'
@@ -106,12 +106,12 @@ const GroupCreateForm = () => {
               <p className='err-text'>Name is required</p>
             }
           </section>
-          <section>
+          <section className='group-form-section'>
             <h2>Describe the purpose of your group.</h2>
-            <p className='description'>People will see this when we promote your group, but you'll be able to add to it later, too.</p>
-            <p className='description'>1. What's the purpose of the group?</p>
-            <p className='description'>2. Who should join?</p>
-            <p className='description'>3. What will you do at your events?</p>
+            <p className='group-form-p'>People will see this when we promote your group, but you'll be able to add to it later, too.</p>
+            <p className='group-form-p'>1. What's the purpose of the group?</p>
+            <p className='group-form-p'>2. Who should join?</p>
+            <p className='group-form-p'>3. What will you do at your events?</p>
             <input
               type='text'
               placeholder='Please write at least 30 characters.'
@@ -123,7 +123,7 @@ const GroupCreateForm = () => {
               <p className='err-text'>Description needs 30 or more characters</p>
             }
           </section>
-          <section>
+          <section className='group-form-section'>
             <div>
               <p className='description'>Is this an in-person or online group?</p>
               <select
@@ -140,7 +140,7 @@ const GroupCreateForm = () => {
               }
             </div>
             <div>
-              <p className='description'>Is this group private or public?</p>
+              <p className='group-form-p'>Is this group private or public?</p>
               <select
                 onChange={updatePrivate}
               >
@@ -154,7 +154,7 @@ const GroupCreateForm = () => {
               }
             </div>
             <div>
-              <p className='description'>Please add an image url for your group below:</p>
+              <p className='group-form-p'>Please add an image url for your group below:</p>
               <input
                 type='url'
                 placeholder='Image URL'
@@ -167,10 +167,12 @@ const GroupCreateForm = () => {
               }
             </div>
           </section>
-          <button id='submit-button' type="submit">Create Group</button>
+          <section className='group-form-section'>
+            <button className='group-submit-button' type="submit">Create Group</button>
+          </section>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 
