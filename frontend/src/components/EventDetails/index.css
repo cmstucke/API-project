@@ -1,6 +1,7 @@
 #body-container {
   display: flex;
   justify-content: center;
+  margin-top: .5rem;
 }
 
 #events-bread-crumb {
@@ -9,7 +10,7 @@
 
 #heading-container {
   align-self: center;
-  width: 40rem;
+  width: 50rem;
 }
 
 #event-details-background {
@@ -18,22 +19,32 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 35rem;
+  height: 66.75rem;
 }
 
 #event-details-upper-container {
   margin-top: 1rem;
-  width: 40rem;
+  width: 50rem;
   display: flex;
-  gap: 1rem;
+  gap: .5rem;
 }
 
 #event-details-img {
   width: 25rem;
 }
 
+#event-details-upper-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  background-color: white;
+  width: 100%;
+  padding: 0 2rem;
+  border-radius: 1rem;
+}
+
 #event-details-description-container {
-  width: 40rem;
+  width: 50rem;
 }
 
 #event-details-description {
@@ -41,20 +52,22 @@
 }
 
 .event-details-text {
-  color: black;
+  color: #CCCCCC;
 }
 
 #type-session-buttons {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 }
 
 .session-buttons-container {
   display: flex;
-  gap: .5rem;
+  gap: .25rem;
   position: relative;
   bottom: 2px;
+  justify-content: flex-start;
 }
 
 .session-button {
@@ -62,7 +75,7 @@
   padding: .25rem .5rem;
   border: solid black 1px;
   box-shadow: 2px 2px black;
-  margin-left: .5rem;
+  margin-right: .25rem;
 }
 
 .events-breadcrumb {
@@ -70,4 +83,50 @@
   align-self: flex-start;
   color: #00525E;
   font-weight: bold;
+}
+
+.event-details-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+#event-details-calendar-days {
+  font-size: 1.75rem;
+  color: #CCCCCC;
+}
+
+#event-details-dollar {
+  font-size: 1.75rem;
+  color: #CCCCCC;
+}
+
+#event-details-pin {
+  font-size: 1.75rem;
+  color: #CCCCCC;
+}
+
+.event-details-date-str {
+  color: #00525E;
+}
+
+.event-details-date {
+  display: flex;
+  justify-content: space-between;
+  gap: .5rem;
+}
+
+.event-details-price-text {
+  position: relative;
+  left: .5rem;
+}
+
+.event-details-type-text {
+  position: relative;
+  left: 10px;
+}
+
+#event-details-lowercontainer {
+  display: flex;
+  justify-content: space-between;
 }

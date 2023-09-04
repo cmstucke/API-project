@@ -104,17 +104,31 @@ const GetEventDetails = ({ allEvents }) => {
               alt='No event img'
             />
           }
-          <div id='upper-info'>
-
-            <p className='event-details-text'>START {event.startDateStr}</p>
-            <p className='event-details-text'>END {event.endDateStr}</p>
-            {
-              event.price === 0 ?
-                <p className='event-details-text'>FREE</p> :
-                <p className='event-details-text'>$ {event.price}</p>
-            }
+          <div id='event-details-upper-info'>
+            <div className='event-details-container'>
+              <i id="event-details-calendar-days" className="fas fa-clock" />
+              <div id='event-details-date-text'>
+                <p className='event-details-date'>START <span
+                  className='event-details-date-str'
+                >{event.startDateStr}</span></p>
+                <p className='event-details-date'>END <span
+                  className='event-details-date-str'
+                >{event.endDateStr}</span></p>
+              </div>
+            </div>
+            <div className='event-details-container'>
+              <i id="event-details-dollar" className="fas fa-dollar-sign" />
+              {
+                event.price === 0 ?
+                  <p className='event-details-price-text'>FREE</p> :
+                  <p className='event-details-price-text'>$ {event.price}</p>
+              }
+            </div>
             <section id='type-session-buttons'>
-              <p className='event-details-text'>{event.type}</p>
+              <div className='event-details-container'>
+                <i id="event-details-pin" className="fas fa-map-pin" />
+                <p className='event-details-type-text'>{event.type}</p>
+              </div>
               {sessionLinks}
             </section>
           </div>

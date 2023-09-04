@@ -1,13 +1,7 @@
-/* #body-container {
-  display: flex;
-  justify-content: center;
-  width: fit-content;
-} */
-
 #all-events-container {
   display: flex;
   flex-direction: column;
-  width: 35rem;
+  width: 40rem;
   align-items: center;
 }
 
@@ -47,4 +41,16 @@
 .all-events-description {
   width: auto;
   color: black;
+}
+
+.all-events-dates {
+  color: #00525E;
+}
+
+.all-events-info-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+  bottom: .75rem;
 }

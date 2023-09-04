@@ -36,18 +36,28 @@
   margin-top: .25rem;
   background-color: #FF5A5F;
   color: white;
-  padding: 1rem;
+  padding: .75rem 1rem;
   border: solid black 1px;
   box-shadow: 2px 2px black;
+  width: 20rem;
 }
 
 .modal-submit:disabled {
   margin-top: .25rem;
   background-color: transparent;
   color: #999999;
-  padding: 1rem;
+  padding: .75rem 1rem;
   border: solid #999999 1px;
   box-shadow: 2px 2px #999999;
+}
+
+.modal-delete-no {
+  margin-top: .25rem;
+  background-color: #999999;
+  color: white;
+  padding: .75rem 1rem;
+  border: solid #999999 1px;
+  box-shadow: 2px 2px black;
 }
 
 .errors {
@@ -61,7 +71,8 @@
 
 .modal-buttons-container {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: .25rem;
 }
 
 .modal-delete-form {

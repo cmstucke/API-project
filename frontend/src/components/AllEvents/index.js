@@ -53,8 +53,8 @@ const GetAllEvents = () => {
                       alt='No event img'
                     />
                   }
-                  <div>
-                    <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
+                  <div className="all-events-info-container">
+                    <p className="all-events-dates">{`${event.startDateStr} · ${event.startTimeStr}`}</p>
                     <h2>{event.name}</h2>
                     {
                       event.venueId === null ?
@@ -89,8 +89,8 @@ const GetAllEvents = () => {
                       alt='No event img'
                     />
                   }
-                  <div>
-                    <p>{`${event.startDateStr} · ${event.startTimeStr}`}</p>
+                  <div className="all-events-info-container">
+                    <p className="all-events-dates">{`${event.startDateStr} · ${event.startTimeStr}`}</p>
                     <h2>{event.name}</h2>
                     {
                       event.venueId === null ?

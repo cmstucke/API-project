@@ -32,7 +32,7 @@ function EventDeleteModal({ event }) {
             type='submit'
           >Yes (Delete Event)</button>
           <button
-            className='modal-submit'
+            className='modal-delete-no'
             onClick={closeModal}
           >No (Keep Event)</button>
         </div>
