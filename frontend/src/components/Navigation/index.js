@@ -13,9 +13,18 @@ function Navigation({ isLoaded }) {
   let sessionLinks;
   if (sessionUser) {
     sessionLinks = (
-      <div id="profile-container">
-        <ProfileButton user={sessionUser} />
-      </div>
+      <>
+        <div>
+        </div>
+        <div id="profile-container">
+          <NavLink
+            id='start-group-link'
+            to='/groups/create'
+          >Start a new group
+          </NavLink>
+          <ProfileButton user={sessionUser} />
+        </div>
+      </>
     );
   } else {
     sessionLinks = (

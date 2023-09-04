@@ -42,10 +42,13 @@ function LoginFormModal() {
   };
 
   return (
-    <div id="modal-form-body">
-      <h1 id="login-modal-heading">Log In</h1>
-      <form id='form' onSubmit={handleSubmit}>
-        <label className="input-container">
+    <div className="modal-form-body">
+      <h1 className="modal-heading">Log In</h1>
+      <form
+        className="modal-form"
+        onSubmit={handleSubmit}
+      >
+        <label className="modal-input-container">
           Username or Email
           <input
             className="input"
@@ -59,7 +62,7 @@ function LoginFormModal() {
 
           <p className="errors">{errors.credential}</p>
         }
-        <label className="input-container">
+        <label className="modal-input-container">
           Password
           <input
             className="input"
@@ -77,12 +80,12 @@ function LoginFormModal() {
           <p className="errors">{errors.credential}</p>
         }
         <button
-          id='log-in'
+          className='modal-submit'
           type="submit"
           onClick={handleDemo}
         >Log in as Demo User</button>
         <button
-          id='log-in'
+          className='modal-submit'
           type="submit"
           disabled={
             credential.length < 4 ||

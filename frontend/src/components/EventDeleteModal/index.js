@@ -19,16 +19,25 @@ function EventDeleteModal({ event }) {
   };
 
   return (
-    <>
-      <h1>Confirm Delete</h1>
-      <form onSubmit={handleSubmit}>
-        <p>Are you sure you want to remove this event?</p>
-        <div className="buttons-container">
-          <button type='submit'>Yes (Delete Event)</button>
-          <button onClick={closeModal}>No (Keep Event)</button>
+    <div className="modal-form-body">
+      <h1 className="modal-heading">Confirm Delete</h1>
+      <form
+        className="modal-delete-form"
+        onSubmit={handleSubmit}
+      >
+        <p className="modal-p">Are you sure you want to remove this event?</p>
+        <div className="modal-buttons-container">
+          <button
+            className='modal-submit'
+            type='submit'
+          >Yes (Delete Event)</button>
+          <button
+            className='modal-submit'
+            onClick={closeModal}
+          >No (Keep Event)</button>
         </div>
       </form>
-    </>
+    </div>
   );
 
 };
