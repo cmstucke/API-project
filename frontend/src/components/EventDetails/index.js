@@ -103,8 +103,11 @@ const GetEventDetails = () => {
 
             <p className='event-details-text'>START {event.startDateStr}</p>
             <p className='event-details-text'>END {event.endDateStr}</p>
-            {event.price !== 0 && <p className='event-details-text'>$ {event.price}</p>}
-            {event.price === 0 && <p className='event-details-text'>FREE</p>}
+            {
+              event.price === 0 ?
+                <p className='event-details-text'>FREE</p> :
+                <p className='event-details-text'>$ {event.price}</p>
+            }
             <section id='type-session-buttons'>
               <p className='event-details-text'>{event.type}</p>
               {sessionLinks}

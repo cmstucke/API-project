@@ -81,6 +81,7 @@ const GroupCreateForm = () => {
               <div>
                 <input
                   type='text'
+                  className='group-state-input'
                   placeholder='State'
                   value={state}
                   onChange={updateState}
@@ -112,12 +113,13 @@ const GroupCreateForm = () => {
             <p className='group-form-p'>1. What's the purpose of the group?</p>
             <p className='group-form-p'>2. Who should join?</p>
             <p className='group-form-p'>3. What will you do at your events?</p>
-            <input
+            <textarea
               type='text'
+              className='group-form-description'
               placeholder='Please write at least 30 characters.'
               value={about}
               onChange={updateAbout}
-            />
+            ></textarea>
             {
               errs.about &&
               <p className='err-text'>Description needs 30 or more characters</p>
@@ -125,7 +127,7 @@ const GroupCreateForm = () => {
           </section>
           <section className='group-form-section'>
             <div>
-              <p className='description'>Is this an in-person or online group?</p>
+              <p className='group-form-p'>Is this an in-person or online group?</p>
               <select
                 onChange={updateType}
                 value={type}
@@ -157,6 +159,7 @@ const GroupCreateForm = () => {
               <p className='group-form-p'>Please add an image url for your group below:</p>
               <input
                 type='url'
+                className='group-url-input'
                 placeholder='Image URL'
                 value={imgUrl}
                 onChange={updateImgUrl}

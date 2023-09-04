@@ -2,12 +2,17 @@
   color: red;
 }
 
-#price-input-currency {
-  position: fixed;
-  left: 3px;
-  /* color: #999999; */
-}
+
 
 #price-input {
   padding-left: .75rem;
+  text-align: right;
+  width: 5rem;
+}
+
+#price-input-currency {
+  z-index: 1;
+  position: relative;
+  right: 5.85rem;
+  font-size: 11pt;
 }

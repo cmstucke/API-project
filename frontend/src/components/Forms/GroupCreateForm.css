@@ -13,8 +13,12 @@
   color: red;
 }
 
-#description {
-  width: 40rem;
+.group-form-description {
+  width: 25rem;
+  height: 10rem;
+  background-color: #E8F0FE;
+  font-family: Arial, Helvetica, sans-serif;
+  border: solid 2px black;
 }
 
 #submit-button {
@@ -48,4 +52,12 @@
 
 .group-form-p {
   color: black;
+}
+
+.group-state-input {
+  width: 2.5rem;
+}
+
+.group-url-input {
+  width: 25rem;
 }

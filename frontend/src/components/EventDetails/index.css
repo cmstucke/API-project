@@ -52,7 +52,7 @@
 
 .session-buttons-container {
   display: flex;
-  gap: 2px;
+  gap: .5rem;
   position: relative;
   bottom: 2px;
 }

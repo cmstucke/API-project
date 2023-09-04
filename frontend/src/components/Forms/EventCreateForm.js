@@ -106,7 +106,6 @@ const EventCreateForm = () => {
                 }
                 <p className='group-form-p'>What is the price for your event?</p>
                 <div id='price-input-container'>
-                  <span id='price-input-currency'>$</span>
                   <input
                     id='price-input'
                     type='number'
@@ -117,6 +116,7 @@ const EventCreateForm = () => {
                     value={price}
                     onChange={e => setPrice(e.target.value)}
                   />
+                  <span id='price-input-currency'>$</span>
                 </div>
                 {errs && errs.price &&
                   <p className='error-text'>Price is required</p>
@@ -148,6 +148,7 @@ const EventCreateForm = () => {
                 <p className='group-form-p'>Please add an image url for your event below:</p>
                 <input
                   type='url'
+                  className='group-url-input'
                   placeholder='Image URL'
                   value={imgUrl}
                   onChange={e => setImgUrl(e.target.value)}
@@ -158,12 +159,15 @@ const EventCreateForm = () => {
               </section>
               <section className='group-form-section'>
                 <p className='group-form-p'>Please describe your event</p>
-                <input
+                <textarea
+                  className='group-form-description'
                   type='textarea'
                   placeholder='Please write at least 30 characters.'
                   value={description}
                   onChange={e => setDescription(e.target.value)}
-                />
+                ></textarea>
+                {/* <input
+                /> */}
                 {errs && errs.description &&
                   <p className='error-text'>Description needs 30 or more characters</p>
                 }
