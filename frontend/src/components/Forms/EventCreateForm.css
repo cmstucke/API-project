@@ -16,3 +16,8 @@
   right: 5.85rem;
   font-size: 11pt;
 }
+
+#calendar-days {
+  position: relative;
+  left: .5rem;
+}

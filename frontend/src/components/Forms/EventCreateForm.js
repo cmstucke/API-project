@@ -140,6 +140,9 @@ const EventCreateForm = () => {
                   value={startDate}
                   onChange={e => setStartDate(e.target.value)}
                 />
+                <span>
+                  <i id="calendar-days" className="fas fa-calendar-days" />
+                </span>
                 {errs && errs.startDate &&
                   <p className='error-text'>{errs.startDate}</p>
                 }
@@ -150,6 +153,9 @@ const EventCreateForm = () => {
                   value={endDate}
                   onChange={e => setEndDate(e.target.value)}
                 />
+                <span>
+                  <i id="calendar-days" className="fas fa-calendar-days" />
+                </span>
                 {errs && errs.endDate &&
                   <p className='error-text'>{errs.endDate}</p>
                 }
