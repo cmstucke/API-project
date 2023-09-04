@@ -121,23 +121,25 @@ const groupsReducer = (state = {}, action) => {
         }
       }
     case ADD_GROUP:
+      // console.log('STATE: ', state);
+      // console.log('ACTION GROUP: ', action.group);
       if (state.allGroups[action.group.id]) {
         const newState = {
           ...state,
           singleGroup: {
             ...action.group,
-            Organizer: { ...action.group.Organizer },
-            Events: [...action.group.Events],
-            Venues: [...action.group.Venues],
-            GroupImages: [...action.group.GroupImages]
+            Organizer: { ...state.singleGroup.Organizer },
+            Events: [...state.singleGroup.Events],
+            Venues: [...state.singleGroup.Venues],
+            GroupImages: [...state.singleGroup.GroupImages]
           },
           allGroups: {
             ...state.allGroups,
             [action.group.id]: {
               ...action.group,
-              Organizer: { ...action.group.Organizer },
-              Events: [...action.group.Events],
-              Venues: [...action.group.Venues]
+              Organizer: { ...state.singleGroup.Organizer },
+              Events: [...state.singleGroup.Events],
+              Venues: [...state.singleGroup.Venues]
             }
           }
         };

@@ -69,7 +69,7 @@ function App() {
             <EventUpdateForm />
           </Route>
           <Route path='/events/:eventId'>
-            <GetEventDetails />
+            <GetEventDetails allEvents={allEvents} />
           </Route>
           <Route path='/events'>
             <GetAllEvents allEvents={allEvents} />

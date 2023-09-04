@@ -19,16 +19,25 @@ function GroupDeleteModal({ groupId }) {
   };
 
   return (
-    <>
-      <h1>Confirm Delete</h1>
-      <form onSubmit={handleSubmit}>
-        <p>Are you sure you want to remove this group?</p>
-        <div className="buttons-container">
-          <button type='submit'>Yes (Delete Group)</button>
-          <button onClick={closeModal}>No (Keep Group)</button>
+    <div className="modal-form-body">
+      <h1 className="modal-heading">Confirm Delete</h1>
+      <form
+        className="modal-delete-form"
+        onSubmit={handleSubmit}
+      >
+        <p className="modal-p">Are you sure you want to remove this group?</p>
+        <div className="modal-buttons-container">
+          <button
+            type='submit'
+            className='modal-submit'
+          >Yes (Delete Group)</button>
+          <button
+            className='modal-submit'
+            onClick={closeModal}
+          >No (Keep Group)</button>
         </div>
       </form>
-    </>
+    </div>
   );
 };
 
