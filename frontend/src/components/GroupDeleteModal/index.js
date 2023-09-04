@@ -32,7 +32,7 @@ function GroupDeleteModal({ groupId }) {
             className='modal-submit'
           >Yes (Delete Group)</button>
           <button
-            className='modal-submit'
+            className='modal-delete-no'
             onClick={closeModal}
           >No (Keep Group)</button>
         </div>

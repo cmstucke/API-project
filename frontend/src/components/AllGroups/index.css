@@ -5,6 +5,7 @@
 #all-groups-body {
   display: flex;
   justify-content: center;
+  margin-top: .5rem;
 }
 
 #headings-container {

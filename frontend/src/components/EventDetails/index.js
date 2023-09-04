@@ -128,8 +128,8 @@ const GetEventDetails = ({ allEvents }) => {
               <div className='event-details-container'>
                 <i id="event-details-pin" className="fas fa-map-pin" />
                 <p className='event-details-type-text'>{event.type}</p>
-                {sessionLinks}
               </div>
+              {sessionLinks}
             </section>
           </div>
         </div>
