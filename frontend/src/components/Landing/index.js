@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import OpenModalButton from "../OpenModalButton";
+import SignupFormModal from "../SignupFormModal";
 import './index.css';
 
 const LandingPage = () => {
@@ -16,7 +18,9 @@ const LandingPage = () => {
         src="https://thumbs.dreamstime.com/b/online-meetup-abstract-concept-vector-illustration-conference-call-join-group-video-service-distance-communication-informal-267314906.jpg"
       />
       <h3>Start a new group</h3>
-      <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.</p>
+      <p
+        className={sessionUser ? 'lower-link-text' : null}
+      >Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.</p>
     </div>
   );
 
@@ -32,7 +36,7 @@ const LandingPage = () => {
         <div id="intro-container">
           <div id="intro-text">
             <h1 id="intro-title">The people platform—<br />Where interests<br />become friendships</h1>
-            <p id='intro-description'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            <p id='intro-description'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <br />Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip <br />ex ea commodo consequat.</p>
           </div>
           <img
             id="intro-img"
@@ -42,7 +46,7 @@ const LandingPage = () => {
         </div>
         <div id="how-to-container">
           <h2>How Meetup Works</h2>
-          <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+          <p id='how-meetup-text'>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
         </div>
         <div id='lower-body'>
           <Link to='/groups' className='lower-link'>
@@ -53,7 +57,9 @@ const LandingPage = () => {
                 src="https://img.freepik.com/premium-vector/online-meetup-concept-virtual-meeting-meetup-group-vector-illustration-flat_186332-879.jpg?w=2000"
               />
               <h3>See all groups</h3>
-              <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.</p>
+              <p
+                className='lower-link-text'
+              >Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.</p>
             </div>
           </Link>
           <Link to='/events' className='lower-link'>
@@ -64,12 +70,22 @@ const LandingPage = () => {
                 src="https://cdni.iconscout.com/illustration/premium/thumb/friends-meetup-4769989-3972613.png"
               />
               <h3>Find an event</h3>
-              <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.</p>
+              <p
+                className='lower-link-text'
+              >Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.</p>
             </div>
           </Link>
           {sessionUser ? sessionLink : startGroupElement}
         </div>
-        {!sessionUser && <button id='join-meetup-button'>Join Meetup</button>}
+
+        {
+          !sessionUser &&
+          <OpenModalButton
+            className='join-meetup-button'
+            buttonText="Join Meetup"
+            modalComponent={<SignupFormModal />}
+          />
+        }
       </div >
     </>
   );

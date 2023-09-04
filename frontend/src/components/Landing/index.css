@@ -46,6 +46,7 @@ Link {
 
 #intro-description {
   width: 18rem;
+  color: black;
 }
 
 #how-to-container {
@@ -54,6 +55,11 @@ Link {
   align-items: center;
   width: 20rem;
   text-align: center;
+  margin-bottom: 1rem;
+}
+
+#how-meetup-text {
+  color: black;
 }
 
 #lower-body {
@@ -64,6 +70,10 @@ Link {
 .lower-link {
   text-decoration: none;
   color: #00525E;
+}
+
+.lower-link:hover {
+  text-decoration: underline;
 }
 
 .lower-container {
@@ -83,8 +93,8 @@ Link {
   color: #999999;
 }
 
-#join-meetup-button {
-  margin-bottom: 1rem;
+.join-meetup-button {
+  margin: 1rem 0;
   font-size: 18px;
   font-weight: 500;
   color: white;
@@ -92,4 +102,8 @@ Link {
   padding: 0.5rem 1rem;
   border: solid black 2px;
   box-shadow: 2px 2px black;
+}
+
+.lower-link-text {
+  color: #00525E;
 }
