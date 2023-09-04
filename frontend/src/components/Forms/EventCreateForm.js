@@ -9,9 +9,19 @@ const EventCreateForm = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { groupId } = useParams();
-  const group = useSelector((state) => (
-    state.groups.singleGroup ? state.groups.singleGroup : null
+
+  const group = useSelector(state => (
+    state.groups.allGroups[groupId] ? state.groups.allGroups[groupId] : null
   ));
+
+  const user = useSelector(state => (
+    state.session.user ? state.session.user : null
+  ));
+
+  if (!group || (!user || user.id !== group.organizerId)) {
+    history.push('/');
+  };
+
 
   const [name, setName] = useState('');
   const [type, setType] = useState('');

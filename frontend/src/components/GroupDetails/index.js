@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { groupDetailsFetch } from '../../store/groups';
 import OpenModalButton from "../OpenModalButton";
 import GroupDeleteModal from '../GroupDeleteModal';
 import GroupEvents from '../GroupEvents';
 import './index.css'
 
-const GetGroupDetails = () => {
+const GetGroupDetails = ({ allGroups }) => {
   // GET GROUP DETAILS
   const dispatch = useDispatch();
   const { groupId } = useParams();
+  const history = useHistory();
   const [imgUrl, setImgUrl] = useState('');
   const breadCrumb = '<';
   const group = useSelector(state => state.groups.singleGroup);
@@ -18,6 +19,10 @@ const GetGroupDetails = () => {
   useEffect(() => {
     dispatch(groupDetailsFetch(groupId));
   }, [dispatch, groupId]);
+
+  useEffect(() => {
+    if (!allGroups[groupId]) history.push('/');
+  }, [allGroups, groupId, history])
 
   // AUTHENTICATED USER
   const [join, setJoin] = useState(null);
@@ -122,6 +127,7 @@ const GetGroupDetails = () => {
               </div>
             </div>
             {
+              sessionUser &&
               join &&
               <button
                 id='join-button'

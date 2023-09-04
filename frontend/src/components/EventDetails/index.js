@@ -1,15 +1,16 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { eventDetailsFetch } from '../../store/events';
 import OpenModalButton from "../OpenModalButton";
 import EventDeleteModal from '../EventDeleteModal';
 import './index.css';
 
-const GetEventDetails = () => {
+const GetEventDetails = ({ allEvents }) => {
   //GET EVENT DETAILS
   const dispatch = useDispatch();
   const { eventId } = useParams();
+  const history = useHistory();
   const breadCrumbLabelVal = '<';
   const sessionUser = useSelector(state => (
     state.session.user
@@ -17,6 +18,10 @@ const GetEventDetails = () => {
   const event = useSelector(state => (
     state.events.singleEvent ? state.events.singleEvent : null
   ));
+
+  useEffect(() => {
+    if (!allEvents[eventId]) history.push('/');
+  }, [allEvents, eventId, history])
 
   useEffect(() => {
     dispatch(eventDetailsFetch(eventId));

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { groupCreate } from '../../store/groups';
 import './GroupCreateForm.css';
@@ -7,6 +7,15 @@ import './GroupCreateForm.css';
 const GroupCreateForm = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const user = useSelector(state => (
+    state.session.user ? state.session.user : null
+  ));
+
+  if (!user) {
+    history.push('/');
+  };
+
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [name, setName] = useState('');
