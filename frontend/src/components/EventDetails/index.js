@@ -32,7 +32,7 @@ const GetEventDetails = ({ allEvents }) => {
   if (sessionUser && event) {
     sessionLinks = (
       <div className='session-buttons-container'>
-        <Link
+        {/* <Link
           to={`/events/${eventId}/update`}
         >
           <button
@@ -41,7 +41,7 @@ const GetEventDetails = ({ allEvents }) => {
           >
             Update
           </button>
-        </Link>
+        </Link> */}
         <OpenModalButton
           className='management-modal'
           buttonText='Delete'

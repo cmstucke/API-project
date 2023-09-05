@@ -82,16 +82,16 @@ function LoginFormModal() {
         <button
           className='modal-submit'
           type="submit"
-          onClick={handleDemo}
-        >Log in as Demo User</button>
-        <button
-          className='modal-submit'
-          type="submit"
           disabled={
             credential.length < 4 ||
             password.length < 6
           }
         >Log In</button>
+        <button
+          className='modal-submit'
+          type="submit"
+          onClick={handleDemo}
+        >Log in as Demo User</button>
       </form>
     </div>
   );
