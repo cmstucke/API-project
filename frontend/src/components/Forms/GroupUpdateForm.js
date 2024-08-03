@@ -20,9 +20,6 @@ const GroupUpdateForm = () => {
     history.push('/');
   };
 
-  // console.log('GROUP: ', group);
-  // console.log('STATE: ', group.state);
-
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [name, setName] = useState('');
@@ -30,8 +27,6 @@ const GroupUpdateForm = () => {
   const [type, setType] = useState('');
   const [isPrivate, setIsPrivate] = useState('');
   const [errs, setErrs] = useState({});
-
-  // console.log('PRIVATE: ', isPrivate)
 
   useEffect(() => {
     if (group) {
@@ -48,16 +43,10 @@ const GroupUpdateForm = () => {
     dispatch(groupDetailsFetch(groupId));
   }, [dispatch, groupId]);
 
-  // const updateCity = e => setCity(e.target.value);
   const updateState = e => setState(e.target.value);
   const updateName = e => setName(e.target.value);
   const updateAbout = e => setAbout(e.target.value);
   const updateType = e => setType(e.target.value);
-  // const updatePrivate = e => {
-  //   console.log('INPUT VALUE: ', e.target.value);
-  //   if (e.target.value === 'Private') setIsPrivate(true);
-  //   if (e.target.value === 'Public') setIsPrivate(false);
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -76,9 +65,7 @@ const GroupUpdateForm = () => {
     try {
       createdGroup = await dispatch(groupUpdate(groupId, payload));
     } catch (err) {
-      // console.log('COMPONENT ERROR CATCH: ', err);
       errRes = await err.json();
-      // console.log('COMPONENT ERROR RESPONSE: ', errRes);
       setErrs(errRes.errors);
     }
     if (createdGroup) history.push(`/groups/${createdGroup.id}`);

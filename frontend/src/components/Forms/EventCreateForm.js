@@ -31,7 +31,6 @@ const EventCreateForm = () => {
   const [description, setDescription] = useState('');
   const [imgUrl, setImgUrl] = useState('');
   const [errs, setErrs] = useState({});
-  // const venueId = null;
   const capacity = 10;
 
   let startDateTime;
@@ -39,14 +38,12 @@ const EventCreateForm = () => {
     const startDateStr = new Date(startDate);
     startDateTime = startDateStr.getTime();
   }
-  // console.log('START DATE TIME', startDateTime)
 
   let endDateTime;
   if (endDate) {
     const endDateStr = new Date(endDate);
     endDateTime = endDateStr.getTime();
   }
-  // console.log('START DATE TIME', startDateTime)
 
   useEffect(() => {
     dispatch(groupDetailsFetch(groupId));
